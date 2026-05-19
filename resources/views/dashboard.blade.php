@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Owner</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, sans-serif;
+    background:#f4f6f9;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:260px;
+    height:100vh;
+    background:#4e73df;
+    position:fixed;
+    left:0;
+    top:0;
+    padding:20px;
+    color:white;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+    margin-bottom:30px;
+}
+
+.menu-title{
+    font-size:13px;
+    margin-bottom:10px;
+    opacity:0.7;
+}
+
+.sidebar a{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:14px;
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+    margin-bottom:10px;
+    transition:0.3s;
+}
+
+.sidebar a:hover{
+    background:rgba(255,255,255,0.15);
+}
+
+.sidebar .active{
+    background:white;
+    color:#4e73df;
+    font-weight:bold;
+}
+
+/* PROFILE */
+.profile{
+    position:absolute;
+    bottom:20px;
+    left:20px;
+    right:20px;
+    background:rgba(255,255,255,0.15);
+    padding:15px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.profile i{
+    font-size:30px;
+}
+
+.profile-text{
+    font-size:14px;
+}
+
+/* CONTENT */
+.content{
+    margin-left:260px;
+    padding:25px;
+}
+
+/* HEADER */
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.logout{
+    background:#dc3545;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.logout:hover{
+    background:#bb2d3b;
+}
+
+/* CARDS */
+.cards{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.card h3{
+    font-size:15px;
+    color:#666;
+    margin-bottom:10px;
+}
+
+.card p{
+    font-size:22px;
+    font-weight:bold;
+    color:#4e73df;
+}
+
+/* ROW */
+.row{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.box{
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* TABLE */
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+table th{
+    background:#f1f3f6;
+    padding:14px;
+    text-align:left;
+}
+
+table td{
+    padding:14px;
+    border-bottom:1px solid #ddd;
+}
+
+.status{
+    background:#28a745;
+    color:white;
+    padding:5px 10px;
+    border-radius:8px;
+    font-size:13px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+    <div class="logo">
+        Nayla Bangunan
+    </div>
+
+    <a href="/dashboard" class="active">
+        <i class="fa-solid fa-house"></i>
+        Dashboard
+    </a>
+
+    <a href="/data-barang">
+        <i class="fa-solid fa-box"></i>
+        Data Barang
+    </a>
+
+    <a href="#">
+        <i class="fa-solid fa-layer-group"></i>
+        Kategori Barang
+    </a>
+
+    <a href="#">
+        <i class="fa-solid fa-warehouse"></i>
+        Stok Barang
+    </a>
+
+    <a href="#">
+        <i class="fa-solid fa-users"></i>
+        Data Pengguna
+    </a>
+
+    <a href="#">
+        <i class="fa-solid fa-percent"></i>
+        Diskon
+    </a>
+
+    <a href="#">
+        <i class="fa-solid fa-chart-line"></i>
+        Laporan Keuangan
+    </a>
+
+    <!-- PROFILE -->
+    <div class="profile">
+
+        <i class="fa-solid fa-circle-user"></i>
+
+        <div class="profile-text">
+            <b>Nayla Amanda</b><br>
+            Owner Toko
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+    <!-- HEADER -->
+    <div class="header">
+
+        <h2>Dashboard Owner</h2>
+
+        <form method="POST" action="/logout">
+            @csrf
+
+            <button class="logout">
+                Logout
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- CARDS -->
+    <div class="cards">
+
+        <div class="card">
+            <h3>Jumlah Transaksi</h3>
+            <p>{{ $data['total_transaksi'] }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Stok Menipis</h3>
+            <p>{{ $data['stok_menipis'] }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Penjualan</h3>
+            <p>Rp {{ number_format($data['total_penjualan'],0,',','.') }}</p>
+        </div>
+
+        <div class="card">
+            <h3>Diskon Aktif</h3>
+            <p>{{ $data['diskon_aktif'] }}</p>
+        </div>
+
+    </div>
+
+    <!-- ROW -->
+    <div class="row">
+
+        <div class="box">
+            <h3>Grafik Penjualan</h3>
+            <br>
+            <p>Grafik penjualan nanti bisa menggunakan Chart.js</p>
+        </div>
+
+        <div class="box">
+            <h3>Peringatan Stok</h3>
+            <br>
+            <p>Beberapa barang hampir habis.</p>
+        </div>
+
+    </div>
+
+    <!-- TABLE -->
+    <div class="box">
+
+        <h3>Transaksi Terakhir</h3>
+
+        <table>
+
+            <tr>
+                <th>ID</th>
+                <th>Waktu</th>
+                <th>Kasir</th>
+                <th>Total</th>
+                <th>Status</th>
+            </tr>
+
+            <tr>
+                <td>#TRX-94821</td>
+                <td>14:23</td>
+                <td>Budi</td>
+                <td>Rp 156.000</td>
+                <td>
+                    <span class="status">
+                        SUKSES
+                    </span>
+                </td>
+            </tr>
+
+        </table>
+
+    </div>
+
+</div>
+
+</body>
+</html>
