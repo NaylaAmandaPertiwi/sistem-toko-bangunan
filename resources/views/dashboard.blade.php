@@ -294,10 +294,62 @@ table td{
 
 </div>
 
-    <a href="#">
-        <i class="fa-solid fa-users"></i>
-        Data Pengguna
-    </a>
+    </div>
+
+<!-- DROPDOWN TRANSAKSI -->
+<div class="dropdown-menu">
+
+    <button class="dropdown-btn" onclick="toggleTransactionDropdown()">
+
+        <div class="menu-left">
+
+            <i class="fa-solid fa-cart-shopping"></i>
+            Transaksi
+
+        </div>
+
+        <i class="fa-solid fa-chevron-down transaction-arrow"></i>
+
+    </button>
+
+    <div class="dropdown-content" id="transactionDropdown">
+
+        <a href="/penjualan">
+
+            <i class="fa-solid fa-cash-register"></i>
+            Penjualan
+
+        </a>
+
+        <a href="/pembayaran">
+
+            <i class="fa-solid fa-credit-card"></i>
+            Pembayaran
+
+        </a>
+
+        <a href="/retur-barang">
+
+            <i class="fa-solid fa-rotate-left"></i>
+            Retur Barang
+
+        </a>
+
+        <a href="/riwayat-transaksi">
+
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            Riwayat Transaksi
+
+        </a>
+
+    </div>
+
+</div>
+
+<a href="#">
+    <i class="fa-solid fa-users"></i>
+    Data Pengguna
+</a>
 
     <a href="#">
         <i class="fa-solid fa-percent"></i>
@@ -418,6 +470,8 @@ table td{
 </div>
 
 <script>
+
+/* DROPDOWN PRODUK & INVENTORY */
 function toggleDropdown() {
 
     const dropdown =
@@ -430,6 +484,21 @@ function toggleDropdown() {
 
     arrow.classList.toggle('rotate');
 }
+
+/* DROPDOWN TRANSAKSI */
+function toggleTransactionDropdown() {
+
+    const dropdown =
+        document.getElementById('transactionDropdown');
+
+    const arrow =
+        document.querySelector('.transaction-arrow');
+
+    dropdown.classList.toggle('show');
+
+    arrow.classList.toggle('rotate');
+}
+
 </script>
 
 </body>
