@@ -167,4 +167,11 @@ Route::middleware('auth')->group(function () {
         return view('laporan.keuangan');
     });
 
+    Route::middleware('auth')->group(function () {
+
+        Route::get('/produk',
+            [ProductController::class, 'index']);
+
+    });
+
 });
