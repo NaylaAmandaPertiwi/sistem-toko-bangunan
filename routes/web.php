@@ -1,7 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -9,31 +12,159 @@ use App\Http\Controllers\AuthController;
 |--------------------------------------------------------------------------
 */
 
+/*
+|--------------------------------------------------------------------------
+| HALAMAN AWAL
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/', function () {
     return view('welcome');
 });
 
-// ======================
-// AUTH LOGIN
-// ======================
+
+/*
+|--------------------------------------------------------------------------
+| AUTH LOGIN
+|--------------------------------------------------------------------------
+*/
 
 // halaman login
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::get('/login',
+    [AuthController::class, 'showLogin'])
+    ->name('login');
 
 // proses login
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login',
+    [AuthController::class, 'login']);
 
 // logout
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::post('/logout',
+    [AuthController::class, 'logout'])
+    ->middleware('auth');
 
-// ======================
-// DASHBOARD (SETELAH LOGIN)
-// ======================
 
-use App\Http\Controllers\DashboardController;
+/*
+|--------------------------------------------------------------------------
+| SEMUA HALAMAN SETELAH LOGIN
+|--------------------------------------------------------------------------
+*/
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth');
+Route::middleware('auth')->group(function () {
 
-use App\Http\Controllers\ProductController;
+    /*
+    |--------------------------------------------------------------------------
+    | DASHBOARD
+    |--------------------------------------------------------------------------
+    */
 
-Route::get('/data-barang', [ProductController::class, 'index']);
+    Route::get('/dashboard',
+        [DashboardController::class, 'index']);
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PRODUK & INVENTORY
+    |--------------------------------------------------------------------------
+    */
+
+    // produk
+    Route::get('/produk',
+        [ProductController::class, 'index']);
+
+    // inventory
+    Route::get('/inventory', function () {
+        return view('inventory');
+    });
+
+    // cetak barcode
+    Route::get('/barcode', function () {
+        return view('barcode');
+    });
+
+    // cetak label harga
+    Route::get('/label-harga', function () {
+        return view('label-harga');
+    });
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TRANSAKSI
+    |--------------------------------------------------------------------------
+    */
+
+    // penjualan
+    Route::get('/penjualan', function () {
+        return view('penjualan');
+    });
+
+    // pembayaran
+    Route::get('/pembayaran', function () {
+        return view('pembayaran');
+    });
+
+    // retur barang
+    Route::get('/retur-barang', function () {
+        return view('retur-barang');
+    });
+
+    // riwayat transaksi
+    Route::get('/riwayat-transaksi', function () {
+        return view('riwayat-transaksi');
+    });
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PEGAWAI
+    |--------------------------------------------------------------------------
+    */
+
+    // staff
+    Route::get('/staff', function () {
+        return view('staff');
+    });
+
+    // kehadiran
+    Route::get('/kehadiran', function () {
+        return view('kehadiran');
+    });
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | LAPORAN
+    |--------------------------------------------------------------------------
+    */
+
+    // laporan penjualan
+    Route::get('/laporan-penjualan', function () {
+        return view('laporan.penjualan');
+    });
+
+    // laporan stok
+    Route::get('/laporan-stok', function () {
+        return view('laporan.stok');
+    });
+
+    // laporan barang masuk
+    Route::get('/laporan-barang-masuk', function () {
+        return view('laporan.barang-masuk');
+    });
+
+    // laporan barang keluar
+    Route::get('/laporan-barang-keluar', function () {
+        return view('laporan.barang-keluar');
+    });
+
+    // laporan keuangan
+    Route::get('/laporan-keuangan', function () {
+        return view('laporan.keuangan');
+    });
+
+});
