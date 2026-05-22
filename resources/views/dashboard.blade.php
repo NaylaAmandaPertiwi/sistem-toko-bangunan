@@ -133,10 +133,15 @@ body{
 
 /* PROFILE */
 .profile{
-    margin-top:30px;
+    position:absolute;
+    bottom:20px;
+    left:20px;
+    right:20px;
+
     background:rgba(255,255,255,0.12);
     padding:14px;
     border-radius:14px;
+
     display:flex;
     align-items:center;
     gap:12px;
