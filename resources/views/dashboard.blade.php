@@ -388,10 +388,64 @@ table td{
         Diskon
     </a>
 
-    <a href="#">
-        <i class="fa-solid fa-chart-line"></i>
-        Laporan Keuangan
-    </a>
+    <!-- DROPDOWN LAPORAN -->
+<div class="dropdown-menu">
+
+    <button class="dropdown-btn"
+            onclick="toggleLaporanDropdown()">
+
+        <div class="menu-left">
+
+            <i class="fa-solid fa-chart-column"></i>
+            Laporan & Pembukuan
+
+        </div>
+
+        <i class="fa-solid fa-chevron-down laporan-arrow"></i>
+
+    </button>
+
+    <div class="dropdown-content"
+         id="laporanDropdown">
+
+        <a href="/laporan-penjualan">
+
+            <i class="fa-solid fa-chart-line"></i>
+            Laporan Penjualan
+
+        </a>
+
+        <a href="/laporan-stok">
+
+            <i class="fa-solid fa-boxes-stacked"></i>
+            Laporan Stok
+
+        </a>
+
+        <a href="/laporan-barang-masuk">
+
+            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            Laporan Barang Masuk
+
+        </a>
+
+        <a href="/laporan-barang-keluar">
+
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            Laporan Barang Keluar
+
+        </a>
+
+        <a href="/laporan-keuangan">
+
+            <i class="fa-solid fa-wallet"></i>
+            Laporan Keuangan
+
+        </a>
+
+    </div>
+
+</div>
 
     <!-- PROFILE -->
     <div class="profile">
@@ -539,6 +593,20 @@ function togglePegawaiDropdown() {
 
     const arrow =
         document.querySelector('.pegawai-arrow');
+
+    dropdown.classList.toggle('show');
+
+    arrow.classList.toggle('rotate');
+}
+
+/* DROPDOWN LAPORAN */
+function toggleLaporanDropdown() {
+
+    const dropdown =
+        document.getElementById('laporanDropdown');
+
+    const arrow =
+        document.querySelector('.laporan-arrow');
 
     dropdown.classList.toggle('show');
 
