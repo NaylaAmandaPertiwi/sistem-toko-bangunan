@@ -67,6 +67,61 @@ body{
     font-weight:bold;
 }
 
+/* DROPDOWN */
+.dropdown-menu{
+    margin-bottom:10px;
+}
+
+.dropdown-btn{
+    width:100%;
+    border:none;
+    background:none;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:14px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+    transition:0.3s;
+}
+
+.dropdown-btn:hover{
+    background:rgba(255,255,255,0.15);
+}
+
+.menu-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.dropdown-content{
+    display:none;
+    margin-top:8px;
+    margin-left:15px;
+    border-left:2px solid rgba(255,255,255,0.2);
+    padding-left:10px;
+}
+
+.dropdown-content a{
+    padding:12px;
+    font-size:15px;
+}
+
+.dropdown-content.show{
+    display:block;
+}
+
+.arrow{
+    transition:0.3s;
+}
+
+.rotate{
+    transform:rotate(180deg);
+}
+
 /* PROFILE */
 .profile{
     position:absolute;
@@ -201,20 +256,43 @@ table td{
         Dashboard
     </a>
 
-    <a href="/data-barang">
-        <i class="fa-solid fa-box"></i>
-        Data Barang
-    </a>
+    <!-- DROPDOWN PRODUK & INVENTORY -->
+<div class="dropdown-menu">
 
-    <a href="#">
-        <i class="fa-solid fa-layer-group"></i>
-        Kategori Barang
-    </a>
+    <button class="dropdown-btn" onclick="toggleDropdown()">
+        <div class="menu-left">
+            <i class="fa-solid fa-boxes-stacked"></i>
+            Produk & Inventory
+        </div>
 
-    <a href="#">
-        <i class="fa-solid fa-warehouse"></i>
-        Stok Barang
-    </a>
+        <i class="fa-solid fa-chevron-down arrow"></i>
+    </button>
+
+    <div class="dropdown-content" id="inventoryDropdown">
+
+        <a href="/produk">
+            <i class="fa-solid fa-box"></i>
+            Produk
+        </a>
+
+        <a href="/inventory">
+            <i class="fa-solid fa-warehouse"></i>
+            Inventory
+        </a>
+
+        <a href="/barcode">
+            <i class="fa-solid fa-barcode"></i>
+            Cetak Barcode Produk
+        </a>
+
+        <a href="/label-harga">
+            <i class="fa-solid fa-tag"></i>
+            Cetak Label Harga
+        </a>
+
+    </div>
+
+</div>
 
     <a href="#">
         <i class="fa-solid fa-users"></i>
@@ -338,6 +416,21 @@ table td{
     </div>
 
 </div>
+
+<script>
+function toggleDropdown() {
+
+    const dropdown =
+        document.getElementById('inventoryDropdown');
+
+    const arrow =
+        document.querySelector('.arrow');
+
+    dropdown.classList.toggle('show');
+
+    arrow.classList.toggle('rotate');
+}
+</script>
 
 </body>
 </html>
