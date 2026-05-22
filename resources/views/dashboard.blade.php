@@ -294,8 +294,6 @@ table td{
 
 </div>
 
-    </div>
-
 <!-- DROPDOWN TRANSAKSI -->
 <div class="dropdown-menu">
 
@@ -346,10 +344,44 @@ table td{
 
 </div>
 
-<a href="#">
-    <i class="fa-solid fa-users"></i>
-    Data Pengguna
-</a>
+<!-- DROPDOWN PEGAWAI -->
+<div class="dropdown-menu">
+
+    <button class="dropdown-btn"
+            onclick="togglePegawaiDropdown()">
+
+        <div class="menu-left">
+
+            <i class="fa-solid fa-user-group"></i>
+            Pegawai
+
+        </div>
+
+        <i class="fa-solid fa-chevron-down pegawai-arrow"></i>
+
+    </button>
+
+    <div class="dropdown-content"
+         id="pegawaiDropdown">
+
+        <a href="/staff">
+
+            <i class="fa-solid fa-user"></i>
+            Staff
+
+        </a>
+
+        <a href="/kehadiran">
+
+            <i class="fa-solid fa-calendar-check"></i>
+            Kehadiran
+
+        </a>
+
+    </div>
+
+</div>
+
 
     <a href="#">
         <i class="fa-solid fa-percent"></i>
@@ -493,6 +525,20 @@ function toggleTransactionDropdown() {
 
     const arrow =
         document.querySelector('.transaction-arrow');
+
+    dropdown.classList.toggle('show');
+
+    arrow.classList.toggle('rotate');
+}
+
+/* DROPDOWN PEGAWAI */
+function togglePegawaiDropdown() {
+
+    const dropdown =
+        document.getElementById('pegawaiDropdown');
+
+    const arrow =
+        document.querySelector('.pegawai-arrow');
 
     dropdown.classList.toggle('show');
 
