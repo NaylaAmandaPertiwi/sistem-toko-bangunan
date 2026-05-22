@@ -309,27 +309,23 @@ table td{
 
     <div class="dropdown-content" id="inventoryDropdown">
 
-        <a href="/produk">
-            <i class="fa-solid fa-box"></i>
-            Produk
-        </a>
+    <a href="/produk">
+        Produk
+    </a>
 
-        <a href="/inventory">
-            <i class="fa-solid fa-warehouse"></i>
-            Inventory
-        </a>
+    <a href="/inventory">
+        Inventory
+    </a>
 
-        <a href="/barcode">
-            <i class="fa-solid fa-barcode"></i>
-            Cetak Barcode Produk
-        </a>
+    <a href="/barcode">
+        Cetak Barcode Produk
+    </a>
 
-        <a href="/label-harga">
-            <i class="fa-solid fa-tag"></i>
-            Cetak Label Harga
-        </a>
+    <a href="/label-harga">
+        Cetak Label Harga
+    </a>
 
-    </div>
+</div>
 
 </div>
 
@@ -352,31 +348,19 @@ table td{
     <div class="dropdown-content" id="transactionDropdown">
 
         <a href="/penjualan">
-
-            <i class="fa-solid fa-cash-register"></i>
             Penjualan
-
         </a>
 
         <a href="/pembayaran">
-
-            <i class="fa-solid fa-credit-card"></i>
             Pembayaran
-
         </a>
 
         <a href="/retur-barang">
-
-            <i class="fa-solid fa-rotate-left"></i>
             Retur Barang
-
         </a>
 
         <a href="/riwayat-transaksi">
-
-            <i class="fa-solid fa-clock-rotate-left"></i>
             Riwayat Transaksi
-
         </a>
 
     </div>
@@ -404,17 +388,11 @@ table td{
          id="pegawaiDropdown">
 
         <a href="/staff">
-
-            <i class="fa-solid fa-user"></i>
             Staff
-
         </a>
 
         <a href="/kehadiran">
-
-            <i class="fa-solid fa-calendar-check"></i>
             Kehadiran
-
         </a>
 
     </div>
@@ -448,38 +426,24 @@ table td{
          id="laporanDropdown">
 
         <a href="/laporan-penjualan">
-
-            <i class="fa-solid fa-chart-line"></i>
             Laporan Penjualan
 
         </a>
 
         <a href="/laporan-stok">
-
-            <i class="fa-solid fa-boxes-stacked"></i>
             Laporan Stok
-
         </a>
 
         <a href="/laporan-barang-masuk">
-
-            <i class="fa-solid fa-arrow-right-to-bracket"></i>
             Laporan Barang Masuk
-
         </a>
 
         <a href="/laporan-barang-keluar">
-
-            <i class="fa-solid fa-arrow-right-from-bracket"></i>
             Laporan Barang Keluar
-
         </a>
 
         <a href="/laporan-keuangan">
-
-            <i class="fa-solid fa-wallet"></i>
             Laporan Keuangan
-
         </a>
 
     </div>
