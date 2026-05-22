@@ -17,59 +17,65 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 }
 
 body{
-    font-family:Arial, sans-serif;
-    background:#f4f6f9;
+    font-family:'Segoe UI', sans-serif;
+    background:#f5f7fb;
+    color:#333;
 }
 
 /* SIDEBAR */
 .sidebar{
     width:260px;
     height:100vh;
-    background:#4e73df;
+    background:linear-gradient(180deg,#4e73df,#355cc9);
     position:fixed;
     left:0;
     top:0;
     padding:20px;
     color:white;
+    overflow-y:auto;
+    box-shadow:4px 0 15px rgba(0,0,0,0.08);
 }
 
 .logo{
     font-size:24px;
-    font-weight:bold;
+    font-weight:700;
     margin-bottom:30px;
-}
-
-.menu-title{
-    font-size:13px;
-    margin-bottom:10px;
-    opacity:0.7;
+    letter-spacing:0.5px;
 }
 
 .sidebar a{
     display:flex;
     align-items:center;
     gap:12px;
-    padding:14px;
+    padding:12px 14px;
     color:white;
     text-decoration:none;
     border-radius:10px;
-    margin-bottom:10px;
+    margin-bottom:6px;
     transition:0.3s;
+    font-size:15px;
 }
 
 .sidebar a:hover{
     background:rgba(255,255,255,0.15);
+    transform:translateX(3px);
 }
 
 .sidebar .active{
     background:white;
-    color:#4e73df;
-    font-weight:bold;
+    color:#355cc9;
+    font-weight:600;
+}
+
+.sidebar a i{
+    width:20px;
+    text-align:center;
+    font-size:16px;
 }
 
 /* DROPDOWN */
 .dropdown-menu{
-    margin-bottom:10px;
+    margin-bottom:8px;
 }
 
 .dropdown-btn{
@@ -80,10 +86,10 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    padding:14px;
+    padding:12px 14px;
     border-radius:10px;
     cursor:pointer;
-    font-size:16px;
+    font-size:15px;
     transition:0.3s;
 }
 
@@ -99,22 +105,25 @@ body{
 
 .dropdown-content{
     display:none;
-    margin-top:8px;
+    margin-top:6px;
     margin-left:15px;
     border-left:2px solid rgba(255,255,255,0.2);
     padding-left:10px;
 }
 
 .dropdown-content a{
-    padding:12px;
-    font-size:15px;
+    padding:10px 12px;
+    font-size:14px;
 }
 
 .dropdown-content.show{
     display:block;
 }
 
-.arrow{
+.arrow,
+.transaction-arrow,
+.pegawai-arrow,
+.laporan-arrow{
     transition:0.3s;
 }
 
@@ -124,30 +133,28 @@ body{
 
 /* PROFILE */
 .profile{
-    position:absolute;
-    bottom:20px;
-    left:20px;
-    right:20px;
-    background:rgba(255,255,255,0.15);
-    padding:15px;
-    border-radius:12px;
+    margin-top:30px;
+    background:rgba(255,255,255,0.12);
+    padding:14px;
+    border-radius:14px;
     display:flex;
     align-items:center;
     gap:12px;
 }
 
 .profile i{
-    font-size:30px;
+    font-size:32px;
 }
 
 .profile-text{
-    font-size:14px;
+    font-size:13px;
+    line-height:1.5;
 }
 
 /* CONTENT */
 .content{
     margin-left:260px;
-    padding:25px;
+    padding:30px;
 }
 
 /* HEADER */
@@ -155,16 +162,30 @@ body{
     display:flex;
     justify-content:space-between;
     align-items:center;
-    margin-bottom:20px;
+    margin-bottom:25px;
+}
+
+.header h2{
+    font-size:28px;
+    font-weight:700;
+    color:#2d3748;
+}
+
+.header p{
+    font-size:14px;
+    color:#888;
+    margin-top:4px;
 }
 
 .logout{
     background:#dc3545;
     color:white;
     border:none;
-    padding:10px 15px;
-    border-radius:8px;
+    padding:10px 18px;
+    border-radius:10px;
     cursor:pointer;
+    font-size:14px;
+    transition:0.3s;
 }
 
 .logout:hover{
@@ -181,21 +202,28 @@ body{
 
 .card{
     background:white;
-    padding:20px;
-    border-radius:15px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+    padding:22px;
+    border-radius:16px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+    border-left:5px solid #4e73df;
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-3px);
 }
 
 .card h3{
-    font-size:15px;
-    color:#666;
-    margin-bottom:10px;
+    font-size:14px;
+    color:#777;
+    margin-bottom:12px;
+    font-weight:600;
 }
 
 .card p{
-    font-size:22px;
-    font-weight:bold;
-    color:#4e73df;
+    font-size:26px;
+    font-weight:700;
+    color:#355cc9;
 }
 
 /* ROW */
@@ -208,9 +236,15 @@ body{
 
 .box{
     background:white;
-    padding:20px;
-    border-radius:15px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+    padding:22px;
+    border-radius:16px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+.box h3{
+    font-size:18px;
+    margin-bottom:10px;
+    color:#333;
 }
 
 /* TABLE */
@@ -221,23 +255,28 @@ table{
 }
 
 table th{
-    background:#f1f3f6;
+    background:#f3f5fa;
     padding:14px;
     text-align:left;
+    font-size:14px;
+    color:#555;
 }
 
 table td{
     padding:14px;
-    border-bottom:1px solid #ddd;
+    border-bottom:1px solid #eee;
+    font-size:14px;
 }
 
 .status{
     background:#28a745;
     color:white;
-    padding:5px 10px;
-    border-radius:8px;
-    font-size:13px;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
 }
+
 
 </style>
 </head>
@@ -397,7 +436,7 @@ table td{
         <div class="menu-left">
 
             <i class="fa-solid fa-chart-column"></i>
-            Laporan & Pembukuan
+            Laporan
 
         </div>
 
