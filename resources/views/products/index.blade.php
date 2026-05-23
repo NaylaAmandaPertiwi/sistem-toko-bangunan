@@ -44,9 +44,25 @@
     background:#f3f5fa;
 }
 
-.tab-menu .active{
-    color:#1684e0;
+.tab-menu .tab-active{
+
+    color:#1e293b;
+
+    background:linear-gradient(
+        to top,
+        rgba(22,132,224,0.12),
+        transparent
+    );
+
     border-bottom:3px solid #1684e0;
+}
+
+.tab-menu a{
+    position:relative;
+}
+
+.tab-menu .tab-active{
+    font-weight:700;
 }
 
 /* FILTER */
@@ -145,7 +161,7 @@ table td{
         <div class="tab-menu">
 
             <a href="/produk"
-               class="active">
+               class="tab-active">
 
                Produk
 
