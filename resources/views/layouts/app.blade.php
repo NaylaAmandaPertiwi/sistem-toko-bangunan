@@ -380,26 +380,52 @@ table td{
 
         </button>
 
-        <div class="dropdown-content"
-             id="transactionDropdown">
+        <div class="dropdown-content
+{{ request()->is('penjualan*') ||
+   request()->is('pembayaran*') ||
+   request()->is('retur-barang*') ||
+   request()->is('riwayat-transaksi*')
+   ? 'show'
+   : '' }}"
+id="transactionDropdown">
 
-            <a href="/penjualan">
-                Penjualan
-            </a>
+    <a href="/penjualan"
+       class="{{ request()->is('penjualan*')
+       ? 'submenu-active'
+       : '' }}">
 
-            <a href="/pembayaran">
-                Pembayaran
-            </a>
+        Penjualan
 
-            <a href="/retur-barang">
-                Retur Barang
-            </a>
+    </a>
 
-            <a href="/riwayat-transaksi">
-                Riwayat Transaksi
-            </a>
+    <a href="/pembayaran"
+       class="{{ request()->is('pembayaran*')
+       ? 'submenu-active'
+       : '' }}">
 
-        </div>
+        Pembayaran
+
+    </a>
+
+    <a href="/retur-barang"
+       class="{{ request()->is('retur-barang*')
+       ? 'submenu-active'
+       : '' }}">
+
+        Retur Barang
+
+    </a>
+
+    <a href="/riwayat-transaksi"
+       class="{{ request()->is('riwayat-transaksi*')
+       ? 'submenu-active'
+       : '' }}">
+
+        Riwayat Transaksi
+
+    </a>
+
+</div>
 
     </div>
 
@@ -420,18 +446,32 @@ table td{
 
         </button>
 
-        <div class="dropdown-content"
-             id="pegawaiDropdown">
+        <div class="dropdown-content
+{{ request()->is('staff*') ||
+   request()->is('kehadiran*')
+   ? 'show'
+   : '' }}"
+id="pegawaiDropdown">
 
-            <a href="/staff">
-                Staff
-            </a>
+    <a href="/staff"
+       class="{{ request()->is('staff*')
+       ? 'submenu-active'
+       : '' }}">
 
-            <a href="/kehadiran">
-                Kehadiran
-            </a>
+        Staff
 
-        </div>
+    </a>
+
+    <a href="/kehadiran"
+       class="{{ request()->is('kehadiran*')
+       ? 'submenu-active'
+       : '' }}">
+
+        Kehadiran
+
+    </a>
+
+</div>
 
     </div>
 
@@ -460,30 +500,58 @@ table td{
 
         </button>
 
-        <div class="dropdown-content"
-             id="laporanDropdown">
+        <div class="dropdown-content
+{{ request()->is('laporan*')
+   ? 'show'
+   : '' }}"
+id="laporanDropdown">
 
-            <a href="/laporan-penjualan">
-                Laporan Penjualan
-            </a>
+    <a href="/laporan-penjualan"
+       class="{{ request()->is('laporan-penjualan*')
+       ? 'submenu-active'
+       : '' }}">
 
-            <a href="/laporan-stok">
-                Laporan Stok
-            </a>
+        Laporan Penjualan
 
-            <a href="/laporan-barang-masuk">
-                Laporan Barang Masuk
-            </a>
+    </a>
 
-            <a href="/laporan-barang-keluar">
-                Laporan Barang Keluar
-            </a>
+    <a href="/laporan-stok"
+       class="{{ request()->is('laporan-stok*')
+       ? 'submenu-active'
+       : '' }}">
 
-            <a href="/laporan-keuangan">
-                Laporan Keuangan
-            </a>
+        Laporan Stok
 
-        </div>
+    </a>
+
+    <a href="/laporan-barang-masuk"
+       class="{{ request()->is('laporan-barang-masuk*')
+       ? 'submenu-active'
+       : '' }}">
+
+        Laporan Barang Masuk
+
+    </a>
+
+    <a href="/laporan-barang-keluar"
+       class="{{ request()->is('laporan-barang-keluar*')
+       ? 'submenu-active'
+       : '' }}">
+
+        Laporan Barang Keluar
+
+    </a>
+
+    <a href="/laporan-keuangan"
+       class="{{ request()->is('laporan-keuangan*')
+       ? 'submenu-active'
+       : '' }}">
+
+        Laporan Keuangan
+
+    </a>
+
+</div>
 
     </div>
     </div>
