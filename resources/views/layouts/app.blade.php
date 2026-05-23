@@ -80,8 +80,15 @@ body{
 }
 
 .active{
-    background:white;
-    color:#355cc9 !important;
+    background:rgba(255,255,255,0.16);
+
+    color:white !important;
+
+    border-radius:10px;
+
+    font-weight:600;
+
+    backdrop-filter:blur(8px);
 }
 
 .dropdown-menu{
@@ -296,9 +303,12 @@ table td{
     </div>
     <div class="sidebar-menu">
 
+    
     <!-- DASHBOARD -->
     <a href="/dashboard"
-   class="{{ request()->is('dashboard') ? 'active' : '' }}">
+    class="{{ request()->is('dashboard')
+    ? 'active'
+    : '' }}">
 
         <i class="fa-solid fa-house"></i>
         Dashboard
