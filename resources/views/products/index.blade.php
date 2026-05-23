@@ -1,32 +1,10 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+@extends('layouts.app')
 
-<title>Produk</title>
+@section('title', 'Produk')
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+@section('content')
 
 <style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    font-family:'Segoe UI', sans-serif;
-    background:#f5f7fb;
-}
-
-/* CONTENT */
-.content{
-    padding:30px;
-}
 
 /* HEADER */
 .page-header{
@@ -150,11 +128,9 @@ table td{
 }
 
 </style>
-</head>
 
-<body>
 
-<div class="content">
+
 
     <div class="page-header">
 
@@ -242,7 +218,6 @@ table td{
 
     </div>
 
-</div>
 
-</body>
-</html>
+
+@endsection

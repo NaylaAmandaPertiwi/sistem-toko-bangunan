@@ -4,8 +4,7 @@
 
 @section('content')
 
-<!-- CONTENT -->
-<div class="content">
+
 
     <!-- HEADER -->
     <div class="header">
@@ -96,6 +95,6 @@
 
     </div>
 
-</div>
+
 
 @endsection
