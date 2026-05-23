@@ -125,6 +125,17 @@ body{
     font-size:14px;
 }
 
+/* SUBMENU ACTIVE */
+.dropdown-content a.submenu-active{
+    background:rgba(255,255,255,0.18);
+
+    border-radius:8px;
+
+    color:white;
+
+    font-weight:600;
+}
+
 .dropdown-content.show{
     display:block;
 }
@@ -286,7 +297,8 @@ table td{
     <div class="sidebar-menu">
 
     <!-- DASHBOARD -->
-    <a href="/dashboard" class="active">
+    <a href="/dashboard"
+   class="{{ request()->is('dashboard') ? 'active' : '' }}">
 
         <i class="fa-solid fa-house"></i>
         Dashboard
@@ -297,7 +309,7 @@ table td{
     <div class="dropdown-menu">
 
         <button class="dropdown-btn"
-                onclick="toggleDropdown()">
+        onclick="toggleDropdown()">
 
             <div class="menu-left">
 
@@ -310,24 +322,42 @@ table td{
 
         </button>
 
-        <div class="dropdown-content"
-             id="inventoryDropdown">
+        <div class="dropdown-content
+        {{ request()->is('produk*') ||
+        request()->is('inventory*') ||
+        request()->is('barcode*') ||
+        request()->is('label-harga*')
+        ? 'show'
+        : '' }}"
+        id="inventoryDropdown">
 
-            <a href="/produk">
+            <a href="/produk"
+            class="{{ request()->is('produk') ? 'submenu-active' : '' }}">
+
                 Produk
+
             </a>
 
-            <a href="/inventory">
+            <a href="/inventory"
+            class="{{ request()->is('inventory') ? 'submenu-active' : '' }}">
+
                 Inventory
+
             </a>
 
-            <a href="/barcode">
-                Cetak Barcode Produk
-            </a>
+            <a href="/barcode"
+    class="{{ request()->is('barcode') ? 'submenu-active' : '' }}">
 
-            <a href="/label-harga">
-                Cetak Label Harga
-            </a>
+        Cetak Barcode Produk
+
+    </a>
+
+            <a href="/label-harga"
+   class="{{ request()->is('label-harga') ? 'submenu-active' : '' }}">
+
+    Cetak Label Harga
+
+</a>
 
         </div>
 
