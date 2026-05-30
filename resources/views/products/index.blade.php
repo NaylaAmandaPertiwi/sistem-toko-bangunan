@@ -84,7 +84,8 @@
     border:1px solid #ddd;
     border-radius:10px;
     padding:12px 16px;
-    min-width:160px;
+    min-width:200px;
+    cursor:pointer;
 }
 
 .search-box{
@@ -260,9 +261,23 @@ th i{
 
             <div class="left-filter">
 
-                <div class="filter-box">
-                    Semua Kategori
-                </div>
+                <select class="filter-box">
+
+                    <option value="">
+                        Semua Kategori
+                    </option>
+
+                    @foreach($categories as $category)
+
+                        <option value="{{ $category->id }}">
+
+                            {{ $category->nama_kategori }}
+
+                        </option>
+
+                    @endforeach
+
+                </select>
 
             </div>
 
