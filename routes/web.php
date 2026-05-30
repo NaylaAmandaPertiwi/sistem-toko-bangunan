@@ -174,4 +174,8 @@ Route::middleware('auth')->group(function () {
 
     });
 
+    Route::get('/kategori-produk', function () {
+        return view('products.category');
+    })->middleware('auth');
+
 });
