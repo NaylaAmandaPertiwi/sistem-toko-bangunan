@@ -214,6 +214,15 @@ th i{
     color:#999;
 }
 
+.status-active{
+    background:#d1fae5;
+    color:#065f46;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
 </style>
 
 
@@ -238,7 +247,7 @@ th i{
 
             </a>
 
-            <a href="/kategori-produk">
+            <a href="">
 
                Kategori Produk
 
@@ -285,18 +294,12 @@ th i{
                         <tr>
 
                             <th>
-                                <input type="checkbox">
-                            </th>
-
-                            <th>Foto</th>
-
-                            <th>
                                 Nama Produk
                                 <i class="fa-solid fa-sort"></i>
                             </th>
 
                             <th>
-                                Variant
+                                Kategori
                                 <i class="fa-solid fa-sort"></i>
                             </th>
 
@@ -325,7 +328,15 @@ th i{
                             </th>
 
                             <th>
-                                Harga Jual di Toko
+                                Harga Jual
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Aksi
                             </th>
 
                         </tr>
@@ -339,7 +350,7 @@ th i{
                             <td colspan="10"
                                 class="no-data">
 
-                                No Data
+                                Belum ada produk
 
                             </td>
 
