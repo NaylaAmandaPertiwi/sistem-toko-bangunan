@@ -12,7 +12,7 @@ class CategoryController extends Controller
                         ->get();
 
         return view(
-            'categories.index',
+            'products.category',
             compact('categories')
         );
     }
