@@ -54,7 +54,7 @@
         transparent
     );
 
-    border-bottom:3px solid #1684e0;
+    border-bottom:3px solid #7093af;
 }
 
 .tab-menu a{
@@ -143,6 +143,77 @@ table td{
     color:#999;
 }
 
+.table-wrapper{
+    overflow-x:auto;
+}
+
+table{
+    min-width:1200px;
+}
+
+thead th{
+    white-space:nowrap;
+}
+
+th i{
+    font-size:12px;
+    margin-left:5px;
+    color:#999;
+}
+
+.table-footer{
+    margin-top:18px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    flex-wrap:wrap;
+
+    gap:15px;
+}
+
+.footer-left,
+.footer-right{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.footer-left select{
+    padding:8px 12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+}
+
+.footer-right button{
+    border:none;
+    background:none;
+    cursor:pointer;
+    color:#666;
+}
+
+.footer-right input{
+    width:60px;
+    padding:8px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    text-align:center;
+}
+
+.page-active{
+    color:#1684e0;
+    font-weight:600;
+}
+
+.delete-btn{
+    border:none;
+    background:none;
+    cursor:pointer;
+    font-size:18px;
+    color:#999;
+}
+
 </style>
 
 
@@ -205,30 +276,124 @@ table td{
         <!-- TABLE -->
         <div class="table-section">
 
-            <table>
+            <div class="table-wrapper">
 
-                <tr>
+                <table>
 
-                    <th>Nama Produk</th>
-                    <th>SKU</th>
-                    <th>Stok</th>
-                    <th>Harga Beli</th>
-                    <th>Harga Jual</th>
+                    <thead>
 
-                </tr>
+                        <tr>
 
-                <tr>
+                            <th>
+                                <input type="checkbox">
+                            </th>
 
-                    <td colspan="5"
-                        class="no-data">
+                            <th>Foto</th>
 
-                        Belum ada produk
+                            <th>
+                                Nama Produk
+                                <i class="fa-solid fa-sort"></i>
+                            </th>
 
-                    </td>
+                            <th>
+                                Variant
+                                <i class="fa-solid fa-sort"></i>
+                            </th>
 
-                </tr>
+                            <th>
+                                SKU
+                                <i class="fa-solid fa-sort"></i>
+                            </th>
 
-            </table>
+                            <th>
+                                Barcode
+                                <i class="fa-solid fa-sort"></i>
+                            </th>
+
+                            <th>
+                                Qty Stok
+                                <i class="fa-solid fa-sort"></i>
+                            </th>
+
+                            <th>
+                                Satuan
+                                <i class="fa-solid fa-sort"></i>
+                            </th>
+
+                            <th>
+                                Harga Beli
+                            </th>
+
+                            <th>
+                                Harga Jual di Toko
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <tr>
+
+                            <td colspan="10"
+                                class="no-data">
+
+                                No Data
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <!-- FOOTER TABLE -->
+            <div class="table-footer">
+
+                <div class="footer-left">
+
+                    <button class="delete-btn">
+
+                        <i class="fa-regular fa-trash-can"></i>
+
+                    </button>
+
+                    <select>
+
+                        <option>10/page</option>
+                        <option>25/page</option>
+                        <option>50/page</option>
+
+                    </select>
+
+                    <span>Total 0</span>
+
+                </div>
+
+                <div class="footer-right">
+
+                    <button>
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+
+                    <span class="page-active">1</span>
+
+                    <button>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+
+                    <span>Go to</span>
+
+                    <input type="number"
+                        value="1">
+
+                </div>
+
+            </div>
 
         </div>
 
