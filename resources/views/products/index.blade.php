@@ -248,7 +248,7 @@ th i{
 
             </a>
 
-            <a href="">
+            <a href="/kategori-produk">
 
                Kategori Produk
 
