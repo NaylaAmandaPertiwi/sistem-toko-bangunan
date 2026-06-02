@@ -92,21 +92,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/stok-masuk',
         [StockInController::class, 'stockIn']);
 
-    // stok keluar
+    //stok keluar  
     Route::get('/stok-keluar',
-        [InventoryController::class, 'stockOut']);
+        [StockInController::class, 'stockOut']);
 
-        // stok opname
+    //stok opname
     Route::get('/stok-opname',
-        [InventoryController::class, 'stockOpname']);
+        [StockInController::class, 'stockOpname']);
 
-        // pergerakan stok
+    // pergerakan stok    
     Route::get('/pergerakan-stok',
-        [InventoryController::class, 'stockMovement']);
+        [StockInController::class, 'stockMovement']);
 
-        // peringatan stok
+    // peringatan stok    
     Route::get('/peringatan-stok',
-        [InventoryController::class, 'stockWarning']);
+        [StockInController::class, 'stockWarning']);
 
 
     // cetak barcode
