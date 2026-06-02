@@ -103,6 +103,13 @@
     background:white;
 
     cursor:pointer;
+
+    border:none;
+    outline:none;
+
+    color:#333;
+
+    font-size:14px;
 }
 
 .date-text{
@@ -136,12 +143,6 @@
     border-radius:10px;
 }
 
-.search-box{
-    padding:12px;
-    border:1px solid #ddd;
-    border-radius:10px;
-}
-
 .btn{
     border:none;
     padding:12px 18px;
@@ -152,10 +153,6 @@
 
 .btn-primary{
     background:#1684e0;
-}
-
-.btn-success{
-    background:#4CAF50;
 }
 
 /* TABLE */
@@ -183,6 +180,25 @@ table td{
     text-align:center;
     color:#999;
     padding:40px;
+}
+
+/* DATE RANGE PICKER */
+.daterangepicker .ranges li{
+    padding:10px 15px;
+}
+
+.daterangepicker .ranges li.active{
+    background:#1684e0;
+}
+
+.daterangepicker td.active,
+.daterangepicker td.active:hover{
+    background:#1684e0;
+}
+
+.daterangepicker .applyBtn{
+    background:#1684e0;
+    border-color:#1684e0;
 }
 
 </style>
@@ -232,7 +248,9 @@ table td{
 
             <div class="toolbar">
 
-                <button class="date-range">
+                <button
+                    id="dateRangePicker"
+                    class="date-range">
 
                     <i class="fa-solid fa-chevron-left"></i>
 
@@ -240,7 +258,11 @@ table td{
 
                         <i class="fa-regular fa-calendar"></i>
 
-                        01 Jun 26 - 01 Jun 26
+                        <span id="selectedDate">
+                            02 Jun 26 - 02 Jun 26
+                        </span>
+
+                        <i class="fa-solid fa-caret-down"></i>
 
                     </div>
 
@@ -332,5 +354,81 @@ table td{
     </div>
 
 </div>
+
+@endsection
+
+@section('scripts')
+
+<script>
+
+$(function(){
+
+    $('#dateRangePicker').daterangepicker({
+
+        startDate: moment(),
+
+        endDate: moment(),
+
+        autoUpdateInput: false,
+
+        ranges: {
+
+            'Today': [
+                moment(),
+                moment()
+            ],
+
+            'Yesterday': [
+                moment().subtract(1,'days'),
+                moment().subtract(1,'days')
+            ],
+
+            'Last 7 Days': [
+                moment().subtract(6,'days'),
+                moment()
+            ],
+
+            'Last 30 Days': [
+                moment().subtract(29,'days'),
+                moment()
+            ],
+
+            'This Month': [
+                moment().startOf('month'),
+                moment().endOf('month')
+            ],
+
+            'Last Month': [
+                moment().subtract(1,'month').startOf('month'),
+                moment().subtract(1,'month').endOf('month')
+            ],
+
+            'This Year': [
+                moment().startOf('year'),
+                moment().endOf('year')
+            ],
+
+            'Last Year': [
+                moment().subtract(1,'year').startOf('year'),
+                moment().subtract(1,'year').endOf('year')
+            ]
+
+        }
+
+    },
+
+    function(start,end){
+
+        $('#selectedDate').text(
+            start.format('DD MMM YY')
+            + ' - ' +
+            end.format('DD MMM YY')
+        );
+
+    });
+
+});
+
+</script>
 
 @endsection

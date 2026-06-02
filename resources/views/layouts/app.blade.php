@@ -291,7 +291,10 @@ table td{
 
 @yield('styles')
 
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 </head>
+
 
 <body>
 
@@ -650,6 +653,12 @@ function toggleLaporanDropdown() {
 }
 
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
 </body>
 </html>
