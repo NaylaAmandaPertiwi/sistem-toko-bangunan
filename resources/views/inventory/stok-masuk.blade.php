@@ -57,14 +57,77 @@
     gap:15px;
 }
 
-.left-filter{
+.filter-top{
+    width:100%;
+
     display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:20px;
+}
+
+.stock-info h2{
+    margin:0;
+    font-size:18px;
+}
+
+.stock-info span{
+    color:#999;
+}
+
+.toolbar{
+    display:flex;
+    align-items:center;
     gap:10px;
 }
 
-.right-filter{
+.filter-bottom{
+    width:100%;
+
     display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.date-range{
+    display:flex;
+    align-items:center;
+    gap:15px;
+
+    padding:14px 18px;
+
+    border:1px solid #ddd;
+    border-radius:10px;
+
+    background:white;
+
+    cursor:pointer;
+}
+
+.date-text{
+    display:flex;
+    align-items:center;
     gap:10px;
+
+    font-weight:600;
+}
+
+.search-box{
+    width:260px;
+
+    padding:12px 15px;
+
+    border:1px solid #ddd;
+    border-radius:10px;
+}
+
+.btn-primary{
+    background:#1684e0;
+}
+
+.btn-primary i{
+    margin-right:8px;
 }
 
 .filter-box{
@@ -157,38 +220,67 @@ table td{
 
     <div class="filter-section">
 
-        <div class="left-filter">
+        <div class="filter-top">
 
-            <select class="filter-box">
-                <option>10 Baris</option>
-                <option>25 Baris</option>
-                <option>50 Baris</option>
-            </select>
+            <div class="stock-info">
+
+                <h2>Daftar Stok Masuk</h2>
+
+                <span>0 Stok Masuk</span>
+
+            </div>
+
+            <div class="toolbar">
+
+                <button class="date-range">
+
+                    <i class="fa-solid fa-chevron-left"></i>
+
+                    <div class="date-text">
+
+                        <i class="fa-regular fa-calendar"></i>
+
+                        01 Jun 26 - 01 Jun 26
+
+                    </div>
+
+                    <i class="fa-solid fa-chevron-right"></i>
+
+                </button>
+
+                <button class="btn btn-primary">
+                    <i class="fa-solid fa-download"></i>
+                    Export
+                </button>
+
+                <button class="btn btn-primary">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    Import
+                </button>
+
+                <button class="btn btn-primary">
+                    <i class="fa-solid fa-plus"></i>
+                    Tambah
+                </button>
+
+            </div>
 
         </div>
 
-        <div class="right-filter">
+        <div class="filter-bottom">
 
-            <input
-                type="date"
-                class="filter-box">
+            <select class="filter-box">
 
-            <input
-                type="date"
-                class="filter-box">
+                <option>10 Baris</option>
+                <option>25 Baris</option>
+                <option>50 Baris</option>
 
-            <button class="btn btn-primary">
-                Export
-            </button>
-
-            <button class="btn btn-success">
-                Tambah
-            </button>
+            </select>
 
             <input
                 type="text"
                 class="search-box"
-                placeholder="Cari Transaksi">
+                placeholder="Cari No. Stok Masuk">
 
         </div>
 
