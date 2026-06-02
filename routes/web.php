@@ -74,10 +74,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/produk',
         [ProductController::class, 'index']);
 
+    // kategori produk
+    Route::get('/kategori-produk',
+        [CategoryController::class, 'index']);
+
+    Route::post('/kategori-produk',
+        [CategoryController::class, 'store']);
+
+
     // inventory
     Route::get('/inventory', function () {
         return view('inventory');
     });
+
+    Route::get('/stok-masuk', function () {
+        return view('inventory.stok-masuk');
+    });
+
+
 
     // cetak barcode
     Route::get('/barcode', function () {
@@ -168,10 +182,5 @@ Route::middleware('auth')->group(function () {
         return view('laporan.keuangan');
     });
 
-    Route::get('/kategori-produk',
-        [CategoryController::class, 'index']);
-
-    Route::post('/kategori-produk',
-        [CategoryController::class, 'store']);
-
+    
 });
