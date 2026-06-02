@@ -6,7 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\StockInController;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,10 +88,25 @@ Route::middleware('auth')->group(function () {
         return view('inventory');
     });
 
-    Route::get('/stok-masuk', function () {
-        return view('inventory.stok-masuk');
-    });
+    // stok masuk
+    Route::get('/stok-masuk',
+        [StockInController::class, 'stockIn']);
 
+    // stok keluar
+    Route::get('/stok-keluar',
+        [InventoryController::class, 'stockOut']);
+
+        // stok opname
+    Route::get('/stok-opname',
+        [InventoryController::class, 'stockOpname']);
+
+        // pergerakan stok
+    Route::get('/pergerakan-stok',
+        [InventoryController::class, 'stockMovement']);
+
+        // peringatan stok
+    Route::get('/peringatan-stok',
+        [InventoryController::class, 'stockWarning']);
 
 
     // cetak barcode
