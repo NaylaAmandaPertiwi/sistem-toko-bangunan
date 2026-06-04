@@ -331,7 +331,7 @@ table td{
 
                     <th>Tujuan</th>
 
-                    <th>Aksi</th>
+                    <th>Petugas</th>
 
                 </tr>
 
