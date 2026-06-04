@@ -17,4 +17,10 @@ class StockOut extends Model
         'tujuan',
         'keterangan'
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
+
 }
