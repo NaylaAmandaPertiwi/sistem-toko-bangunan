@@ -249,6 +249,7 @@ table td{
             <div class="toolbar">
 
                 <button
+                    type="button"
                     id="dateRangePicker"
                     class="date-range">
 
@@ -362,6 +363,8 @@ table td{
 <script>
 
 $(function(){
+
+    console.log('Date Range Loaded');
 
     $('#dateRangePicker').daterangepicker({
 

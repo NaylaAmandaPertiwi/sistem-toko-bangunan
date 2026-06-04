@@ -335,13 +335,19 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 
         </button>
 
-        <div class="dropdown-content
-        {{ request()->is('produk*') ||
-        request()->is('inventory*') ||
-        request()->is('barcode*') ||
-        request()->is('label-harga*')
-        ? 'show'
-        : '' }}"
+        <div class="dropdown-content {{ 
+            request()->is('produk*') ||
+            request()->is('kategori-produk*') ||
+            request()->is('inventory*') ||
+            request()->is('stok-masuk*') ||
+            request()->is('stok-keluar*') ||
+            request()->is('stok-opname*') ||
+            request()->is('pergerakan-stok*') ||
+            request()->is('peringatan-stok*') ||
+            request()->is('barcode*') ||
+            request()->is('label-harga*')
+            ? 'show': '' 
+        }}"
         id="inventoryDropdown">
 
             <a href="/produk"
@@ -359,18 +365,18 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
             </a>
 
             <a href="/barcode"
-    class="{{ request()->is('barcode') ? 'submenu-active' : '' }}">
+            class="{{ request()->is('barcode') ? 'submenu-active' : '' }}">
 
-        Cetak Barcode Produk
+                Cetak Barcode Produk
 
-    </a>
+            </a>
 
             <a href="/label-harga"
-   class="{{ request()->is('label-harga') ? 'submenu-active' : '' }}">
+            class="{{ request()->is('label-harga') ? 'submenu-active' : '' }}">
 
-    Cetak Label Harga
+                Cetak Label Harga
 
-</a>
+            </a>
 
         </div>
 
@@ -592,8 +598,6 @@ id="laporanDropdown">
 
 </div>
 
-@yield('scripts')
-
 <script>
 
 /* DROPDOWN PRODUK */
@@ -659,6 +663,8 @@ function toggleLaporanDropdown() {
 <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+@yield('scripts')
 
 </body>
 </html>
