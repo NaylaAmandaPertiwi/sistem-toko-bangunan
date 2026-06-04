@@ -6,7 +6,14 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+
+use App\Http\Controllers\InventoryController;
+
 use App\Http\Controllers\StockInController;
+use App\Http\Controllers\StockOutController;
+use App\Http\Controllers\StockOpnameController;
+use App\Http\Controllers\StockMovementController;
+use App\Http\Controllers\StockWarningController;
 
 /*
 |--------------------------------------------------------------------------
@@ -101,6 +108,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/peringatan-stok',
         [StockWarningController::class,'index']);
+
+        
 
     // cetak barcode
     Route::get('/barcode', function () {
