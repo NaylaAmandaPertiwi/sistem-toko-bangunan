@@ -281,10 +281,13 @@ table td{
                     Import
                 </button>
 
-                <button class="btn btn-primary">
+                <a href="/stok-keluar/create"
+                class="btn btn-primary">
+
                     <i class="fa-solid fa-plus"></i>
                     Tambah
-                </button>
+
+                </a>
 
             </div>
 

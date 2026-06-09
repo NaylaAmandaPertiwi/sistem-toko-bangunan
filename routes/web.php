@@ -10,7 +10,6 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\InventoryController;
 
 use App\Http\Controllers\StockInController;
-use App\Http\Controllers\StockOutController;
 use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\StockWarningController;
@@ -74,7 +73,7 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | PRODUK & INVENTORY
+    | PRODUK
     |--------------------------------------------------------------------------
     */
 
@@ -89,37 +88,49 @@ Route::middleware('auth')->group(function () {
     Route::post('/kategori-produk',
         [CategoryController::class, 'store']);
 
+    // barcode
+    Route::get('/barcode', function () {
+        return view('barcode');
+    });
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    |  SUPPLIER
+    |--------------------------------------------------------------------------
+    */
+
+    // supplier
+    Route::get('/supplier',
+    [SupplierController::class,'index']);
+        
+
+    /*
+    |--------------------------------------------------------------------------
+    | INVENTORY
+    |--------------------------------------------------------------------------
+    */    
 
     // Inventory
     Route::get('/inventory',
         [InventoryController::class,'index']);
 
+    // stok masuk
     Route::get('/stok-masuk',
         [StockInController::class,'index']);
 
-    Route::get('/stok-keluar',
-        [StockOutController::class,'index']);
-
+    // stok opname    
     Route::get('/stok-opname',
         [StockOpnameController::class,'index']);
 
+    // pergerakan stok    
     Route::get('/pergerakan-stok',
         [StockMovementController::class,'index']);
 
+    // peringatan stok
     Route::get('/peringatan-stok',
         [StockWarningController::class,'index']);
-
-        
-
-    // cetak barcode
-    Route::get('/barcode', function () {
-        return view('barcode');
-    });
-
-    // cetak label harga
-    Route::get('/label-harga', function () {
-        return view('label-harga');
-    });
 
 
 
@@ -134,14 +145,9 @@ Route::middleware('auth')->group(function () {
         return view('penjualan');
     });
 
-    // pembayaran
-    Route::get('/pembayaran', function () {
-        return view('pembayaran');
-    });
-
     // retur barang
-    Route::get('/retur-barang', function () {
-        return view('retur-barang');
+    Route::get('/retur', function () {
+        return view('retur');
     });
 
     // riwayat transaksi
@@ -150,24 +156,15 @@ Route::middleware('auth')->group(function () {
     });
 
 
-
     /*
     |--------------------------------------------------------------------------
-    | PEGAWAI
+    | DISKON
     |--------------------------------------------------------------------------
     */
 
-    // staff
-    Route::get('/staff', function () {
-        return view('staff');
-    });
-
-    // kehadiran
-    Route::get('/kehadiran', function () {
-        return view('kehadiran');
-    });
-
-
+    // diskon
+    Route::get('/diskon',
+    [DiscountController::class,'index']);
 
     /*
     |--------------------------------------------------------------------------
@@ -185,14 +182,9 @@ Route::middleware('auth')->group(function () {
         return view('laporan.stok');
     });
 
-    // laporan barang masuk
-    Route::get('/laporan-barang-masuk', function () {
-        return view('laporan.barang-masuk');
-    });
-
-    // laporan barang keluar
-    Route::get('/laporan-barang-keluar', function () {
-        return view('laporan.barang-keluar');
+    // laporan barang terlaris
+    Route::get('/laporan-barang-terlaris', function () {
+        return view('laporan.barang-terlaris');
     });
 
     // laporan keuangan

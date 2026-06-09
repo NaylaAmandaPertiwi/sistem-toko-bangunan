@@ -29,7 +29,7 @@ return new class extends Migration
 
             $table->string('tujuan');
 
-            $table->text('keterangan')->nullable();
+            $table->text('petugas');
 
             $table->timestamps();
         });

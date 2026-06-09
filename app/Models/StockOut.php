@@ -15,7 +15,7 @@ class StockOut extends Model
         'harga_jual',
         'total',
         'tujuan',
-        'keterangan'
+        'Petugas'
     ];
 
     public function product()

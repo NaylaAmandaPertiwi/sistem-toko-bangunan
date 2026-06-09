@@ -308,272 +308,200 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 
     
     <!-- DASHBOARD -->
-    <a href="/dashboard"
-    class="{{ request()->is('dashboard')
-    ? 'active'
-    : '' }}">
 
-        <i class="fa-solid fa-house"></i>
-        Dashboard
+    <a href="/dashboard"
+    class="{{ request()->is('dashboard*') ? 'active' : '' }}">
+
+    ```
+    <i class="fa-solid fa-house"></i>
+    Dashboard
+    ```
 
     </a>
 
-    <!-- DROPDOWN PRODUK -->
+    <!-- PRODUK -->
+
     <div class="dropdown-menu">
 
-        <button class="dropdown-btn"
-        onclick="toggleDropdown()">
+    ```
+    <button class="dropdown-btn"
+            onclick="toggleProdukDropdown()">
 
-            <div class="menu-left">
+        <div class="menu-left">
 
-                <i class="fa-solid fa-boxes-stacked"></i>
-                Produk & Inventory
-
-            </div>
-
-            <i class="fa-solid fa-chevron-down arrow"></i>
-
-        </button>
-
-        <div class="dropdown-content {{ 
-            request()->is('produk*') ||
-            request()->is('kategori-produk*') ||
-            request()->is('inventory*') ||
-            request()->is('stok-masuk*') ||
-            request()->is('stok-keluar*') ||
-            request()->is('stok-opname*') ||
-            request()->is('pergerakan-stok*') ||
-            request()->is('peringatan-stok*') ||
-            request()->is('barcode*') ||
-            request()->is('label-harga*')
-            ? 'show': '' 
-        }}"
-        id="inventoryDropdown">
-
-            <a href="/produk"
-            class="{{ request()->is('produk') ? 'submenu-active' : '' }}">
-
-                Produk
-
-            </a>
-
-            <a href="/inventory"
-            class="{{ request()->is('inventory') ? 'submenu-active' : '' }}">
-
-                Inventory
-
-            </a>
-
-            <a href="/barcode"
-            class="{{ request()->is('barcode') ? 'submenu-active' : '' }}">
-
-                Cetak Barcode Produk
-
-            </a>
-
-            <a href="/label-harga"
-            class="{{ request()->is('label-harga') ? 'submenu-active' : '' }}">
-
-                Cetak Label Harga
-
-            </a>
+            <i class="fa-solid fa-box"></i>
+            Produk
 
         </div>
 
+        <i class="fa-solid fa-chevron-down produk-arrow"></i>
+
+    </button>
+
+    <div class="dropdown-content
+    {{ request()->is('produk*') ||
+    request()->is('kategori-produk*') ||
+    request()->is('barcode*')
+    ? 'show' : '' }}"
+    id="produkDropdown">
+
+        <a href="/produk">Produk</a>
+
+        <a href="/kategori-produk">Kategori</a>
+
+        <a href="/barcode">Barcode</a>
+
     </div>
-
-    <!-- DROPDOWN TRANSAKSI -->
-    <div class="dropdown-menu">
-
-        <button class="dropdown-btn"
-                onclick="toggleTransactionDropdown()">
-
-            <div class="menu-left">
-
-                <i class="fa-solid fa-cart-shopping"></i>
-                Transaksi
-
-            </div>
-
-            <i class="fa-solid fa-chevron-down transaction-arrow"></i>
-
-        </button>
-
-        <div class="dropdown-content
-{{ request()->is('penjualan*') ||
-   request()->is('pembayaran*') ||
-   request()->is('retur-barang*') ||
-   request()->is('riwayat-transaksi*')
-   ? 'show'
-   : '' }}"
-id="transactionDropdown">
-
-    <a href="/penjualan"
-       class="{{ request()->is('penjualan*')
-       ? 'submenu-active'
-       : '' }}">
-
-        Penjualan
-
-    </a>
-
-    <a href="/pembayaran"
-       class="{{ request()->is('pembayaran*')
-       ? 'submenu-active'
-       : '' }}">
-
-        Pembayaran
-
-    </a>
-
-    <a href="/retur-barang"
-       class="{{ request()->is('retur-barang*')
-       ? 'submenu-active'
-       : '' }}">
-
-        Retur Barang
-
-    </a>
-
-    <a href="/riwayat-transaksi"
-       class="{{ request()->is('riwayat-transaksi*')
-       ? 'submenu-active'
-       : '' }}">
-
-        Riwayat Transaksi
-
-    </a>
-
-</div>
+    ```
 
     </div>
 
-    <!-- DROPDOWN PEGAWAI -->
+    <!-- SUPPLIER -->
+
+    <a href="/supplier"
+    class="{{ request()->is('supplier*') ? 'active' : '' }}">
+
+    ```
+    <i class="fa-solid fa-truck"></i>
+    Supplier
+    ```
+
+    </a>
+
+    <!-- INVENTORY -->
+
     <div class="dropdown-menu">
 
-        <button class="dropdown-btn"
-                onclick="togglePegawaiDropdown()">
+    ```
+    <button class="dropdown-btn"
+            onclick="toggleInventoryDropdown()">
 
-            <div class="menu-left">
+        <div class="menu-left">
 
-                <i class="fa-solid fa-user-group"></i>
-                Pegawai
+            <i class="fa-solid fa-warehouse"></i>
+            Inventory
 
-            </div>
+        </div>
 
-            <i class="fa-solid fa-chevron-down pegawai-arrow"></i>
+        <i class="fa-solid fa-chevron-down inventory-arrow"></i>
 
-        </button>
+    </button>
 
-        <div class="dropdown-content
-{{ request()->is('staff*') ||
-   request()->is('kehadiran*')
-   ? 'show'
-   : '' }}"
-id="pegawaiDropdown">
+    <div class="dropdown-content
+    {{ request()->is('stok-masuk*') ||
+    request()->is('stok-opname*') ||
+    request()->is('pergerakan-stok*') ||
+    request()->is('peringatan-stok*')
+    ? 'show' : '' }}"
+    id="inventoryDropdown">
 
-    <a href="/staff"
-       class="{{ request()->is('staff*')
-       ? 'submenu-active'
-       : '' }}">
+        <a href="/stok-masuk">Stok Masuk</a>
 
-        Staff
+        <a href="/stok-opname">Stok Opname</a>
 
-    </a>
+        <a href="/pergerakan-stok">Pergerakan Stok</a>
 
-    <a href="/kehadiran"
-       class="{{ request()->is('kehadiran*')
-       ? 'submenu-active'
-       : '' }}">
+        <a href="/peringatan-stok">Peringatan Stok</a>
 
-        Kehadiran
+    </div>
+    ```
 
-    </a>
+    </div>
 
-</div>
+    <!-- TRANSAKSI -->
+
+    <div class="dropdown-menu">
+
+    ```
+    <button class="dropdown-btn"
+            onclick="toggleTransactionDropdown()">
+
+        <div class="menu-left">
+
+            <i class="fa-solid fa-cart-shopping"></i>
+            Transaksi
+
+        </div>
+
+        <i class="fa-solid fa-chevron-down transaction-arrow"></i>
+
+    </button>
+
+    <div class="dropdown-content
+    {{ request()->is('penjualan*') ||
+    request()->is('retur*') ||
+    request()->is('riwayat*')
+    ? 'show' : '' }}"
+    id="transactionDropdown">
+
+        <a href="/penjualan">Penjualan</a>
+
+        <a href="/retur-barang">Retur</a>
+
+        <a href="/riwayat-transaksi">Riwayat</a>
+
+    </div>
+    ```
 
     </div>
 
     <!-- DISKON -->
-    <a href="#">
 
-        <i class="fa-solid fa-percent"></i>
-        Diskon
+    <a href="/diskon"
+    class="{{ request()->is('diskon*') ? 'active' : '' }}">
+
+    ```
+    <i class="fa-solid fa-percent"></i>
+    Diskon
+    ```
 
     </a>
 
-    <!-- DROPDOWN LAPORAN -->
+    <!-- LAPORAN -->
+
     <div class="dropdown-menu">
 
-        <button class="dropdown-btn"
-                onclick="toggleLaporanDropdown()">
+    ```
+    <button class="dropdown-btn"
+            onclick="toggleLaporanDropdown()">
 
-            <div class="menu-left">
+        <div class="menu-left">
 
-                <i class="fa-solid fa-chart-column"></i>
-                Laporan
+            <i class="fa-solid fa-chart-column"></i>
+            Laporan
 
-            </div>
+        </div>
 
-            <i class="fa-solid fa-chevron-down laporan-arrow"></i>
+        <i class="fa-solid fa-chevron-down laporan-arrow"></i>
 
-        </button>
+    </button>
 
-        <div class="dropdown-content
-{{ request()->is('laporan*')
-   ? 'show'
-   : '' }}"
-id="laporanDropdown">
+    <div class="dropdown-content
+    {{ request()->is('laporan*')
+    ? 'show' : '' }}"
+    id="laporanDropdown">
 
-    <a href="/laporan-penjualan"
-       class="{{ request()->is('laporan-penjualan*')
-       ? 'submenu-active'
-       : '' }}">
+        <a href="/laporan-penjualan">
+            Penjualan
+        </a>
 
-        Laporan Penjualan
+        <a href="/laporan-stok">
+            Stok
+        </a>
 
-    </a>
+        <a href="/laporan-barang-terlaris">
+            Barang Terlaris
+        </a>
 
-    <a href="/laporan-stok"
-       class="{{ request()->is('laporan-stok*')
-       ? 'submenu-active'
-       : '' }}">
-
-        Laporan Stok
-
-    </a>
-
-    <a href="/laporan-barang-masuk"
-       class="{{ request()->is('laporan-barang-masuk*')
-       ? 'submenu-active'
-       : '' }}">
-
-        Laporan Barang Masuk
-
-    </a>
-
-    <a href="/laporan-barang-keluar"
-       class="{{ request()->is('laporan-barang-keluar*')
-       ? 'submenu-active'
-       : '' }}">
-
-        Laporan Barang Keluar
-
-    </a>
-
-    <a href="/laporan-keuangan"
-       class="{{ request()->is('laporan-keuangan*')
-       ? 'submenu-active'
-       : '' }}">
-
-        Laporan Keuangan
-
-    </a>
-
-</div>
+        <a href="/laporan-keuangan">
+            Keuangan
+        </a>
 
     </div>
+    ```
+
     </div>
+
 
     <!-- PROFILE -->
     <div class="profile">
@@ -654,6 +582,28 @@ function toggleLaporanDropdown() {
     dropdown.classList.toggle('show');
 
     arrow.classList.toggle('rotate');
+}
+
+function toggleProdukDropdown() {
+
+    document
+    .getElementById('produkDropdown')
+    .classList.toggle('show');
+
+    document
+    .querySelector('.produk-arrow')
+    .classList.toggle('rotate');
+}
+
+function toggleInventoryDropdown() {
+
+    document
+    .getElementById('inventoryDropdown')
+    .classList.toggle('show');
+
+    document
+    .querySelector('.inventory-arrow')
+    .classList.toggle('rotate');
 }
 
 </script>

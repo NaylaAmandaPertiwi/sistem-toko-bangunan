@@ -10,4 +10,9 @@ class StockOutController extends Controller
     {
         return view('inventory.stok-keluar');
     }
+
+    public function create()
+    {
+        return view('inventory.create-stock-out');
+    }
 }
