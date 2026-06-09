@@ -147,9 +147,9 @@ body{
     display:block;
 }
 
-.arrow,
+.produk-arrow,
+.inventory-arrow,
 .transaction-arrow,
-.pegawai-arrow,
 .laporan-arrow{
     transition:0.3s;
 }
@@ -312,10 +312,9 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <a href="/dashboard"
     class="{{ request()->is('dashboard*') ? 'active' : '' }}">
 
-    ```
+
     <i class="fa-solid fa-house"></i>
     Dashboard
-    ```
 
     </a>
 
@@ -323,7 +322,6 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 
     <div class="dropdown-menu">
 
-    ```
     <button class="dropdown-btn"
             onclick="toggleProdukDropdown()">
 
@@ -345,14 +343,22 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     ? 'show' : '' }}"
     id="produkDropdown">
 
-        <a href="/produk">Produk</a>
+        <a href="/produk"
+        class="{{ request()->is('produk*') ? 'submenu-active' : '' }}">
+            Produk
+        </a>
 
-        <a href="/kategori-produk">Kategori</a>
+        <a href="/kategori-produk"
+        class="{{ request()->is('kategori-produk*') ? 'submenu-active' : '' }}">
+            Kategori
+        </a>
 
-        <a href="/barcode">Barcode</a>
+        <a href="/barcode"
+        class="{{ request()->is('barcode*') ? 'submenu-active' : '' }}">
+            Barcode
+        </a>
 
     </div>
-    ```
 
     </div>
 
@@ -361,10 +367,8 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <a href="/supplier"
     class="{{ request()->is('supplier*') ? 'active' : '' }}">
 
-    ```
     <i class="fa-solid fa-truck"></i>
     Supplier
-    ```
 
     </a>
 
@@ -372,7 +376,7 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 
     <div class="dropdown-menu">
 
-    ```
+
     <button class="dropdown-btn"
             onclick="toggleInventoryDropdown()">
 
@@ -395,16 +399,27 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     ? 'show' : '' }}"
     id="inventoryDropdown">
 
-        <a href="/stok-masuk">Stok Masuk</a>
+        <a href="/stok-masuk"
+        class="{{ request()->is('stok-masuk*') ? 'submenu-active' : '' }}">
+            Stok Masuk
+        </a>
 
-        <a href="/stok-opname">Stok Opname</a>
+        <a href="/stok-opname"
+        class="{{ request()->is('stok-opname*') ? 'submenu-active' : '' }}">
+            Stok Opname
+        </a>
 
-        <a href="/pergerakan-stok">Pergerakan Stok</a>
+        <a href="/pergerakan-stok"
+        class="{{ request()->is('pergerakan-stok*') ? 'submenu-active' : '' }}">
+            Pergerakan Stok
+        </a>
 
-        <a href="/peringatan-stok">Peringatan Stok</a>
+        <a href="/peringatan-stok"
+        class="{{ request()->is('peringatan-stok*') ? 'submenu-active' : '' }}">
+            Peringatan Stok
+        </a>
 
     </div>
-    ```
 
     </div>
 
@@ -412,7 +427,6 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 
     <div class="dropdown-menu">
 
-    ```
     <button class="dropdown-btn"
             onclick="toggleTransactionDropdown()">
 
@@ -434,14 +448,22 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     ? 'show' : '' }}"
     id="transactionDropdown">
 
-        <a href="/penjualan">Penjualan</a>
+        <a href="/penjualan"
+        class="{{ request()->is('penjualan*') ? 'submenu-active' : '' }}">
+            Penjualan
+        </a>
 
-        <a href="/retur-barang">Retur</a>
+        <a href="/retur"
+        class="{{ request()->is('retur*') ? 'submenu-active' : '' }}">
+            Retur
+        </a>
 
-        <a href="/riwayat-transaksi">Riwayat</a>
+        <a href="/riwayat-transaksi"
+        class="{{ request()->is('riwayat-transaksi*') ? 'submenu-active' : '' }}">
+            Riwayat
+        </a>
 
     </div>
-    ```
 
     </div>
 
@@ -450,10 +472,8 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     <a href="/diskon"
     class="{{ request()->is('diskon*') ? 'active' : '' }}">
 
-    ```
     <i class="fa-solid fa-percent"></i>
     Diskon
-    ```
 
     </a>
 
@@ -461,7 +481,6 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 
     <div class="dropdown-menu">
 
-    ```
     <button class="dropdown-btn"
             onclick="toggleLaporanDropdown()">
 
@@ -481,24 +500,27 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     ? 'show' : '' }}"
     id="laporanDropdown">
 
-        <a href="/laporan-penjualan">
+        <a href="/laporan-penjualan"
+        class="{{ request()->is('laporan-penjualan*') ? 'submenu-active' : '' }}">
             Penjualan
         </a>
 
-        <a href="/laporan-stok">
+        <a href="/laporan-stok"
+        class="{{ request()->is('laporan-stok*') ? 'submenu-active' : '' }}">
             Stok
         </a>
 
-        <a href="/laporan-barang-terlaris">
+        <a href="/laporan-barang-terlaris"
+        class="{{ request()->is('laporan-barang-terlaris*') ? 'submenu-active' : '' }}">
             Barang Terlaris
         </a>
 
-        <a href="/laporan-keuangan">
+        <a href="/laporan-keuangan"
+        class="{{ request()->is('laporan-keuangan*') ? 'submenu-active' : '' }}">
             Keuangan
         </a>
 
     </div>
-    ```
 
     </div>
 
@@ -528,19 +550,6 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 
 <script>
 
-/* DROPDOWN PRODUK */
-function toggleDropdown() {
-
-    const dropdown =
-        document.getElementById('inventoryDropdown');
-
-    const arrow =
-        document.querySelector('.arrow');
-
-    dropdown.classList.toggle('show');
-
-    arrow.classList.toggle('rotate');
-}
 
 /* DROPDOWN TRANSAKSI */
 function toggleTransactionDropdown() {
@@ -556,19 +565,6 @@ function toggleTransactionDropdown() {
     arrow.classList.toggle('rotate');
 }
 
-/* DROPDOWN PEGAWAI */
-function togglePegawaiDropdown() {
-
-    const dropdown =
-        document.getElementById('pegawaiDropdown');
-
-    const arrow =
-        document.querySelector('.pegawai-arrow');
-
-    dropdown.classList.toggle('show');
-
-    arrow.classList.toggle('rotate');
-}
 
 /* DROPDOWN LAPORAN */
 function toggleLaporanDropdown() {
@@ -605,6 +601,22 @@ function toggleInventoryDropdown() {
     .querySelector('.inventory-arrow')
     .classList.toggle('rotate');
 }
+
+window.addEventListener('DOMContentLoaded', () => {
+
+    document.querySelectorAll('.dropdown-content.show')
+    .forEach(function(dropdown){
+
+        const arrow = dropdown.parentElement
+            .querySelector('i.fa-chevron-down');
+
+        if(arrow){
+            arrow.classList.add('rotate');
+        }
+
+    });
+
+});
 
 </script>
 

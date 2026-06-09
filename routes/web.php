@@ -7,12 +7,18 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 
+use App\Http\Controllers\SupplierController;
+
 use App\Http\Controllers\InventoryController;
 
 use App\Http\Controllers\StockInController;
 use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\StockWarningController;
+
+
+
+use App\Http\Controllers\DiscountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -142,17 +148,17 @@ Route::middleware('auth')->group(function () {
 
     // penjualan
     Route::get('/penjualan', function () {
-        return view('penjualan');
+        return view('transaksi.penjualan');
     });
 
     // retur barang
     Route::get('/retur', function () {
-        return view('retur');
+        return view('transaksi.retur');
     });
 
     // riwayat transaksi
     Route::get('/riwayat-transaksi', function () {
-        return view('riwayat-transaksi');
+        return view('transaksi.riwayat-transaksi');
     });
 
 
