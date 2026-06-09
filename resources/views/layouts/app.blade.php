@@ -180,12 +180,165 @@ body{
     z-index:999;
 }
 
-.profile i{
+.profile > .fa-circle-user{
     font-size:30px;
 }
 
 .profile-text{
     line-height:1.4;
+    font-size:14px;
+}
+
+.profile-arrow{
+    margin-left:auto;
+    font-size:11px;
+    transition:.3s;
+}
+
+.profile-arrow.rotate{
+    transform:rotate(180deg);
+}
+
+.profile{
+    cursor:pointer;
+}
+
+.profile-menu{
+
+    position:absolute;
+
+    left:20px;
+    right:20px;
+
+    bottom:95px;
+
+    background:#fff;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    display:none;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.15);
+
+    z-index:9999;
+}
+
+.profile-menu.show{
+    display:block;
+}
+
+.profile-menu a{
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:15px 18px;
+
+    color:#444;
+
+    text-decoration:none;
+
+    transition:.2s;
+}
+
+.profile-menu a:hover{
+    background:#f5f7fb;
+}
+
+.profile-menu button{
+
+    width:100%;
+
+    border:none;
+
+    background:#fff5f5;
+
+    color:#dc3545;
+
+    padding:15px 18px;
+
+    text-align:left;
+
+    cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    font-size:14px;
+}
+
+.profile-menu button:hover{
+    background:#ffe9e9;
+}
+
+.menu-divider{
+    height:1px;
+    background:#eaeaea;
+}
+
+.profile{
+    cursor:pointer;
+}
+
+.profile-menu{
+
+    position:absolute;
+
+    left:20px;
+    right:20px;
+
+    bottom:95px;
+
+    background:white;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    display:none;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.15);
+
+    z-index:9999;
+}
+
+.profile-menu.show{
+    display:block;
+}
+
+.profile-menu a{
+    color:#333;
+    padding:16px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+}
+
+.profile-menu button{
+
+    width:100%;
+
+    border:none;
+
+    background:#fff3f3;
+
+    color:#dc3545;
+
+    text-align:left;
+
+    padding:16px;
+
+    cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+
     font-size:14px;
 }
 
@@ -523,10 +676,11 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
     </div>
 
     </div>
-
+</div>
 
     <!-- PROFILE -->
-    <div class="profile">
+    <div class="profile"
+        onclick="toggleProfileMenu()">
 
         <i class="fa-solid fa-circle-user"></i>
 
@@ -537,13 +691,56 @@ href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
 
         </div>
 
+        <i class="fa-solid fa-chevron-up profile-arrow"></i>
+
+    </div>
+
+    <!-- DROP UP PROFILE -->
+    <div id="profileMenu"
+        class="profile-menu">
+
+        <a href="/profil">
+
+            <i class="fa-regular fa-user"></i>
+            Profil Saya
+
+        </a>
+
+        <a href="/pengaturan-akun">
+
+            <i class="fa-solid fa-gear"></i>
+            Pengaturan Akun
+
+        </a>
+
+        <a href="/ubah-password">
+
+            <i class="fa-solid fa-lock"></i>
+            Ubah Password
+
+        </a>
+
+        <div class="menu-divider"></div>
+
+        <form method="POST"
+            action="/logout">
+            @csrf
+
+            <button type="submit">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Keluar
+
+            </button>
+
+        </form>
+
     </div>
 
 </div>
 
 <!-- CONTENT -->
 <div class="content">
-
     @yield('content')
 
 </div>
@@ -617,6 +814,17 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
 });
+
+function toggleProfileMenu() {
+
+    document
+    .getElementById('profileMenu')
+    .classList.toggle('show');
+
+    document
+    .querySelector('.profile-arrow')
+    .classList.toggle('rotate');
+}
 
 </script>
 

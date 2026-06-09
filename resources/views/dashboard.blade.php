@@ -11,15 +11,6 @@
 
         <h2>Dashboard Owner</h2>
 
-        <form method="POST" action="/logout">
-            @csrf
-
-            <button class="logout">
-                Logout
-            </button>
-
-        </form>
-
     </div>
 
     <!-- CARDS -->
