@@ -15,5 +15,14 @@ class ProductController extends Controller
             'products.index',
             compact('categories')
         );
+
+        
+    }
+    
+    public function barcode()
+    {
+        $products = [];
+
+        return view('products.barcode', compact('products'));
     }
 }

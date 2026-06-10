@@ -95,10 +95,8 @@ Route::middleware('auth')->group(function () {
         [CategoryController::class, 'store']);
 
     // barcode
-    Route::get('/barcode', function () {
-        return view('barcode');
-    });
-
+    Route::get('/barcode',
+    [ProductController::class, 'barcode']);
 
 
     /*
