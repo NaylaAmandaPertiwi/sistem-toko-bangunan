@@ -8,12 +8,13 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // contoh data (nanti bisa dari database)
         $data = [
-            'total_transaksi' => 140,
-            'stok_menipis' => 5,
-            'total_penjualan' => 50000000,
-            'diskon_aktif' => 5
+
+            'total_produk'      => 250,
+            'total_supplier'    => 15,
+            'total_transaksi'   => 32,
+            'total_penjualan'   => 7500000
+
         ];
 
         return view('dashboard', compact('data'));

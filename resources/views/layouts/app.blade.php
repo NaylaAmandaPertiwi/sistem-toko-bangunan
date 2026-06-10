@@ -399,6 +399,58 @@ body{
     color:#355cc9;
 }
 
+.dashboard-summary{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:20px;
+
+    margin-bottom:25px;
+}
+
+.summary-item{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:16px;
+
+    box-shadow:
+    0 4px 12px rgba(0,0,0,.05);
+}
+
+.summary-item span{
+
+    color:#777;
+
+    font-size:14px;
+}
+
+.summary-item h3{
+
+    margin-top:10px;
+
+    color:#355cc9;
+
+    font-size:26px;
+}
+
+.filter-box{
+
+    background:white;
+
+    padding:10px 18px;
+
+    border-radius:10px;
+
+    box-shadow:
+    0 2px 8px rgba(0,0,0,.05);
+}
+
 /* ROW */
 .row{
     display:grid;

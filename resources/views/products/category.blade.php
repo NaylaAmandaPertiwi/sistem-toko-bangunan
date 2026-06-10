@@ -23,33 +23,6 @@
     font-weight:600;
 }
 
-/* TAB */
-.tab-menu{
-    display:flex;
-    background:white;
-    border-bottom:1px solid #eee;
-}
-
-.tab-menu a{
-    flex:1;
-    text-align:center;
-    padding:18px;
-    text-decoration:none;
-    color:#444;
-    font-weight:600;
-}
-
-.tab-active{
-    color:#1e293b;
-    background:linear-gradient(
-        to top,
-        rgba(22,132,224,0.12),
-        transparent
-    );
-    border-bottom:3px solid #7093af;
-    font-weight:700;
-}
-
 /* FILTER */
 .filter-section{
     padding:25px;
@@ -74,11 +47,16 @@
 .add-btn{
     background:#4CAF50;
     color:white;
+    text-decoration:none;
     border:none;
     padding:12px 18px;
     border-radius:10px;
     cursor:pointer;
     font-size:15px;
+
+    display:flex;
+    align-items:center;
+    gap:8px;
 }
 
 .add-btn:hover{
@@ -141,24 +119,9 @@ table td{
 
 <div class="page-header">
 
-```
 <!-- HEADER -->
 <div class="top-header">
-    Katalog Produk
-</div>
-
-<!-- TAB -->
-<div class="tab-menu">
-
-    <a href="/produk">
-        Produk
-    </a>
-
-    <a href="/kategori-produk"
-       class="tab-active">
-        Kategori Produk
-    </a>
-
+    Kategori Produk
 </div>
 
 <!-- FILTER -->
@@ -171,12 +134,10 @@ table td{
 
     </div>
 
-    <button class="add-btn">
-
+    <a href="/kategori-produk/create" class="add-btn">
         <i class="fa-solid fa-plus"></i>
         Tambah Kategori
-
-    </button>
+    </a>
 
 </div>
 
@@ -223,10 +184,8 @@ table td{
 
                 <td>
 
-                    <span class="status-active">
-
+                    <span class="{{ $category->status == 'Aktif' ? 'status-active' : 'status-inactive' }}">
                         {{ $category->status }}
-
                     </span>
 
                 </td>
@@ -269,7 +228,7 @@ table td{
     </table>
 
 </div>
-```
+
 
 </div>
 

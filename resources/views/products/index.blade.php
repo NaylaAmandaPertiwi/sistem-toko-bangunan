@@ -23,48 +23,6 @@
     font-weight:600;
 }
 
-/* TAB */
-.tab-menu{
-    display:flex;
-    background:white;
-    border-bottom:1px solid #eee;
-}
-
-.tab-menu a{
-    flex:1;
-    text-align:center;
-    padding:18px;
-    text-decoration:none;
-    color:#444;
-    font-weight:600;
-    transition:0.3s;
-}
-
-.tab-menu a:hover{
-    background:#f3f5fa;
-}
-
-.tab-menu .tab-active{
-
-    color:#1e293b;
-
-    background:linear-gradient(
-        to top,
-        rgba(22,132,224,0.12),
-        transparent
-    );
-
-    border-bottom:3px solid #7093af;
-}
-
-.tab-menu a{
-    position:relative;
-}
-
-.tab-menu .tab-active{
-    font-weight:700;
-}
-
 /* FILTER */
 .filter-section{
     padding:25px;
@@ -234,25 +192,7 @@ th i{
         <!-- HEADER -->
         <div class="top-header">
 
-            Katalog Produk
-
-        </div>
-
-        <!-- TAB -->
-        <div class="tab-menu">
-
-            <a href="/produk"
-               class="tab-active">
-
-               Produk
-
-            </a>
-
-            <a href="/kategori-produk">
-
-               Kategori Produk
-
-            </a>
+            Produk
 
         </div>
 
