@@ -4,124 +4,274 @@
 
 @section('content')
 
+<style>
+
+.page-card{
+    background:white;
+    border-radius:15px;
+    overflow:hidden;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.page-header{
+    padding:25px;
+    border-bottom:1px solid #eee;
+}
+
+.page-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.page-title h2{
+    font-size:34px;
+    margin:0;
+}
+
+.btn-save{
+    background:#57c13b;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.btn-cancel{
+    text-decoration:none;
+    color:#1684e0;
+    margin-right:15px;
+}
+
+.form-body{
+    padding:30px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+}
+
+.form-group{
+    margin-bottom:20px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+    color:#444;
+}
+
+.form-control{
+    width:100%;
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:14px;
+}
+
+.form-control:focus{
+    outline:none;
+    border-color:#1684e0;
+}
+
+.section-title{
+    color:#57c13b;
+    font-size:22px;
+    margin-bottom:20px;
+}
+
+</style>
+
 <div class="page-card">
 
-```
-<div class="page-header">
+    <div class="page-header">
 
-    <h2>Edit Produk</h2>
+        <div class="page-title">
 
-    <div>
+            <h2>Edit Produk</h2>
 
-        <a href="{{ route('produk.index') }}">
-            Batal
-        </a>
+            <div>
 
-        <button
-            form="productForm"
-            type="submit">
+                <a href="{{ route('produk.index') }}"
+                   class="btn-cancel">
 
-            Simpan Perubahan
+                    Batal
 
-        </button>
+                </a>
+
+                <button
+                    form="productForm"
+                    type="submit"
+                    class="btn-save">
+
+                    Simpan
+
+                </button>
+
+            </div>
+
+        </div>
 
     </div>
 
-</div>
+    <div class="form-body">
 
-<form
-    id="productForm"
-    action="{{ route('produk.update',$produk->id) }}"
-    method="POST">
+        <form
+            id="productForm"
+            action="{{ route('produk.update',$produk->id) }}"
+            method="POST">
 
-    @csrf
-    @method('PUT')
+            @csrf
+            @method('PUT')
 
-    <label>Kategori</label>
+            <div class="form-grid">
 
-    <select name="category_id">
+                <div>
 
-        @foreach($categories as $category)
+                    <h3 class="section-title">
+                        Informasi Produk
+                    </h3>
 
-            <option
-                value="{{ $category->id }}"
-                {{ $produk->category_id == $category->id ? 'selected' : '' }}>
+                    <div class="form-group">
 
-                {{ $category->nama_kategori }}
+                        <label>Kategori</label>
 
-            </option>
+                        <select
+                            name="category_id"
+                            class="form-control">
 
-        @endforeach
+                            @foreach($categories as $category)
 
-    </select>
+                                <option
+                                    value="{{ $category->id }}">
 
-    <label>Nama Produk</label>
+                                    {{ $category->nama_kategori }}
 
-    <input
-        type="text"
-        name="nama_produk"
-        value="{{ $produk->nama_produk }}">
+                                </option>
 
-    <label>SKU</label>
+                            @endforeach
 
-    <input
-        type="text"
-        name="sku"
-        value="{{ $produk->sku }}">
+                        </select>
 
-    <label>Barcode</label>
+                    </div>
 
-    <input
-        type="text"
-        name="barcode"
-        value="{{ $produk->barcode }}">
+                    <div class="form-group">
 
-    <label>Stok</label>
+                        <label>Nama Produk</label>
 
-    <input
-        type="number"
-        name="stok"
-        value="{{ $produk->stok }}">
+                        <input
+                            type="text"
+                                name="nama_produk"
+                                value="{{ $produk->nama_produk }}">
 
-    <label>Satuan</label>
+                    </div>
 
-    <input
-        type="text"
-        name="satuan"
-        value="{{ $produk->satuan }}">
+                    <div class="form-group">
 
-    <label>Harga Beli</label>
+                        <label>SKU</label>
 
-    <input
-        type="number"
-        name="harga_beli"
-        value="{{ $produk->harga_beli }}">
+                        <input
+                            type="text"
+                            name="sku"
+                            value="{{ $produk->sku }}">
 
-    <label>Harga Jual</label>
+                    </div>
 
-    <input
-        type="number"
-        name="harga_jual"
-        value="{{ $produk->harga_jual }}">
+                    <div class="form-group">
 
-    <label>Status</label>
+                        <label>Barcode</label>
 
-    <select name="status">
+                        <input
+                            type="text"
+                            name="barcode"
+                            value="{{ $produk->barcode }}">
 
-        <option value="Aktif"
-            {{ $produk->status == 'Aktif' ? 'selected' : '' }}>
-            Aktif
-        </option>
+                    </div>
 
-        <option value="Nonaktif"
-            {{ $produk->status == 'Nonaktif' ? 'selected' : '' }}>
-            Nonaktif
-        </option>
+                </div>
 
-    </select>
+                <div>
 
-</form>
-```
+                    <h3 class="section-title">
+                        Detail Stok & Harga
+                    </h3>
+
+                    <div class="form-group">
+
+                        <label>Stok Awal</label>
+
+                        <input
+                            type="number"
+                            name="stok"
+                            value="{{ $produk->stok }}">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Satuan</label>
+
+                        <input
+                            type="text"
+                            name="satuan"
+                            value="{{ $produk->satuan }}">
+                            placeholder="Contoh: Sak, Kg, Batang">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Harga Beli</label>
+
+                        <input
+                            type="number"
+                            name="harga_beli"
+                            value="{{ $produk->harga_beli }}">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Harga Jual</label>
+
+                        <input
+                            type="number"
+                            name="harga_jual"
+                            value="{{ $produk->harga_jual }}">
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label>Status</label>
+
+                        <select
+                            name="status"
+                            class="form-control">
+
+                            <option value="Aktif">
+                                Aktif
+                            </option>
+
+                            <option value="Nonaktif">
+                                Nonaktif
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
 
 </div>
 
