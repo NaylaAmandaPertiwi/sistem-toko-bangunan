@@ -182,6 +182,8 @@ th i{
     font-weight:600;
 }
 
+
+
 </style>
 
 
@@ -199,41 +201,64 @@ th i{
         <!-- FILTER -->
         <div class="filter-section">
 
-            <div class="left-filter">
+            <form
+                method="GET"
+                action="{{ route('produk.index') }}"
+                style="display:flex;gap:15px;width:100%;">
 
-                <select class="filter-box">
+                <div class="left-filter">
 
-                    <option value="">
-                        Semua Kategori
-                    </option>
+                    <select
+                        name="category"
+                        class="filter-box">
 
-                    @foreach($categories as $category)
-
-                        <option value="{{ $category->id }}">
-
-                            {{ $category->nama_kategori }}
-
+                        <option value="">
+                            Semua Kategori
                         </option>
 
-                    @endforeach
+                        @foreach($categories as $category)
 
-                </select>
+                            <option
+                                value="{{ $category->id }}"
+                                {{ request('category') == $category->id ? 'selected' : '' }}>
 
-            </div>
+                                {{ $category->nama_kategori }}
 
-            <div class="search-box">
+                            </option>
 
-                <input type="text"
-                       placeholder="Cari Produk">
+                        @endforeach
 
-            </div>
+                    </select>
 
-            <button class="add-btn">
+                </div>
 
-                <i class="fa-solid fa-plus"></i>
-                Tambah Produk
+                <div class="search-box">
 
-            </button>
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Cari Produk">
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="add-btn">
+
+                    Cari
+
+                </button>
+
+                <a href="{{ route('produk.create') }}"
+                class="add-btn">
+
+                    <i class="fa-solid fa-plus"></i>
+                    Tambah Produk
+
+                </a>
+
+            </form>
 
         </div>
 
@@ -300,6 +325,92 @@ th i{
 
                     <tbody>
 
+                        @forelse($products as $product)
+
+                        <tr>
+
+                            <td>
+                                {{ $product->nama_produk }}
+                            </td>
+
+                            <td>
+                                {{ $product->category->nama_kategori ?? '-' }}
+                            </td>
+
+                            <td>
+                                {{ $product->sku }}
+                            </td>
+
+                            <td>
+                                {{ $product->barcode }}
+                            </td>
+
+                            <td>
+                                {{ $product->stok }}
+                            </td>
+
+                            <td>
+                                {{ $product->satuan }}
+                            </td>
+
+                            <td>
+                                Rp {{ number_format($product->harga_beli,0,',','.') }}
+                            </td>
+
+                            <td>
+                                Rp {{ number_format($product->harga_jual,0,',','.') }}
+                            </td>
+
+                            <td>
+
+                                @if($product->status == 'Aktif')
+
+                                    <span class="status-active">
+                                        Aktif
+                                    </span>
+
+                                @else
+
+                                    <span class="status-inactive">
+                                        Nonaktif
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+                            <td>
+
+                                <a href="{{ route('produk.edit',$product->id) }}"
+                                class="edit-btn">
+
+                                    <i class="fa-solid fa-pen"></i>
+
+                                </a>
+
+                                <form action="{{ route('produk.destroy',$product->id) }}"
+                                    method="POST"
+                                    style="display:inline;">
+
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit"
+                                            class="delete-btn"
+                                            onclick="return confirm('Hapus produk ini?')">
+
+                                        <i class="fa-solid fa-trash"></i>
+
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+
+                        @empty
+
                         <tr>
 
                             <td colspan="10"
@@ -310,6 +421,8 @@ th i{
                             </td>
 
                         </tr>
+
+                        @endforelse
 
                     </tbody>
 

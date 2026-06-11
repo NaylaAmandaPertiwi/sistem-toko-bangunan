@@ -84,8 +84,11 @@ Route::middleware('auth')->group(function () {
     */
 
     // produk
-    Route::get('/produk',
-        [ProductController::class, 'index']);
+    Route::resource(
+        'produk',
+        ProductController::class
+
+    );
 
     // kategori produk
     Route::resource(
