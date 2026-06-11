@@ -99,12 +99,22 @@ table td{
     font-weight:600;
 }
 
+.status-inactive{
+    background:#fee2e2;
+    color:#991b1b;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
 .action-btn{
     border:none;
     background:none;
     cursor:pointer;
     margin-right:10px;
     font-size:16px;
+    text-decoration:none;
 }
 
 .edit-btn{
@@ -127,16 +137,23 @@ table td{
 <!-- FILTER -->
 <div class="filter-section">
 
-    <div class="search-box">
+    <form method="GET"
+        action="{{ route('kategori-produk.index') }}"
+        class="search-box">
 
         <input type="text"
-               placeholder="Cari Kategori Produk">
+            name="search"
+            value="{{ request('search') }}"
+            placeholder="Cari Kategori Produk">
 
-    </div>
+    </form>
 
-    <a href="/kategori-produk/create" class="add-btn">
+    <a href="{{ route('kategori-produk.create') }}"
+    class="add-btn">
+
         <i class="fa-solid fa-plus"></i>
         Tambah Kategori
+
     </a>
 
 </div>
@@ -192,17 +209,29 @@ table td{
 
                 <td>
 
-                    <button class="action-btn edit-btn">
+                    <a href="{{ route('kategori-produk.edit', $category->id) }}"
+                    class="action-btn edit-btn">
 
                         <i class="fa-solid fa-pen"></i>
 
-                    </button>
+                    </a>
 
-                    <button class="action-btn delete-btn">
+                    <form action="{{ route('kategori-produk.destroy', $category->id) }}"
+                        method="POST"
+                        style="display:inline;">
 
-                        <i class="fa-solid fa-trash"></i>
+                        @csrf
+                        @method('DELETE')
 
-                    </button>
+                        <button type="submit"
+                                class="action-btn delete-btn"
+                                onclick="return confirm('Hapus kategori ini?')">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                        </button>
+
+                    </form>
 
                 </td>
 

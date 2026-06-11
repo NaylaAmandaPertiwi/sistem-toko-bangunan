@@ -88,11 +88,10 @@ Route::middleware('auth')->group(function () {
         [ProductController::class, 'index']);
 
     // kategori produk
-    Route::get('/kategori-produk',
-        [CategoryController::class, 'index']);
-
-    Route::post('/kategori-produk',
-        [CategoryController::class, 'store']);
+    Route::resource(
+        'kategori-produk',
+        CategoryController::class
+    );
 
     // barcode
     Route::get('/barcode',
