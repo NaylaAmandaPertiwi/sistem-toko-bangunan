@@ -96,7 +96,7 @@ Route::middleware('auth')->group(function () {
 
     // barcode
     Route::get('/barcode',
-    [ProductController::class, 'barcode']);
+        [ProductController::class, 'barcode']);
 
 
     /*
@@ -106,8 +106,15 @@ Route::middleware('auth')->group(function () {
     */
 
     // supplier
-    Route::get('/supplier',
-    [SupplierController::class,'index']);
+    Route::resource(
+        'supplier',
+        SupplierController::class
+    );
+
+    Route::get(
+        '/supplier-export',
+        [SupplierController::class,'export']
+    )->name('supplier.export');
         
 
     /*
@@ -168,7 +175,7 @@ Route::middleware('auth')->group(function () {
 
     // diskon
     Route::get('/diskon',
-    [DiscountController::class,'index']);
+        [DiscountController::class,'index']);
 
     /*
     |--------------------------------------------------------------------------

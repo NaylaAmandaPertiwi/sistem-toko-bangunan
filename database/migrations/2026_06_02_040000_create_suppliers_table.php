@@ -12,17 +12,26 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('suppliers', function (Blueprint $table) {
-
             $table->id();
 
             $table->string('nama_supplier');
-
+            $table->string('kontak_person')->nullable();
+            $table->string('email')->nullable();
             $table->string('telepon')->nullable();
+            $table->text('catatan')->nullable();
 
+            $table->string('foto')->nullable();
+
+            $table->string('negara')->nullable();
+            $table->string('provinsi')->nullable();
+            $table->string('kota')->nullable();
+            $table->string('kode_pos')->nullable();
             $table->text('alamat')->nullable();
 
-            $table->timestamps();
+            $table->enum('status',['Aktif','Nonaktif'])
+                ->default('Aktif');
 
+            $table->timestamps();
         });
     }
 

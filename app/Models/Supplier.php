@@ -9,14 +9,22 @@ class Supplier extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'nama_supplier',
-        'telepon',
-        'alamat'
-    ];
+        protected $fillable = [
 
-    public function stockIns()
-    {
-        return $this->hasMany(StockIn::class);
-    }
+        'nama_supplier',
+        'kontak_person',
+        'email',
+        'telepon',
+        'catatan',
+
+        'foto',
+
+        'negara',
+        'provinsi',
+        'kota',
+        'kode_pos',
+        'alamat',
+
+        'status'
+    ];
 }

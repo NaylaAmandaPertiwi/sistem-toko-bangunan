@@ -18,10 +18,6 @@ return new class extends Migration
                 ->constrained('categories')
                 ->onDelete('cascade');
 
-        $table->foreignId('category_id')
-                  ->constrained('categories')
-                  ->onDelete('cascade');
-
             $table->string('nama_produk');
 
             $table->string('sku')->nullable();
