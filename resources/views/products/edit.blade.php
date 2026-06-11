@@ -147,8 +147,8 @@
                             @foreach($categories as $category)
 
                                 <option
-                                    value="{{ $category->id }}">
-
+                                    value="{{ $category->id }}"
+                                    {{ $produk->category_id == $category->id ? 'selected' : '' }}>
                                     {{ $category->nama_kategori }}
 
                                 </option>
@@ -165,8 +165,9 @@
 
                         <input
                             type="text"
-                                name="nama_produk"
-                                value="{{ $produk->nama_produk }}">
+                            name="nama_produk"
+                            value="{{ $produk->nama_produk }}"
+                            class="form-control">
 
                     </div>
 
@@ -177,8 +178,8 @@
                         <input
                             type="text"
                             name="sku"
-                            value="{{ $produk->sku }}">
-
+                            value="{{ $produk->sku }}"
+                            class="form-control">
                     </div>
 
                     <div class="form-group">
@@ -188,7 +189,8 @@
                         <input
                             type="text"
                             name="barcode"
-                            value="{{ $produk->barcode }}">
+                            value="{{ $produk->barcode }}"
+                            class="form-control">
 
                     </div>
 
@@ -207,7 +209,8 @@
                         <input
                             type="number"
                             name="stok"
-                            value="{{ $produk->stok }}">
+                            value="{{ $produk->stok }}"
+                            class="form-control">
 
                     </div>
 
@@ -218,7 +221,8 @@
                         <input
                             type="text"
                             name="satuan"
-                            value="{{ $produk->satuan }}">
+                            value="{{ $produk->satuan }}"
+                            class="form-control"
                             placeholder="Contoh: Sak, Kg, Batang">
 
                     </div>
@@ -230,7 +234,8 @@
                         <input
                             type="number"
                             name="harga_beli"
-                            value="{{ $produk->harga_beli }}">
+                            value="{{ $produk->harga_beli }}"
+                            class="form-control">
 
                     </div>
 
@@ -241,7 +246,8 @@
                         <input
                             type="number"
                             name="harga_jual"
-                            value="{{ $produk->harga_jual }}">
+                            value="{{ $produk->harga_jual }}"
+                            class="form-control">
 
                     </div>
 
@@ -253,11 +259,13 @@
                             name="status"
                             class="form-control">
 
-                            <option value="Aktif">
+                            <option value="Aktif"
+                                {{ $produk->status == 'Aktif' ? 'selected' : '' }}>
                                 Aktif
                             </option>
 
-                            <option value="Nonaktif">
+                            <option value="Nonaktif"
+                                {{ $produk->status == 'Nonaktif' ? 'selected' : '' }}>
                                 Nonaktif
                             </option>
 

@@ -182,6 +182,15 @@ th i{
     font-weight:600;
 }
 
+.status-inactive{
+    background:#fee2e2;
+    color:#991b1b;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
 
 
 </style>
@@ -265,6 +274,19 @@ th i{
         <!-- TABLE -->
         <div class="table-section">
 
+            <form id="bulkDeleteForm"
+                action="{{ route('produk.bulkDelete') }}"
+                method="POST">
+
+                @csrf
+                @method('DELETE')
+
+                <input type="hidden"
+                    name="ids"
+                    id="selectedIds">
+
+            </form>
+
             <div class="table-wrapper">
 
                 <table>
@@ -273,10 +295,14 @@ th i{
 
                         <tr>
 
-                            <th>
-                                Nama Produk
-                                <i class="fa-solid fa-sort"></i>
-                            </th>
+                                <th width="40">
+                                    <input type="checkbox"
+                                        id="checkAll">
+                                </th>
+
+                                <th>
+                                    Nama Produk
+                                </th>
 
                             <th>
                                 Kategori
@@ -329,9 +355,17 @@ th i{
 
                         <tr>
 
-                            <td>
-                                {{ $product->nama_produk }}
-                            </td>
+                                <td>
+
+                                    <input type="checkbox"
+                                        class="product-checkbox"
+                                        value="{{ $product->id }}">
+
+                                </td>
+
+                                <td>
+                                    {{ $product->nama_produk }}
+                                </td>
 
                             <td>
                                 {{ $product->category->nama_kategori ?? '-' }}
@@ -388,23 +422,6 @@ th i{
 
                                 </a>
 
-                                <form action="{{ route('produk.destroy',$product->id) }}"
-                                    method="POST"
-                                    style="display:inline;">
-
-                                    @csrf
-                                    @method('DELETE')
-
-                                    <button type="submit"
-                                            class="delete-btn"
-                                            onclick="return confirm('Hapus produk ini?')">
-
-                                        <i class="fa-solid fa-trash"></i>
-
-                                    </button>
-
-                                </form>
-
                             </td>
 
                         </tr>
@@ -435,7 +452,10 @@ th i{
 
                 <div class="footer-left">
 
-                    <button class="delete-btn">
+                    <button
+                        type="button"
+                        class="delete-btn"
+                        onclick="bulkDelete()">
 
                         <i class="fa-regular fa-trash-can"></i>
 
@@ -478,6 +498,51 @@ th i{
 
     </div>
 
+    <script>
+
+    document.getElementById('checkAll')
+    .addEventListener('change', function(){
+
+        document
+        .querySelectorAll('.product-checkbox')
+        .forEach(item => {
+
+            item.checked = this.checked;
+
+        });
+
+    });
+
+    function bulkDelete()
+    {
+        let ids = [];
+
+        document
+        .querySelectorAll('.product-checkbox:checked')
+        .forEach(item => {
+
+            ids.push(item.value);
+
+        });
+
+        if(ids.length === 0)
+        {
+            alert('Pilih produk terlebih dahulu');
+            return;
+        }
+
+        if(confirm('Hapus produk yang dipilih?'))
+        {
+            document.getElementById('selectedIds').value =
+                ids.join(',');
+
+            document
+                .getElementById('bulkDeleteForm')
+                .submit();
+        }
+    }
+
+    </script>
 
 
 @endsection

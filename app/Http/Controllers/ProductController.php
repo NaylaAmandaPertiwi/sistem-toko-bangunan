@@ -138,6 +138,21 @@ class ProductController extends Controller
             );
     }
 
+    // Hapus Banyak Produk
+    public function bulkDelete(Request $request)
+    {
+        $ids = explode(',', $request->ids);
+
+        Product::whereIn('id', $ids)->delete();
+
+        return redirect()
+            ->route('produk.index')
+            ->with(
+                'success',
+                'Produk berhasil dihapus'
+            );
+    }
+
     // Halaman Barcode
     public function barcode()
     {

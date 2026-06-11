@@ -84,6 +84,11 @@ Route::middleware('auth')->group(function () {
     */
 
     // produk
+    Route::delete(
+        '/produk/bulk-delete',
+        [ProductController::class, 'bulkDelete']
+    )->name('produk.bulkDelete');
+
     Route::resource(
         'produk',
         ProductController::class
