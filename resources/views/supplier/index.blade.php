@@ -46,35 +46,51 @@
     background:#f5f7fb;
 }
 
+/* STATUS */
 .badge-active{
-    background:#d4edda;
-    color:#155724;
+    background:#d1fae5;
+    color:#065f46;
     padding:6px 12px;
     border-radius:20px;
+    font-size:12px;
+    font-weight:600;
 }
 
 .badge-inactive{
-    background:#f8d7da;
-    color:#721c24;
+    background:#fee2e2;
+    color:#991b1b;
     padding:6px 12px;
     border-radius:20px;
+    font-size:12px;
+    font-weight:600;
 }
 
-.btn-edit{
-    background:#1684e0;
-    color:white;
-    padding:8px 12px;
-    border-radius:8px;
+/* AKSI */
+.action-btn{
     text-decoration:none;
+    font-size:16px;
+    margin-right:10px;
 }
 
-.btn-delete{
-    background:#dc3545;
-    color:white;
+.edit-btn{
+    color:#1684e0;
+}
+
+.edit-btn:hover{
+    color:#0d6efd;
+}
+
+.delete-btn{
+    background:none;
     border:none;
-    padding:8px 12px;
-    border-radius:8px;
     cursor:pointer;
+    color:#dc3545;
+    font-size:16px;
+    padding:0;
+}
+
+.delete-btn:hover{
+    color:#bb2d3b;
 }
 
 .empty-state{
@@ -210,23 +226,26 @@ table td{
                     <td>
 
                         <a href="{{ route('supplier.edit',$supplier->id) }}"
-                        class="btn-edit">
+                        class="action-btn edit-btn">
 
-                            Edit
+                            <i class="fa-solid fa-pen"></i>
 
                         </a>
 
-                        <form action="{{ route('supplier.destroy',$supplier->id) }}"
+                        <form
+                            action="{{ route('supplier.destroy',$supplier->id) }}"
                             method="POST"
                             style="display:inline;">
 
                             @csrf
                             @method('DELETE')
 
-                            <button class="btn-delete"
-                                    onclick="return confirm('Hapus supplier ini?')">
+                            <button
+                                type="submit"
+                                class="delete-btn"
+                                onclick="return confirm('Hapus supplier ini?')">
 
-                                Hapus
+                                <i class="fa-solid fa-trash"></i>
 
                             </button>
 
