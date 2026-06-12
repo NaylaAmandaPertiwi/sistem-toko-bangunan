@@ -22,31 +22,6 @@
     font-weight:600;
 }
 
-/* TAB */
-.tab-menu{
-    display:flex;
-    border-bottom:1px solid #eee;
-}
-
-.tab-menu a{
-    flex:1;
-    text-align:center;
-    text-decoration:none;
-    padding:18px;
-    color:#444;
-    font-weight:600;
-}
-
-.tab-active{
-    color:#1e293b;
-    background:linear-gradient(
-        to top,
-        rgba(22,132,224,.12),
-        transparent
-    );
-    border-bottom:3px solid #1684e0;
-}
-
 /* FILTER */
 .filter-section{
     padding:25px;
@@ -207,31 +182,6 @@ table td{
 
     <div class="top-header">
         Inventory
-    </div>
-
-    <div class="tab-menu">
-
-        <a href="/stok-masuk"
-           class="tab-active">
-            Stok Masuk
-        </a>
-
-        <a href="/stok-keluar">
-            Stok Keluar
-        </a>
-
-        <a href="/stok-opname">
-            Stok Opname
-        </a>
-
-        <a href="/pergerakan-stok">
-            Pergerakan Stok
-        </a>
-
-        <a href="/peringatan-stok">
-            Peringatan Stok
-        </a>
-
     </div>
 
     <div class="filter-section">
