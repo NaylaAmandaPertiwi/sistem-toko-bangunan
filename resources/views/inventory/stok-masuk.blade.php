@@ -135,6 +135,16 @@
     padding:25px;
 }
 
+.table-wrapper{
+    width:100%;
+    overflow-x:auto;
+}
+
+.stock-table{
+    width:100%;
+    min-width:1100px;
+}
+
 table{
     width:100%;
     border-collapse:collapse;
@@ -142,13 +152,16 @@ table{
 
 table th{
     background:#f3f5fa;
-    padding:15px;
+    padding:12px;
     text-align:left;
+    font-size:14px;
+    font-weight:600;
 }
 
 table td{
-    padding:15px;
+    padding:12px;
     border-bottom:1px solid #eee;
+    font-size:14px;
 }
 
 .no-data{
@@ -176,9 +189,48 @@ table td{
     border-color:#1684e0;
 }
 
+.table-footer{
+    margin-top:20px;
+    display:flex;
+    align-items:center;
+}
+
+.footer-left{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.delete-btn{
+    border:none;
+    background:none;
+    cursor:pointer;
+    color:#999;
+    font-size:20px;
+}
+
+.stock-table th,
+.stock-table td{
+    white-space:nowrap;
+}
+
 </style>
 
 <div class="page-header">
+
+    @if(session('success'))
+
+    <div style="
+        margin:20px;
+        padding:15px;
+        background:#d4edda;
+        color:#155724;
+        border-radius:8px;
+    ">
+        {{ session('success') }}
+    </div>
+
+    @endif
 
     <div class="top-header">
         Inventory
@@ -192,7 +244,7 @@ table td{
 
                 <h2>Daftar Stok Masuk</h2>
 
-                <span>0 Stok Masuk</span>
+                <span>{{ $stockIns->count() }} Stok Masuk</span>
 
             </div>
 
@@ -231,10 +283,13 @@ table td{
                     Import
                 </button>
 
-                <button class="btn btn-primary">
+                <a href="{{ route('stok-masuk.create') }}"
+                class="btn btn-primary">
+
                     <i class="fa-solid fa-plus"></i>
                     Tambah
-                </button>
+
+                </a>
 
             </div>
 
@@ -259,27 +314,54 @@ table td{
 
     </div>
 
+    <form id="bulkDeleteForm"
+        action="{{ route('stok-masuk.bulkDelete') }}"
+        method="POST">
+
+        @csrf
+        @method('DELETE')
+
+        <input type="hidden"
+            name="ids"
+            id="selectedIds">
+
+    </form>
+
     <div class="table-section">
+
+        <div class="table-wrapper">
+
+            <table class="stock-table">
 
         <table>
 
             <thead>
 
                 <tr>
+                    
+                <th width="40">
+                    <input type="checkbox" id="checkAll">
+                </th>
 
-                    <th>No Transaksi</th>
+                <th width="170">No Transaksi</th>
 
-                    <th>Supplier</th>
+                <th width="120">Tanggal Masuk</th>
 
-                    <th>Tanggal Masuk</th>
+                <th width="150">Supplier</th>
 
-                    <th>Barang</th>
+                <th width="180">Produk</th>
 
-                    <th>Jumlah Masuk</th>
+                <th width="140">SKU</th>
 
-                    <th>Harga Beli</th>
+                <th width="120">Harga Beli</th>
 
-                    <th>Total</th>
+                <th width="100">Qty Stok</th>
+
+                <th width="140">Total Harga</th>
+
+                <th width="150">Keterangan</th>
+
+                <th width="70">Aksi</th>
 
                 </tr>
 
@@ -287,20 +369,99 @@ table td{
 
             <tbody>
 
-                <tr>
+            @forelse($stockIns as $stock)
 
-                    <td colspan="7"
-                        class="no-data">
+            <tr>
 
-                        Belum ada data stok masuk
+                <td>
+                    <input
+                        type="checkbox"
+                        class="row-checkbox"
+                        value="{{ $stock->id }}">
+                </td>
 
-                    </td>
+                <td title="{{ $stock->nomor_transaksi }}">
+                    {{ $stock->nomor_transaksi }}
+                </td>
 
-                </tr>
+                <td>
+                    {{ date('d-m-Y', strtotime($stock->tanggal_masuk)) }}
+                </td>
+
+                <td>
+                    {{ $stock->supplier->nama_supplier ?? '-' }}
+                </td>
+
+                <td>
+                    {{ $stock->product->nama_produk ?? '-' }}
+                </td>
+
+                <td>
+                    {{ $stock->product->sku ?? '-' }}
+                </td>
+
+                <td>
+                    Rp {{ number_format($stock->harga_beli,0,',','.') }}
+                </td>
+
+                <td>
+                    {{ $stock->jumlah_masuk }}
+                </td>
+
+                <td>
+                    Rp {{ number_format($stock->jumlah_masuk * $stock->harga_beli,0,',','.') }}
+                </td>
+
+                <td>{{ $stock->keterangan }}</td>
+
+                <td>
+                    <a href="{{ route('stok-masuk.edit',$stock->id) }}">
+                        <i class="fa-solid fa-pen"></i>
+                    </a>
+                </td>
+
+            </tr>
+
+            @empty
+
+            <tr>
+                <td colspan="11" class="no-data">
+                    Belum ada data stok masuk
+                </td>
+            </tr>
+
+            @endforelse
 
             </tbody>
 
         </table>
+
+        </div>
+
+        <div class="table-footer">
+
+            <div class="footer-left">
+
+                <button
+                    type="button"
+                    class="delete-btn"
+                    onclick="bulkDelete()">
+
+                    <i class="fa-regular fa-trash-can"></i>
+
+                </button>
+
+                <select class="filter-box">
+                    <option>10/page</option>
+                    <option>25/page</option>
+                    <option>50/page</option>
+                </select>
+
+                <span>Total {{ $stockIns->count() }}</span>
+
+            </div>
+
+        </div>
 
     </div>
 
@@ -381,6 +542,52 @@ $(function(){
     });
 
 });
+
+</script>
+
+<script>
+
+document.getElementById('checkAll')
+?.addEventListener('change', function(){
+
+    document
+    .querySelectorAll('.row-checkbox')
+    .forEach(item => {
+
+        item.checked = this.checked;
+
+    });
+
+});
+
+function bulkDelete()
+{
+    let ids = [];
+
+    document
+    .querySelectorAll('.row-checkbox:checked')
+    .forEach(item => {
+
+        ids.push(item.value);
+
+    });
+
+    if(ids.length === 0)
+    {
+        alert('Pilih data terlebih dahulu');
+        return;
+    }
+
+    if(confirm('Hapus data yang dipilih?'))
+    {
+        document.getElementById('selectedIds').value =
+            ids.join(',');
+
+        document
+            .getElementById('bulkDeleteForm')
+            .submit();
+    }
+}
 
 </script>
 

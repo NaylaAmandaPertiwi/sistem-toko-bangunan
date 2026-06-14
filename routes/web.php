@@ -76,7 +76,6 @@ Route::middleware('auth')->group(function () {
         [DashboardController::class, 'index']);
 
 
-
     /*
     |--------------------------------------------------------------------------
     | PRODUK
@@ -134,9 +133,47 @@ Route::middleware('auth')->group(function () {
     Route::get('/inventory',
         [InventoryController::class,'index']);
 
-    // stok masuk
+        /*
+        |--------------------------------------------------------------------------
+        | STOK MASUK
+        |--------------------------------------------------------------------------
+        */ 
+
+    // Menampilkan daftar stok masuk
     Route::get('/stok-masuk',
-        [StockInController::class,'index']);
+        [StockInController::class,'index'])
+        ->name('stok-masuk.index');
+
+    // Menampilkan form tambah stok masuk
+    Route::get('/stok-masuk/create',
+        [StockInController::class,'create'])
+        ->name('stok-masuk.create');
+
+    // Menyimpan data stok masuk baru
+    Route::post('/stok-masuk',
+        [StockInController::class,'store'])
+        ->name('stok-masuk.store');
+
+    // Menampilkan form edit stok masuk
+    Route::get('/stok-masuk/{id}/edit',
+        [StockInController::class,'edit'])
+        ->name('stok-masuk.edit');
+
+    // Menyimpan hasil edit stok masuk
+    Route::put('/stok-masuk/{id}',
+        [StockInController::class,'update'])
+        ->name('stok-masuk.update');
+
+    // Hapus banyak data sekaligus
+    Route::delete('/stok-masuk/bulk-delete',
+        [StockInController::class,'bulkDelete'])
+        ->name('stok-masuk.bulkDelete');
+
+        /*
+        |--------------------------------------------------------------------------
+        | INVENTORY LAINNYA
+        |--------------------------------------------------------------------------
+        */     
 
     // stok opname    
     Route::get('/stok-opname',
