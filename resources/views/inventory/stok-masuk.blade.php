@@ -305,11 +305,17 @@ table td{
 
             </select>
 
-            <input
-                type="text"
-                class="search-box"
-                placeholder="Cari No. Stok Masuk">
+            <form method="GET">
 
+                <input
+                    type="text"
+                    name="search"
+                    class="search-box"
+                    placeholder="Cari No. Stok Masuk"
+                    value="{{ request('search') }}"
+                    onchange="this.form.submit()">
+
+            </form>
         </div>
 
     </div>
@@ -332,8 +338,6 @@ table td{
         <div class="table-wrapper">
 
             <table class="stock-table">
-
-        <table>
 
             <thead>
 
@@ -434,8 +438,6 @@ table td{
 
             </tbody>
 
-        </table>
-
         </div>
 
         <div class="table-footer">
@@ -475,14 +477,10 @@ table td{
 
 $(function(){
 
-    console.log('Date Range Loaded');
-
     $('#dateRangePicker').daterangepicker({
 
         startDate: moment(),
-
         endDate: moment(),
-
         autoUpdateInput: false,
 
         ranges: {
@@ -524,20 +522,25 @@ $(function(){
 
             'Last Year': [
                 moment().subtract(1,'year').startOf('year'),
-                moment().subtract(1,'year').endOf('year')
+                moment().endOf('year')
             ]
 
         }
 
-    },
-
-    function(start,end){
+    }, function(start, end){
 
         $('#selectedDate').text(
             start.format('DD MMM YY')
             + ' - ' +
             end.format('DD MMM YY')
         );
+
+        window.location.href =
+            "{{ route('stok-masuk.index') }}"
+            + "?start_date="
+            + start.format('YYYY-MM-DD')
+            + "&end_date="
+            + end.format('YYYY-MM-DD');
 
     });
 

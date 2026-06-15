@@ -9,12 +9,36 @@ use App\Models\Supplier;
 
 class StockInController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $stockIns = StockIn::with([
+        $query = StockIn::with([
             'supplier',
             'product'
-        ])->latest()->get();
+        ]);
+
+        if($request->start_date && $request->end_date)
+        {
+            $query->whereBetween(
+                'tanggal_masuk',
+                [
+                    $request->start_date,
+                    $request->end_date
+                ]
+            );
+        }
+
+        if($request->search)
+        {
+            $query->where(
+                'nomor_transaksi',
+                'like',
+                '%' . $request->search . '%'
+            );
+        }
+
+        $stockIns = $query
+            ->latest()
+            ->get();
 
         return view(
             'inventory.stok-masuk',
