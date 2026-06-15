@@ -469,7 +469,7 @@ th i{
 
                     </select>
 
-                    <span>Total 0</span>
+                    <span>Total {{ $products->count() }}</span>
 
                 </div>
 
