@@ -171,13 +171,33 @@ Route::middleware('auth')->group(function () {
 
         /*
         |--------------------------------------------------------------------------
-        | INVENTORY LAINNYA
+        | STOK OPNAME
         |--------------------------------------------------------------------------
         */     
 
-    // stok opname    
-    Route::get('/stok-opname',
-        [StockOpnameController::class,'index']);
+    // stok opname
+
+    Route::get(
+        '/stok-opname',
+        [StockOpnameController::class,'index']
+    )->name('stok-opname.index');
+
+    Route::get(
+        '/stok-opname/create',
+        [StockOpnameController::class,'create']
+    )->name('stok-opname.create');
+
+    Route::post(
+        '/stok-opname',
+        [StockOpnameController::class,'store']
+    )->name('stok-opname.store');
+
+    Route::get(
+        '/stok-opname/{id}',
+        [StockOpnameController::class,'show']
+    )->name('stok-opname.show');
+
+    
 
     // pergerakan stok    
     Route::get('/pergerakan-stok',
