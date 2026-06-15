@@ -192,6 +192,7 @@ table td{
 .table-footer{
     margin-top:20px;
     display:flex;
+    justify-content:flex-start;
     align-items:center;
 }
 
@@ -437,6 +438,8 @@ table td{
             @endforelse
 
             </tbody>
+
+            </table>
 
         </div>
 
