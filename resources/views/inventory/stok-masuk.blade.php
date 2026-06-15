@@ -274,16 +274,6 @@ table td{
 
                 </button>
 
-                <button class="btn btn-primary">
-                    <i class="fa-solid fa-download"></i>
-                    Export
-                </button>
-
-                <button class="btn btn-primary">
-                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                    Import
-                </button>
-
                 <a href="{{ route('stok-masuk.create') }}"
                 class="btn btn-primary">
 
