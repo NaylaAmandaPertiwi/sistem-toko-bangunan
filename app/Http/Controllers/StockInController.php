@@ -27,18 +27,54 @@ class StockInController extends Controller
             );
         }
 
-        if($request->search)
+        if($request->filled('search'))
         {
-            $query->where(
-                'nomor_transaksi',
-                'like',
-                '%' . $request->search . '%'
-            );
+            $search = $request->search;
+
+            $query->where(function($q) use ($search){
+
+                $q->where(
+                    'nomor_transaksi',
+                    'like',
+                    "%{$search}%"
+                )
+
+                ->orWhere(
+                    'tanggal_masuk',
+                    'like',
+                    "%{$search}%"
+                )
+
+                ->orWhereHas('supplier', function($supplier) use ($search){
+
+                    $supplier->where(
+                        'nama_supplier',
+                        'like',
+                        "%{$search}%"
+                    );
+
+                })
+
+                ->orWhereHas('product', function($product) use ($search){
+
+                    $product->where(
+                        'nama_produk',
+                        'like',
+                        "%{$search}%"
+                    )
+
+                    ->orWhere(
+                        'sku',
+                        'like',
+                        "%{$search}%"
+                    );
+
+                });
+
+            });
         }
 
-        $stockIns = $query
-            ->latest()
-            ->get();
+        $stockIns = $query->latest()->get();
 
         return view(
             'inventory.stok-masuk',
