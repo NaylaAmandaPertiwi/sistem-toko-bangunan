@@ -33,7 +33,6 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->text('keterangan')->nullable();
         });
     }
 
