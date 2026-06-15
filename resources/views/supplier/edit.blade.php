@@ -240,6 +240,7 @@ textarea.form-control{
                         <label>Provinsi</label>
 
                         <input type="text"
+                               name="provinsi"
                                value="{{ old('provinsi',$supplier->provinsi) }}"
                                class="form-control">
 
@@ -250,6 +251,7 @@ textarea.form-control{
                         <label>Kota</label>
 
                         <input type="text"
+                               name="kota"
                                value="{{ old('kota',$supplier->kota) }}"
                                class="form-control">
 
@@ -260,6 +262,7 @@ textarea.form-control{
                         <label>Kode Pos</label>
 
                         <input type="text"
+                               name="kode_pos"
                                value="{{ old('kode_pos',$supplier->kode_pos) }}"
                                class="form-control">
 
