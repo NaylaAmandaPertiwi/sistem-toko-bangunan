@@ -158,6 +158,19 @@
     gap:15px;
 }
 
+.delete-btn{
+    border:none;
+    background:none;
+    cursor:pointer;
+    color:#a0a0a0;
+    font-size:20px;
+    padding:0;
+}
+
+.delete-btn:hover{
+    color:#ff4d4f;
+}
+
 </style>
 
 <div class="page-header">
@@ -205,13 +218,16 @@
 
             </select>
 
-            <form method="GET">
+            <form
+                method="GET"
+                action="{{ route('stok-opname.index') }}">
 
                 <input
                     type="text"
                     name="search"
+                    value="{{ request('search') }}"
                     class="search-box"
-                    placeholder="Cari No Opname">
+                    placeholder="Cari No Opname / Produk / SKU">
 
             </form>
 
@@ -253,8 +269,8 @@
 
                     </tr>
 
-                </thead>
-
+                    </thead>
+                
                 <tbody>
 
                 @forelse($stockOpnames as $detail)
@@ -293,7 +309,6 @@
                     </td>
 
                     <td>
-
                         @if($detail->selisih > 0)
 
                             <span style="color:green">
@@ -314,23 +329,15 @@
                     </td>
 
                     <td>
-
                         <span class="badge-success">
-
                             {{ $detail->stockOpname->status ?? '-' }}
-
                         </span>
-
                     </td>
 
                     <td>
-
-                        <a href="#">
-
+                        <a href="{{ route('stok-opname.show', $detail->stock_opname_id) }}">
                             <i class="fa-solid fa-eye"></i>
-
                         </a>
-
                     </td>
 
                 </tr>
@@ -338,13 +345,9 @@
                 @empty
 
                 <tr>
-
                     <td colspan="10" class="no-data">
-
                         Belum ada data stok opname
-
                     </td>
-
                 </tr>
 
                 @endforelse
@@ -358,6 +361,15 @@
         <div class="table-footer">
 
             <div class="footer-left">
+
+                <button
+                    id="deleteSelected"
+                    class="delete-btn"
+                    type="button">
+
+                    <i class="fa-regular fa-trash-can"></i>
+
+                </button>
 
                 <select class="filter-box">
 
@@ -380,5 +392,79 @@
     </div>
 
 </div>
+
+<script>
+
+document
+.getElementById('checkAll')
+.addEventListener(
+'change',
+function(){
+
+    document
+    .querySelectorAll('.row-checkbox')
+    .forEach(cb => {
+
+        cb.checked = this.checked;
+
+    });
+
+});
+
+document
+.getElementById('deleteSelected')
+.addEventListener(
+'click',
+function(){
+
+    let ids = [];
+
+    document
+    .querySelectorAll('.row-checkbox:checked')
+    .forEach(cb => {
+
+        ids.push(cb.value);
+
+    });
+
+    if(ids.length == 0)
+    {
+        alert('Pilih data yang akan dihapus');
+        return;
+    }
+
+    if(!confirm('Yakin ingin menghapus data terpilih?'))
+    {
+        return;
+    }
+
+    fetch(
+        "{{ route('stok-opname.bulk-delete') }}",
+        {
+            method:'DELETE',
+
+            headers:{
+                'Content-Type':'application/json',
+                'X-CSRF-TOKEN':'{{ csrf_token() }}'
+            },
+
+            body:JSON.stringify({
+                ids:ids.join(',')
+            })
+        }
+    )
+    .then(response => response.json())
+    .then(data => {
+
+        if(data.success)
+        {
+            location.reload();
+        }
+
+    });
+
+});
+
+</script>
 
 @endsection

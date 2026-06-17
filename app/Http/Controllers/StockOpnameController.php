@@ -10,12 +10,57 @@ use App\Models\StockOpnameDetail;
 class StockOpnameController extends Controller
 {
     // Halaman daftar stok opname
-    public function index()
+    public function index(Request $request)
     {
         $stockOpnames = StockOpnameDetail::with([
             'product',
             'stockOpname'
-        ])->latest()->get();
+        ]);
+
+        if($request->filled('search'))
+        {
+            $search = $request->search;
+
+            $stockOpnames->where(function($query) use ($search){
+
+                $query->whereHas(
+                    'stockOpname',
+                    function($q) use ($search){
+
+                        $q->where(
+                            'nomor_opname',
+                            'like',
+                            '%'.$search.'%'
+                        );
+
+                    }
+                )
+
+                ->orWhereHas(
+                    'product',
+                    function($q) use ($search){
+
+                        $q->where(
+                            'nama_produk',
+                            'like',
+                            '%'.$search.'%'
+                        )
+
+                        ->orWhere(
+                            'sku',
+                            'like',
+                            '%'.$search.'%'
+                        );
+
+                    }
+                );
+
+            });
+        }
+
+        $stockOpnames = $stockOpnames
+            ->latest()
+            ->get();
 
         return view(
             'inventory.stok-opname',
@@ -99,8 +144,25 @@ class StockOpnameController extends Controller
         )->findOrFail($id);
 
         return view(
-            'inventory.detail-stock-opname',
+            'inventory.show-stock-opname',
             compact('opname')
         );
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = explode(
+            ',',
+            $request->ids
+        );
+
+        StockOpnameDetail::whereIn(
+            'id',
+            $ids
+        )->delete();
+
+        return response()->json([
+            'success' => true
+        ]);
     }
 }
