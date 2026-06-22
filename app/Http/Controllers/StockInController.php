@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\StockMovement;
 use App\Models\StockIn;
 use App\Models\Product;
 use App\Models\Supplier;
@@ -129,6 +130,49 @@ class StockInController extends Controller
             'harga_beli' => $request->harga_beli,
 
             'keterangan' => $request->keterangan
+
+        ]);
+
+        $product =
+            Product::findOrFail(
+                $request->product_id
+            );
+
+        $stokAwal =
+            $product->stok;
+
+        $stokAkhir =
+            $stokAwal +
+            $request->jumlah_masuk;
+
+        $product->update([
+
+            'stok' => $stokAkhir
+
+        ]);
+
+        StockMovement::create([
+
+            'product_id'
+                => $product->id,
+
+            'tanggal'
+                => now(),
+
+            'jenis'
+                => 'Masuk',
+
+            'qty'
+                => $request->jumlah_masuk,
+
+            'stok_awal'
+                => $stokAwal,
+
+            'stok_akhir'
+                => $stokAkhir,
+
+            'keterangan'
+                => 'Stok Masuk Supplier'
 
         ]);
 

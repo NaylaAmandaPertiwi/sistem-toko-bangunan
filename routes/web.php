@@ -212,11 +212,20 @@ Route::middleware('auth')->group(function () {
         [StockOpnameController::class,'show']
     )->name('stok-opname.show');
 
+    /*
+        |--------------------------------------------------------------------------
+        | PERGERAKAN STOK
+        |--------------------------------------------------------------------------
+        */ 
     
-
     // pergerakan stok    
-    Route::get('/pergerakan-stok',
-        [StockMovementController::class,'index']);
+        Route::get(
+        '/stock-movement',
+        [StockMovementController::class,'index']
+    )->name('stock-movement.index');
+
+
+
 
     // peringatan stok
     Route::get('/peringatan-stok',

@@ -619,8 +619,8 @@ rel="stylesheet">
             Stok Opname
         </a>
 
-        <a href="/pergerakan-stok"
-        class="{{ request()->is('pergerakan-stok*') ? 'submenu-active' : '' }}">
+        <a href="{{ route('stock-movement.index') }}"
+        class="{{ request()->is('stock-movement*') ? 'submenu-active' : '' }}">
             Pergerakan Stok
         </a>
 

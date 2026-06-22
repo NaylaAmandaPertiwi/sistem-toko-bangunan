@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\StockOpname;
 use App\Models\StockOpnameDetail;
+use App\Models\StockMovement;
 
 class StockOpnameController extends Controller
 {
@@ -127,6 +128,24 @@ class StockOpnameController extends Controller
                 'stok'
                     => $item['stok_fisik']
             ]);
+
+            StockMovement::create([
+
+                'product_id' => $item['product_id'],
+
+                'tanggal' => now(),
+
+                'jenis' => 'Opname',
+
+                'qty' => $selisih,
+
+                'stok_awal' => $item['stok_sistem'],
+
+                'stok_akhir' => $item['stok_fisik'],
+
+                'keterangan' => 'Stok Opname'
+
+            ]);
         }
 
         return redirect()
@@ -194,10 +213,9 @@ class StockOpnameController extends Controller
 
     public function print($id)
     {
-        $opname = StockOpname::with([
-            'details.product',
-            'user'
-        ])->findOrFail($id);
+        $opname = StockOpname::with(
+            'details.product'
+        )->findOrFail($id);
 
         return view(
             'inventory.print-stock-opname',
