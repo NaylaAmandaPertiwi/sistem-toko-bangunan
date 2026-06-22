@@ -12,10 +12,7 @@ class StockOpnameController extends Controller
     // Halaman daftar stok opname
     public function index(Request $request)
     {
-        $stockOpnames = StockOpnameDetail::with([
-            'product',
-            'stockOpname'
-        ]);
+        $stockOpnames = StockOpname::query();
 
         if($request->filled('search'))
         {
@@ -23,36 +20,20 @@ class StockOpnameController extends Controller
 
             $stockOpnames->where(function($query) use ($search){
 
-                $query->whereHas(
-                    'stockOpname',
-                    function($q) use ($search){
-
-                        $q->where(
-                            'nomor_opname',
-                            'like',
-                            '%'.$search.'%'
-                        );
-
-                    }
+                $query->where(
+                    'nomor_opname',
+                    'like',
+                    "%{$search}%"
                 )
-
-                ->orWhereHas(
-                    'product',
-                    function($q) use ($search){
-
-                        $q->where(
-                            'nama_produk',
-                            'like',
-                            '%'.$search.'%'
-                        )
-
-                        ->orWhere(
-                            'sku',
-                            'like',
-                            '%'.$search.'%'
-                        );
-
-                    }
+                ->orWhere(
+                    'keterangan',
+                    'like',
+                    "%{$search}%"
+                )
+                ->orWhere(
+                    'petugas',
+                    'like',
+                    "%{$search}%"
                 );
 
             });
@@ -82,10 +63,23 @@ class StockOpnameController extends Controller
     // Simpan stok opname
     public function store(Request $request)
     {
+
+        $request->validate([
+            'tanggal_opname' => 'required',
+            'petugas' => 'required',
+            'status' => 'required',
+            'products' => 'required|array|min:1',
+        ]);
+
+        $nomorOpname =
+            'SO-' .
+            now()->format('YmdHis') .
+            rand(100,999);
+
         $opname = StockOpname::create([
 
             'nomor_opname'
-                => 'SO-'.date('YmdHis'),
+                => $nomorOpname,
 
             'tanggal_opname'
                 => $request->tanggal_opname,
@@ -93,8 +87,11 @@ class StockOpnameController extends Controller
             'keterangan'
                 => $request->keterangan,
 
+            'petugas'
+                => auth()->user()->name,
+
             'status'
-                => 'Selesai'
+                => $request->status
         ]);
 
         foreach($request->products as $item)
@@ -156,7 +153,14 @@ class StockOpnameController extends Controller
             $request->ids
         );
 
+        // hapus detail opname dulu
         StockOpnameDetail::whereIn(
+            'stock_opname_id',
+            $ids
+        )->delete();
+
+        // lalu hapus header opname
+        StockOpname::whereIn(
             'id',
             $ids
         )->delete();
@@ -164,5 +168,40 @@ class StockOpnameController extends Controller
         return response()->json([
             'success' => true
         ]);
+    }
+
+    public function updateStatus(
+    Request $request,
+    $id
+    )
+    {
+        $opname =
+            StockOpname::findOrFail($id);
+
+        $opname->update([
+
+            'status' =>
+                $request->status
+
+        ]);
+
+        return back()
+            ->with(
+                'success',
+                'Status berhasil diperbarui'
+            );
+    }
+
+    public function print($id)
+    {
+        $opname = StockOpname::with([
+            'details.product',
+            'user'
+        ])->findOrFail($id);
+
+        return view(
+            'inventory.print-stock-opname',
+            compact('opname')
+        );
     }
 }

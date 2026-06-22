@@ -141,6 +141,15 @@
     font-weight:600;
 }
 
+.badge-danger{
+    background:#f8d7da;
+    color:#721c24;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
 .action-btn{
     color:#1684e0;
     text-decoration:none;
@@ -249,23 +258,17 @@
                             <input type="checkbox" id="checkAll">
                         </th>
 
-                        <th width="170">No Opname</th>
+                        <th>No Opname</th>
 
-                        <th width="120">Tanggal</th>
+                        <th>Tanggal</th>
 
-                        <th width="180">Produk</th>
+                        <th>Catatan</th>
 
-                        <th width="140">SKU</th>
+                        <th>Status</th>
 
-                        <th width="120">Stok Sistem</th>
+                        <th>Diterima Oleh</th>
 
-                        <th width="120">Stok Fisik</th>
-
-                        <th width="100">Selisih</th>
-
-                        <th width="120">Status</th>
-
-                        <th width="70">Aksi</th>
+                        <th>Aksi</th>
 
                     </tr>
 
@@ -273,7 +276,7 @@
                 
                 <tbody>
 
-                @forelse($stockOpnames as $detail)
+                @forelse($stockOpnames as $opname)
 
                 <tr>
 
@@ -281,61 +284,57 @@
                         <input
                             type="checkbox"
                             class="row-checkbox"
-                            value="{{ $detail->id }}">
+                            value="{{ $opname->id }}">
                     </td>
 
                     <td>
-                        {{ $detail->stockOpname->nomor_opname ?? '-' }}
+                        {{ $opname->nomor_opname }}
                     </td>
 
                     <td>
-                        {{ date('d-m-Y', strtotime($detail->stockOpname->tanggal_opname)) }}
+                        {{ date('d-m-Y', strtotime($opname->tanggal_opname)) }}
                     </td>
 
                     <td>
-                        {{ $detail->product->nama_produk ?? '-' }}
+                        {{ $opname->keterangan ?? '-' }}
                     </td>
 
                     <td>
-                        {{ $detail->product->sku ?? '-' }}
-                    </td>
 
-                    <td>
-                        {{ $detail->stok_sistem }}
-                    </td>
+                        @if($opname->status == 'Draft')
 
-                    <td>
-                        {{ $detail->stok_fisik }}
-                    </td>
-
-                    <td>
-                        @if($detail->selisih > 0)
-
-                            <span style="color:green">
-                                +{{ $detail->selisih }}
+                            <span class="badge-warning">
+                                Draft
                             </span>
 
-                        @elseif($detail->selisih < 0)
+                        @elseif($opname->status == 'Disetujui')
 
-                            <span style="color:red">
-                                {{ $detail->selisih }}
+                            <span class="badge-info">
+                                Disetujui
                             </span>
 
-                        @else
+                        @elseif($opname->status == 'Selesai')
 
-                            0
+                            <span class="badge-success">
+                                Selesai
+                            </span>
+
+                        @elseif($opname->status == 'Dibatalkan')
+
+                            <span class="badge-danger">
+                                Dibatalkan
+                            </span>
 
                         @endif
+
                     </td>
 
                     <td>
-                        <span class="badge-success">
-                            {{ $detail->stockOpname->status ?? '-' }}
-                        </span>
+                        {{ $opname->petugas }}
                     </td>
 
                     <td>
-                        <a href="{{ route('stok-opname.show', $detail->stock_opname_id) }}">
+                        <a href="{{ route('stok-opname.show',$opname->id) }}">
                             <i class="fa-solid fa-eye"></i>
                         </a>
                     </td>
@@ -456,10 +455,23 @@ function(){
     .then(response => response.json())
     .then(data => {
 
+        console.log(data);
+
         if(data.success)
         {
+            alert('Berhasil dihapus');
             location.reload();
         }
+        else
+        {
+            alert('Gagal hapus');
+        }
+
+    })
+    .catch(error => {
+
+        console.log(error);
+        alert('Terjadi error');
 
     });
 

@@ -13,6 +13,8 @@ class StockOpname extends Model
 
         'tanggal_opname',
 
+        'petugas',
+
         'keterangan',
 
         'status'
@@ -22,6 +24,14 @@ class StockOpname extends Model
     {
         return $this->hasMany(
             StockOpnameDetail::class
+        );
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(
+            User::class,
+            'petugas'
         );
     }
 }
