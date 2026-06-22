@@ -546,12 +546,9 @@ rel="stylesheet">
 
     </button>
 
-    <div class="dropdown-content
-    {{ request()->is('produk*') ||
-    request()->is('kategori-produk*') ||
-    request()->is('barcode*')
-    ? 'show' : '' }}"
+    <div class="dropdown-content"
     id="produkDropdown">
+
 
         <a href="/produk"
         class="{{ request()->is('produk*') ? 'submenu-active' : '' }}">
@@ -601,12 +598,7 @@ rel="stylesheet">
 
     </button>
 
-    <div class="dropdown-content
-    {{ request()->is('stok-masuk*') ||
-    request()->is('stok-opname*') ||
-    request()->is('pergerakan-stok*') ||
-    request()->is('peringatan-stok*')
-    ? 'show' : '' }}"
+    <div class="dropdown-content"
     id="inventoryDropdown">
 
         <a href="/stok-masuk"
@@ -651,11 +643,7 @@ rel="stylesheet">
 
     </button>
 
-    <div class="dropdown-content
-    {{ request()->is('penjualan*') ||
-    request()->is('retur*') ||
-    request()->is('riwayat*')
-    ? 'show' : '' }}"
+    <div class="dropdown-content"
     id="transactionDropdown">
 
         <a href="/penjualan"
@@ -705,9 +693,7 @@ rel="stylesheet">
 
     </button>
 
-    <div class="dropdown-content
-    {{ request()->is('laporan*')
-    ? 'show' : '' }}"
+    <div class="dropdown-content"
     id="laporanDropdown">
 
         <a href="/laporan-penjualan"
@@ -815,8 +801,12 @@ function toggleTransactionDropdown() {
         document.querySelector('.transaction-arrow');
 
     dropdown.classList.toggle('show');
-
     arrow.classList.toggle('rotate');
+
+    localStorage.setItem(
+        'transactionDropdown',
+        dropdown.classList.contains('show')
+    );
 }
 
 
@@ -830,42 +820,84 @@ function toggleLaporanDropdown() {
         document.querySelector('.laporan-arrow');
 
     dropdown.classList.toggle('show');
-
     arrow.classList.toggle('rotate');
+
+    localStorage.setItem(
+        'laporanDropdown',
+        dropdown.classList.contains('show')
+    );
 }
 
 function toggleProdukDropdown() {
 
-    document
-    .getElementById('produkDropdown')
-    .classList.toggle('show');
+    const dropdown =
+        document.getElementById('produkDropdown');
 
-    document
-    .querySelector('.produk-arrow')
-    .classList.toggle('rotate');
+    const arrow =
+        document.querySelector('.produk-arrow');
+
+    dropdown.classList.toggle('show');
+    arrow.classList.toggle('rotate');
+
+    localStorage.setItem(
+        'produkDropdown',
+        dropdown.classList.contains('show')
+    );
 }
 
 function toggleInventoryDropdown() {
 
-    document
-    .getElementById('inventoryDropdown')
-    .classList.toggle('show');
+    const dropdown =
+        document.getElementById('inventoryDropdown');
 
-    document
-    .querySelector('.inventory-arrow')
-    .classList.toggle('rotate');
+    const arrow =
+        document.querySelector('.inventory-arrow');
+
+    dropdown.classList.toggle('show');
+    arrow.classList.toggle('rotate');
+
+    localStorage.setItem(
+        'inventoryDropdown',
+        dropdown.classList.contains('show')
+    );
 }
 
 window.addEventListener('DOMContentLoaded', () => {
 
-    document.querySelectorAll('.dropdown-content.show')
-    .forEach(function(dropdown){
+    const dropdowns = [
+        {
+            id:'produkDropdown',
+            arrow:'.produk-arrow',
+            key:'produkDropdown'
+        },
+        {
+            id:'inventoryDropdown',
+            arrow:'.inventory-arrow',
+            key:'inventoryDropdown'
+        },
+        {
+            id:'transactionDropdown',
+            arrow:'.transaction-arrow',
+            key:'transactionDropdown'
+        },
+        {
+            id:'laporanDropdown',
+            arrow:'.laporan-arrow',
+            key:'laporanDropdown'
+        }
+    ];
 
-        const arrow = dropdown.parentElement
-            .querySelector('i.fa-chevron-down');
+    dropdowns.forEach(item => {
 
-        if(arrow){
-            arrow.classList.add('rotate');
+        if(localStorage.getItem(item.key) === 'true')
+        {
+            document
+            .getElementById(item.id)
+            ?.classList.add('show');
+
+            document
+            .querySelector(item.arrow)
+            ?.classList.add('rotate');
         }
 
     });
