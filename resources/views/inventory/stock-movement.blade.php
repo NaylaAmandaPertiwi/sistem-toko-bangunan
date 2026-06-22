@@ -72,6 +72,26 @@
 
     <div class="page-body">
 
+        <form method="GET" style="margin-bottom:20px;">
+
+            <input
+                type="date"
+                name="start_date"
+                value="{{ request('start_date') }}">
+
+            <input
+                type="date"
+                name="end_date"
+                value="{{ request('end_date') }}">
+
+            <button type="submit">
+                Filter
+            </button>
+
+        </form>
+
+    <table class="stock-table">
+
         <table class="stock-table">
 
             <thead>
@@ -79,9 +99,71 @@
                 <tr>
 
                     <th>Tanggal</th>
-                    <th>Produk</th>
-                    <th>Jenis</th>
+
+                    <th>
+                        <form method="GET" id="filterProdukForm">
+                            <select
+                                name="product_id"
+                                onchange="document.getElementById('filterProdukForm').submit()"
+                                style="
+                                    border:none;
+                                    background:transparent;
+                                    font-weight:600;
+                                    cursor:pointer;
+                                ">
+                                
+                                <option value="">
+                                    Semua Produk
+                                </option>
+
+                                @foreach($products as $product)
+                                    <option
+                                        value="{{ $product->id }}"
+                                        {{ request('product_id') == $product->id ? 'selected' : '' }}>
+                                        {{ $product->nama_produk }}
+                                    </option>
+                                @endforeach
+
+                            </select>
+                        </form>
+                    </th>
+
+                    <th>
+                        <form method="GET" id="filterJenisForm">
+
+                            <select
+                                name="jenis"
+                                onchange="document.getElementById('filterJenisForm').submit()"
+                                style="
+                                    border:none;
+                                    background:transparent;
+                                    font-weight:600;
+                                    cursor:pointer;
+                                ">
+
+                                <option value="">
+                                    Semua
+                                </option>
+
+                                <option value="Masuk">
+                                    Masuk
+                                </option>
+
+                                <option value="Keluar">
+                                    Keluar
+                                </option>
+
+                                <option value="Opname">
+                                    Opname
+                                </option>
+
+                            </select>
+
+                        </form>
+                    </th>
+
                     <th>Qty</th>
+
                     <th>Stok Awal</th>
                     <th>Stok Akhir</th>
                     <th>Keterangan</th>
@@ -97,7 +179,7 @@
                 <tr>
 
                     <td>
-                        {{ date('d-m-Y H:i',strtotime($item->tanggal)) }}
+                        {{ date('d-m-Y', strtotime($item->tanggal)) }}
                     </td>
 
                     <td>
