@@ -25,6 +25,74 @@
     padding:25px;
 }
 
+.top-header{
+    background:#1684e0;
+    color:white;
+    padding:18px 25px;
+    font-size:28px;
+    font-weight:600;
+}
+
+.filter-section{
+    padding:25px;
+}
+
+.filter-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.stock-info h2{
+    margin:0;
+    font-size:18px;
+}
+
+.stock-info span{
+    color:#999;
+}
+
+.filter-bottom{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.filter-box{
+    padding:12px;
+    border:1px solid #ddd;
+    border-radius:10px;
+}
+
+.toolbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.search-box{
+    width:260px;
+    padding:12px 15px;
+    border:1px solid #ddd;
+    border-radius:10px;
+}
+
+.date-range{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    padding:12px 18px;
+
+    border:1px solid #ddd;
+    border-radius:10px;
+
+    background:white;
+    cursor:pointer;
+}
+
 .stock-table{
     width:100%;
     border-collapse:collapse;
@@ -62,35 +130,117 @@
     border-radius:20px;
 }
 
+.table-filter{
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    font-size:12px;
+    color:#666;
+    margin-left:5px;
+    width:auto;
+}
+
 </style>
 
 <div class="page-card">
 
-    <div class="page-header">
-        Pergerakan Stok
+    <div class="top-header">
+        Inventory
+    </div>
+
+    <div class="filter-section">
+
+        <div class="filter-top">
+
+            <div class="stock-info">
+
+                <h2>Pergerakan Stok</h2>
+
+                <span>
+                    {{ $movements->count() }}
+                    Data Pergerakan Stok
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="filter-bottom">
+
+            <select class="filter-box">
+
+                <option>10 Baris</option>
+                <option>25 Baris</option>
+                <option>50 Baris</option>
+
+            </select>
+
+            <div class="toolbar">
+
+                <form method="GET">
+
+                    <input
+                        type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        class="search-box"
+                        placeholder="Cari Produk"
+                        onchange="this.form.submit()">
+
+                </form>
+
+                <button
+                    type="button"
+                    id="dateRangePicker"
+                    class="date-range">
+
+                    <i class="fa-regular fa-calendar"></i>
+
+                    <span id="selectedDate">
+                        Pilih Tanggal
+                    </span>
+
+                </button>
+
+                <form
+                    id="dateFilterForm"
+                    method="GET">
+
+                    <input
+                        type="hidden"
+                        name="start_date"
+                        id="start_date">
+
+                    <input
+                        type="hidden"
+                        name="end_date"
+                        id="end_date">
+
+                </form>
+
+                <form
+                    id="dateFilterForm"
+                    method="GET">
+
+                    <input
+                        type="hidden"
+                        name="start_date"
+                        id="start_date">
+
+                    <input
+                        type="hidden"
+                        name="end_date"
+                        id="end_date">
+
+                </form>
+
+            </div>
+
+        </div>
+
     </div>
 
     <div class="page-body">
-
-        <form method="GET" style="margin-bottom:20px;">
-
-            <input
-                type="date"
-                name="start_date"
-                value="{{ request('start_date') }}">
-
-            <input
-                type="date"
-                name="end_date"
-                value="{{ request('end_date') }}">
-
-            <button type="submit">
-                Filter
-            </button>
-
-        </form>
-
-    <table class="stock-table">
 
         <table class="stock-table">
 
@@ -101,65 +251,101 @@
                     <th>Tanggal</th>
 
                     <th>
-                        <form method="GET" id="filterProdukForm">
+
+                        Produk
+
+                        <form
+                            method="GET"
+                            id="filterProdukForm"
+                            style="display:inline;">
+
                             <select
                                 name="product_id"
-                                onchange="document.getElementById('filterProdukForm').submit()"
+                                class="table-filter"
+                                onchange="this.form.submit()"
                                 style="
                                     border:none;
                                     background:transparent;
-                                    font-weight:600;
+                                    font-size:12px;
                                     cursor:pointer;
+                                    width:18px;
+                                    color:#666;
                                 ">
-                                
+
+                                <option value="" selected></option>
+
                                 <option value="">
                                     Semua Produk
                                 </option>
 
                                 @foreach($products as $product)
+
                                     <option
                                         value="{{ $product->id }}"
                                         {{ request('product_id') == $product->id ? 'selected' : '' }}>
+
                                         {{ $product->nama_produk }}
+
                                     </option>
+
                                 @endforeach
 
                             </select>
+
                         </form>
+
                     </th>
 
                     <th>
-                        <form method="GET" id="filterJenisForm">
+
+                        Status
+
+                        <form
+                            method="GET"
+                            id="filterJenisForm"
+                            style="display:inline;">
 
                             <select
                                 name="jenis"
-                                onchange="document.getElementById('filterJenisForm').submit()"
+                                class="table-filter"
+                                onchange="this.form.submit()"
                                 style="
                                     border:none;
                                     background:transparent;
-                                    font-weight:600;
+                                    font-size:12px;
                                     cursor:pointer;
+                                    width:18px;
+                                    color:#666;
                                 ">
+
+                                <option value=""></option>
 
                                 <option value="">
                                     Semua
                                 </option>
 
-                                <option value="Masuk">
+                                <option
+                                    value="Masuk"
+                                    {{ request('jenis') == 'Masuk' ? 'selected' : '' }}>
                                     Masuk
                                 </option>
 
-                                <option value="Keluar">
+                                <option
+                                    value="Keluar"
+                                    {{ request('jenis') == 'Keluar' ? 'selected' : '' }}>
                                     Keluar
                                 </option>
 
-                                <option value="Opname">
+                                <option
+                                    value="Opname"
+                                    {{ request('jenis') == 'Opname' ? 'selected' : '' }}>
                                     Opname
                                 </option>
 
                             </select>
 
                         </form>
+
                     </th>
 
                     <th>Qty</th>
@@ -239,5 +425,74 @@
     </div>
 
 </div>
+
+@section('scripts')
+
+<script>
+
+$(function(){
+
+    $('#dateRangePicker').daterangepicker({
+
+        startDate: moment(),
+        endDate: moment(),
+
+        ranges: {
+
+            'Today': [
+                moment(),
+                moment()
+            ],
+
+            'Yesterday': [
+                moment().subtract(1,'days'),
+                moment().subtract(1,'days')
+            ],
+
+            'Last 7 Days': [
+                moment().subtract(6,'days'),
+                moment()
+            ],
+
+            'Last 30 Days': [
+                moment().subtract(29,'days'),
+                moment()
+            ],
+
+            'This Month': [
+                moment().startOf('month'),
+                moment().endOf('month')
+            ],
+
+            'Last Month': [
+                moment().subtract(1,'month').startOf('month'),
+                moment().subtract(1,'month').endOf('month')
+            ]
+        }
+
+    }, function(start,end){
+
+        $('#selectedDate').text(
+            start.format('DD MMM YY')
+            + ' - ' +
+            end.format('DD MMM YY')
+        );
+
+        $('#start_date').val(
+            start.format('YYYY-MM-DD')
+        );
+
+        $('#end_date').val(
+            end.format('YYYY-MM-DD')
+        );
+
+        $('#dateFilterForm').submit();
+
+    });
+});
+
+</script>
+
+@endsection
 
 @endsection

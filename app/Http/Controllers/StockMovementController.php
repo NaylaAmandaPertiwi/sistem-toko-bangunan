@@ -12,6 +12,22 @@ class StockMovementController extends Controller
     {
         $query = StockMovement::with('product');
 
+        if($request->filled('search'))
+        {
+            $query->whereHas(
+                'product',
+                function($q) use ($request){
+
+                    $q->where(
+                        'nama_produk',
+                        'like',
+                        '%' . $request->search . '%'
+                    );
+
+                }
+            );
+        }
+
         // Filter Produk
         if($request->filled('product_id'))
         {
@@ -22,7 +38,11 @@ class StockMovementController extends Controller
         }
 
         // Filter Jenis
-        if($request->filled('jenis'))
+        if(
+            $request->has('jenis')
+            &&
+            $request->jenis != ''
+        )
         {
             $query->where(
                 'jenis',
