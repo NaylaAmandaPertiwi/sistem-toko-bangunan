@@ -14,9 +14,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\StockInController;
 use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\StockMovementController;
-//use App\Http\Controllers\StockWarningController;
 use App\Http\Controllers\StockAlertController;
-
 
 
 use App\Http\Controllers\DiscountController;
@@ -268,8 +266,10 @@ Route::middleware('auth')->group(function () {
     */
 
     // diskon
-    Route::get('/diskon',
-        [DiscountController::class,'index']);
+    Route::resource(
+        'diskon',
+        DiscountController::class
+    );
 
     /*
     |--------------------------------------------------------------------------
