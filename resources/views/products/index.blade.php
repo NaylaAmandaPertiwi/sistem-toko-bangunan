@@ -227,7 +227,8 @@ th i{
 
                     <select
                         name="category"
-                        class="filter-box">
+                        class="filter-box"
+                        onchange="this.form.submit()">
 
                         <option value="">
                             Semua Kategori
@@ -255,7 +256,8 @@ th i{
                         type="text"
                         name="search"
                         value="{{ request('search') }}"
-                        placeholder="Cari Produk">
+                        placeholder="Cari Produk"
+                        onchange="this.form.submit()">
 
                 </div>
 
