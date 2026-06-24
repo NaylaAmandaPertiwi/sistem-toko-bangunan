@@ -616,7 +616,7 @@ rel="stylesheet">
             Pergerakan Stok
         </a>
 
-        <a href="/peringatan-stok"
+        <a href="{{ route('stock-alert.index') }}"
         class="{{ request()->is('peringatan-stok*') ? 'submenu-active' : '' }}">
             Peringatan Stok
         </a>

@@ -13,6 +13,7 @@ class Product extends Model
         'sku',
         'barcode',
         'stok',
+        'stok_minimum',
         'satuan',
         'harga_beli',
         'harga_jual',

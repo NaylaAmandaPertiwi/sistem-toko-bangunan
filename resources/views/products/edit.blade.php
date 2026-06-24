@@ -216,6 +216,18 @@
 
                     <div class="form-group">
 
+                        <label>Stok Minimum</label>
+
+                        <input
+                            type="number"
+                            name="stok_minimum"
+                            value="{{ $produk->stok_minimum ?? 10 }}"
+                            class="form-control">
+
+                    </div>
+
+                    <div class="form-group">
+
                         <label>Satuan</label>
 
                         <input

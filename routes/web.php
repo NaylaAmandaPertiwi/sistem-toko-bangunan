@@ -14,7 +14,8 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\StockInController;
 use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\StockMovementController;
-use App\Http\Controllers\StockWarningController;
+//use App\Http\Controllers\StockWarningController;
+use App\Http\Controllers\StockAlertController;
 
 
 
@@ -225,12 +226,17 @@ Route::middleware('auth')->group(function () {
     )->name('stock-movement.index');
 
 
-
+        /*
+        |--------------------------------------------------------------------------
+        | PERINGATAN STOK
+        |--------------------------------------------------------------------------
+        */ 
 
     // peringatan stok
-    Route::get('/peringatan-stok',
-        [StockWarningController::class,'index']);
-
+    Route::get(
+        '/peringatan-stok',
+        [StockAlertController::class,'index']
+    )->name('stock-alert.index');
 
 
     /*
