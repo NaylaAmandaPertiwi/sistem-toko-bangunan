@@ -191,6 +191,11 @@ th i{
     font-weight:600;
 }
 
+.col-produk,
+.col-sku{
+    white-space: nowrap;
+}
+
 
 
 </style>
@@ -295,21 +300,21 @@ th i{
 
                         <tr>
 
-                                <th width="40">
-                                    <input type="checkbox"
-                                        id="checkAll">
-                                </th>
+                            <th width="40">
+                                <input type="checkbox"
+                                    id="checkAll">
+                            </th>
 
-                                <th>
-                                    Nama Produk
-                                </th>
+                            <th width="250">
+                                Nama Produk
+                            </th>
 
                             <th>
                                 Kategori
                                 <i class="fa-solid fa-sort"></i>
                             </th>
 
-                            <th>
+                            <th width="180">
                                 SKU
                                 <i class="fa-solid fa-sort"></i>
                             </th>
@@ -319,8 +324,13 @@ th i{
                                 <i class="fa-solid fa-sort"></i>
                             </th>
 
-                            <th>
+                            <th width="150">
                                 Qty Stok
+                                <i class="fa-solid fa-sort"></i>
+                            </th>
+
+                            <th>
+                                Stok Minimum
                                 <i class="fa-solid fa-sort"></i>
                             </th>
 
@@ -355,23 +365,23 @@ th i{
 
                         <tr>
 
-                                <td>
+                            <td>
 
-                                    <input type="checkbox"
-                                        class="product-checkbox"
-                                        value="{{ $product->id }}">
+                                <input type="checkbox"
+                                    class="product-checkbox"
+                                    value="{{ $product->id }}">
 
-                                </td>
+                            </td>
 
-                                <td>
-                                    {{ $product->nama_produk }}
-                                </td>
+                            <td class="col-produk">
+                                {{ $product->nama_produk }}
+                            </td>
 
                             <td>
                                 {{ $product->category->nama_kategori ?? '-' }}
                             </td>
 
-                            <td>
+                            <td class="col-sku">
                                 {{ $product->sku }}
                             </td>
 
@@ -381,6 +391,10 @@ th i{
 
                             <td>
                                 {{ $product->stok }}
+                            </td>
+
+                            <td>
+                                {{ $product->stok_minimum }}
                             </td>
 
                             <td>
@@ -430,7 +444,7 @@ th i{
 
                         <tr>
 
-                            <td colspan="10"
+                            <td colspan="12"
                                 class="no-data">
 
                                 Belum ada produk
