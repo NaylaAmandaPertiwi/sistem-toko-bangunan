@@ -66,10 +66,13 @@
     border-radius:10px;
     cursor:pointer;
     font-size:15px;
+    text-decoration:none;
 }
 
 .add-btn:hover{
     background:#43a047;
+    text-decoration:none;
+    color:white;
 }
 
 /* TABLE */
@@ -267,7 +270,6 @@ th i{
                 <a href="{{ route('produk.create') }}"
                 class="add-btn">
 
-                    <i class="fa-solid fa-plus"></i>
                     Tambah Produk
 
                 </a>
