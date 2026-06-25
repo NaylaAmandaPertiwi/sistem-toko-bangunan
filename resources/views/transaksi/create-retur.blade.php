@@ -190,6 +190,30 @@
 
             </div>
 
+            <div
+                style="
+                    margin-top:25px;
+                    text-align:right;
+                    font-size:22px;
+                    font-weight:bold;
+                    color:#1684e0;
+                ">
+
+                Total Retur :
+                Rp <span id="totalRetur">0</span>
+
+            </div>
+
+            <input
+                type="hidden"
+                name="items"
+                id="itemsReturn">
+
+            <input
+                type="hidden"
+                name="total_retur"
+                id="totalReturnInput">
+
             <div class="button-group">
 
                 <a
@@ -215,5 +239,174 @@
     </div>
 
 </div>
+
+<script>
+
+const sales = @json($sales);
+
+const saleSelect =
+    document.getElementById('saleSelect');
+
+const detailBody =
+    document.getElementById('detailBody');
+
+let totalRetur = 0;
+
+saleSelect.addEventListener(
+    'change',
+    function(){
+
+        let sale =
+            sales.find(
+
+                item => item.id == this.value
+
+            );
+
+        if(!sale){
+
+            detailBody.innerHTML = `
+                <tr>
+
+                    <td colspan="5">
+
+                        Pilih transaksi terlebih dahulu
+
+                    </td>
+
+                </tr>
+            `;
+
+            return;
+
+        }
+
+        let html = '';
+
+        sale.details.forEach(detail=>{
+
+            html += `
+            <tr>
+
+                <td>
+
+                    ${detail.product.nama_produk}
+
+                </td>
+
+                <td>
+
+                    ${detail.qty}
+
+                </td>
+
+                <td>
+
+                    <input
+                        type="number"
+                        min="0"
+                        max="${detail.qty}"
+                        value="0"
+                        class="qty-retur"
+                        data-product="${detail.product.id}"
+                        data-harga="${detail.harga}"
+                        data-max="${detail.qty}"
+                        oninput="hitungRetur()">
+
+                </td>
+
+                <td>
+
+                    Rp ${Number(detail.harga).toLocaleString('id-ID')}
+
+                </td>
+
+                <td class="subtotal">
+
+                    Rp 0
+
+                </td>
+
+            </tr>
+            `;
+
+        });
+
+        detailBody.innerHTML = html;
+
+    }
+);
+
+function hitungRetur()
+{
+    totalRetur = 0;
+
+    let items = [];
+
+    document
+    .querySelectorAll('.qty-retur')
+    .forEach(function(input){
+
+        let qty =
+            parseInt(input.value) || 0;
+
+        let harga =
+            parseFloat(
+                input.dataset.harga
+            );
+
+        let subtotal =
+            qty * harga;
+
+        input
+        .closest('tr')
+        .querySelector('.subtotal')
+        .innerHTML =
+            'Rp ' +
+            subtotal.toLocaleString('id-ID');
+
+        totalRetur += subtotal;
+
+        if(qty > 0)
+        {
+            items.push({
+
+                product_id:
+                    input.dataset.product,
+
+                qty:
+                    qty,
+
+                harga:
+                    harga,
+
+                subtotal:
+                    subtotal
+
+            });
+        }
+
+    });
+
+    document
+    .getElementById(
+        'totalRetur'
+    ).innerHTML =
+        totalRetur.toLocaleString('id-ID');
+
+    document
+    .getElementById(
+        'itemsReturn'
+    ).value =
+        JSON.stringify(items);
+
+    document
+    .getElementById(
+        'totalReturnInput'
+    ).value =
+        totalRetur;
+}
+
+</script>
 
 @endsection

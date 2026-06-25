@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\ReturnDetail;
 use App\Models\ReturnSale;
 use App\Models\Sale;
+use App\Models\StockMovement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -62,7 +63,7 @@ class ReturnController extends Controller
             $returnSale = ReturnSale::create([
 
                 'kode_retur' =>
-                    'RT-' . time(),
+                    'RT-' . date('YmdHis'),
 
                 'sale_id' =>
                     $request->sale_id,
@@ -71,14 +72,12 @@ class ReturnController extends Controller
                     now(),
 
                 'total_retur' =>
-                    0,
+                    $request->total_retur,
 
                 'keterangan' =>
                     $request->keterangan
 
             ]);
-
-            $totalRetur = 0;
 
             if ($request->filled('items')) {
 
@@ -88,6 +87,11 @@ class ReturnController extends Controller
                 );
 
                 foreach ($items as $item) {
+
+                    if($item['qty'] <= 0)
+                    {
+                        continue;
+                    }
 
                     ReturnDetail::create([
 
@@ -116,17 +120,41 @@ class ReturnController extends Controller
                         $item['qty']
                     );
 
-                    $totalRetur +=
-                        $item['subtotal'];
+                    $product = Product::find(
+                        $item['product_id']
+                    );
+
+                    $stokAkhir = $product->stok;
+
+                    $stokAwal = $stokAkhir - $item['qty'];
+
+                    StockMovement::create([
+
+                        'product_id' =>
+                            $product->id,
+
+                        'tanggal' =>
+                            now(),
+
+                        'jenis' =>
+                            'Retur',
+
+                        'qty' =>
+                            $item['qty'],
+
+                        'stok_awal' =>
+                            $stokAwal,
+
+                        'stok_akhir' =>
+                            $stokAkhir,
+
+                        'keterangan' =>
+                            'Retur Penjualan ' .
+                            $returnSale->kode_retur
+
+                    ]);
                 }
             }
-
-            $returnSale->update([
-
-                'total_retur' =>
-                    $totalRetur
-
-            ]);
 
             DB::commit();
 
