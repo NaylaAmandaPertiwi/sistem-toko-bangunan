@@ -30,6 +30,13 @@ class Product extends Model
         return $this->hasMany(StockOut::class);
     }
 
+    public function returnDetails()
+    {
+        return $this->hasMany(
+            ReturnDetail::class
+        );
+    }
+
     public function saleDetails()
     {
         return $this->hasMany(
