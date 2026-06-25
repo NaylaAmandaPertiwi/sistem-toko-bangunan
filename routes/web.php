@@ -68,6 +68,36 @@ Route::post('/logout',
 Route::middleware('auth')->group(function () {
 
     /*
+|--------------------------------------------------------------------------
+| ADMIN
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('role:Admin')
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+
+        // Route Admin akan dipindahkan ke sini secara bertahap
+
+    });
+
+/*
+|--------------------------------------------------------------------------
+| KASIR
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('role:Kasir')
+    ->prefix('kasir')
+    ->name('kasir.')
+    ->group(function () {
+
+        // Route Kasir akan dibuat nanti
+
+    });
+
+    /*
     |--------------------------------------------------------------------------
     | DASHBOARD
     |--------------------------------------------------------------------------
@@ -296,7 +326,7 @@ Route::middleware('auth')->group(function () {
     )->name('retur.destroy');
 
 
-    
+
     // riwayat transaksi
     Route::get('/riwayat-transaksi', function () {
         return view('transaksi.riwayat-transaksi');
