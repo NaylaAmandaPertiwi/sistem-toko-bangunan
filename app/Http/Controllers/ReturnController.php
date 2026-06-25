@@ -37,7 +37,9 @@ class ReturnController extends Controller
 
     public function create()
     {
-        $sales = Sale::latest()->get();
+        $sales = Sale::with('details.product')
+            ->latest()
+            ->get();
 
         return view(
             'transaksi.create-retur',
