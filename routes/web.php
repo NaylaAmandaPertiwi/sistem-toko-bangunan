@@ -17,6 +17,7 @@ use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\StockAlertController;
 
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\ReturnController;
 
 use App\Http\Controllers\DiscountController;
 
@@ -244,6 +245,12 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
+        /*
+        |--------------------------------------------------------------------------
+        | PENJUALAN
+        |--------------------------------------------------------------------------
+        */ 
+
     // penjualan
     Route::get(
         '/penjualan',
@@ -256,12 +263,40 @@ Route::middleware('auth')->group(function () {
     )->name('penjualan.store');
 
 
+    /*
+        |--------------------------------------------------------------------------
+        | RETUR BARANG
+        |--------------------------------------------------------------------------
+        */ 
 
     // retur barang
-    Route::get('/retur', function () {
-        return view('transaksi.retur');
-    });
+    Route::get(
+        '/retur',
+        [ReturnController::class,'index']
+    )->name('retur.index');
 
+    Route::get(
+        '/retur/create',
+        [ReturnController::class,'create']
+    )->name('retur.create');
+
+    Route::post(
+        '/retur',
+        [ReturnController::class,'store']
+    )->name('retur.store');
+
+    Route::get(
+        '/retur/{retur}',
+        [ReturnController::class,'show']
+    )->name('retur.show');
+
+    Route::delete(
+        '/retur/{retur}',
+        [ReturnController::class,'destroy']
+    )->name('retur.destroy');
+
+
+    
     // riwayat transaksi
     Route::get('/riwayat-transaksi', function () {
         return view('transaksi.riwayat-transaksi');
