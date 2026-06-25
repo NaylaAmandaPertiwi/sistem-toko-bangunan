@@ -648,17 +648,17 @@ rel="stylesheet">
 
         <a href="/penjualan"
         class="{{ request()->is('penjualan*') ? 'submenu-active' : '' }}">
-            Penjualan
+            Data Penjualan
         </a>
 
         <a href="/retur"
         class="{{ request()->is('retur*') ? 'submenu-active' : '' }}">
-            Retur
+            Retur Penjualan
         </a>
 
         <a href="/riwayat-transaksi"
         class="{{ request()->is('riwayat-transaksi*') ? 'submenu-active' : '' }}">
-            Riwayat
+            Riwayat Transaksi
         </a>
 
     </div>
