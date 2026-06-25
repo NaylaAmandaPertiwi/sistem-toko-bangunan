@@ -26,6 +26,8 @@ return new class extends Migration
 
             $table->integer('stok')->default(0);
 
+            $table->integer('stok_minimum')->default(0);
+
             $table->string('satuan');
 
             $table->decimal('harga_beli', 15, 2);

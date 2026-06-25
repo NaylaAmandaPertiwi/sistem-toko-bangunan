@@ -16,6 +16,7 @@ use App\Http\Controllers\StockOpnameController;
 use App\Http\Controllers\StockMovementController;
 use App\Http\Controllers\StockAlertController;
 
+use App\Http\Controllers\SaleController;
 
 use App\Http\Controllers\DiscountController;
 
@@ -244,9 +245,17 @@ Route::middleware('auth')->group(function () {
     */
 
     // penjualan
-    Route::get('/penjualan', function () {
-        return view('transaksi.penjualan');
-    });
+    Route::get(
+        '/penjualan',
+        [SaleController::class, 'index']
+    )->name('penjualan.index');
+
+    Route::post(
+    '/penjualan/simpan',
+        [SaleController::class,'store']
+    )->name('penjualan.store');
+
+
 
     // retur barang
     Route::get('/retur', function () {
