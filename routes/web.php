@@ -68,34 +68,72 @@ Route::post('/logout',
 Route::middleware('auth')->group(function () {
 
     /*
-|--------------------------------------------------------------------------
-| ADMIN
-|--------------------------------------------------------------------------
-*/
+    |--------------------------------------------------------------------------
+    | ADMIN
+    |--------------------------------------------------------------------------
+    */
 
-Route::middleware('role:Admin')
-    ->prefix('admin')
-    ->name('admin.')
-    ->group(function () {
+    Route::middleware('role:Admin')
+        ->prefix('admin')
+        ->name('admin.')
+        ->group(function () {
 
-        // Route Admin akan dipindahkan ke sini secara bertahap
+            // Route Admin akan dipindahkan ke sini secara bertahap
+            //Dashboard
+            Route::get(
+                '/dashboard',
+                [\App\Http\Controllers\Admin\DashboardController::class,'index']
+            )->name('dashboard');
 
-    });
+            /*
+            |--------------------------------------------------------------------------
+            | PRODUK
+            |--------------------------------------------------------------------------
+            */
 
-/*
-|--------------------------------------------------------------------------
-| KASIR
-|--------------------------------------------------------------------------
-*/
+            // produk
+            Route::delete(
+                '/produk/bulk-delete',
+                [\App\Http\Controllers\Admin\ProductController::class, 'bulkDelete']
+            )->name('produk.bulkDelete');
 
-Route::middleware('role:Kasir')
-    ->prefix('kasir')
-    ->name('kasir.')
-    ->group(function () {
+            Route::resource(
+                'produk',
+                \App\Http\Controllers\Admin\ProductController::class
 
-        // Route Kasir akan dibuat nanti
+            );
 
-    });
+            // kategori produk
+            //Route::resource(
+                //'kategori-produk',
+                //\App\Http\Controllers\Admin\ProductController::class
+            //);
+
+            // barcode
+            Route::get(
+                '/barcode',
+                [\App\Http\Controllers\Admin\ProductController::class, 'barcode']
+            )->name('barcode');
+
+
+            
+
+        });
+
+    /*
+    |--------------------------------------------------------------------------
+    | KASIR
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware('role:Kasir')
+        ->prefix('kasir')
+        ->name('kasir.')
+        ->group(function () {
+
+            // Route Kasir akan dibuat nanti
+
+        });
 
     /*
     |--------------------------------------------------------------------------
