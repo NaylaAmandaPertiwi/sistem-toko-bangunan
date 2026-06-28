@@ -138,7 +138,7 @@ table td{
 <div class="filter-section">
 
     <form method="GET"
-        action="{{ route('kategori-produk.index') }}"
+        action="{{ route('admin.kategori-produk.index') }}"
         class="search-box">
 
         <input type="text"
@@ -148,7 +148,7 @@ table td{
 
     </form>
 
-    <a href="{{ route('kategori-produk.create') }}"
+    <a href="{{ route('admin.kategori-produk.create') }}"
     class="add-btn">
 
         <i class="fa-solid fa-plus"></i>
@@ -209,14 +209,14 @@ table td{
 
                 <td>
 
-                    <a href="{{ route('kategori-produk.edit', $category->id) }}"
+                    <a href="{{ route('admin.kategori-produk.edit', $category->id) }}"
                     class="action-btn edit-btn">
 
                         <i class="fa-solid fa-pen"></i>
 
                     </a>
 
-                    <form action="{{ route('kategori-produk.destroy', $category->id) }}"
+                    <form action="{{ route('admin.kategori-produk.destroy', $category->id) }}"
                         method="POST"
                         style="display:inline;">
 

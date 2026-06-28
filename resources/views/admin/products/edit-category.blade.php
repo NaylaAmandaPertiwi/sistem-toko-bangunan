@@ -70,7 +70,7 @@
 
             <div>
 
-                <a href="{{ route('kategori-produk.index') }}"
+                <a href="{{ route('admin.kategori-produk.index') }}"
                    class="btn-cancel">
 
                     Batal
@@ -94,7 +94,7 @@
     <div class="form-body">
 
         <form id="editCategoryForm"
-              action="{{ route('kategori-produk.update',$kategori_produk->id) }}"
+              action="{{ route('admin.kategori-produk.update',$kategori_produk->id) }}"
               method="POST">
 
             @csrf

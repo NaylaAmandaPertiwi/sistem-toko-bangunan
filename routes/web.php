@@ -104,10 +104,10 @@ Route::middleware('auth')->group(function () {
             );
 
             // kategori produk
-            //Route::resource(
-                //'kategori-produk',
-                //\App\Http\Controllers\Admin\ProductController::class
-            //);
+            Route::resource(
+                'kategori-produk',
+                \App\Http\Controllers\Admin\CategoryController::class
+            );
 
             // barcode
             Route::get(
