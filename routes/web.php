@@ -115,6 +115,22 @@ Route::middleware('auth')->group(function () {
                 [\App\Http\Controllers\Admin\ProductController::class, 'barcode']
             )->name('barcode');
 
+            /*
+            |--------------------------------------------------------------------------
+            | SUPPLIER
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/supplier-export',
+                [\App\Http\Controllers\Admin\SupplierController::class, 'export']
+            )->name('supplier.export');
+
+            Route::resource(
+                'supplier',
+                \App\Http\Controllers\Admin\SupplierController::class
+            );
+
 
             
 
