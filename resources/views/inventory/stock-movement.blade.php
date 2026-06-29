@@ -369,7 +369,7 @@
                     </td>
 
                     <td>
-                        {{ $item->product->nama_produk }}
+                        {{ optional($item->product)->nama_produk ?? '-' }}
                     </td>
 
                     <td>
