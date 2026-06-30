@@ -492,6 +492,280 @@ table td{
     font-size:12px;
 }
 
+/* =====================================================
+   GLOBAL TOAST NOTIFICATION
+===================================================== */
+
+.toast{
+
+    position:fixed;
+
+    top:25px;
+    left:50%;
+
+    transform:translateX(-50%);
+
+    display:flex;
+    align-items:center;
+    gap:12px;
+
+    padding:14px 22px;
+
+    min-width:280px;
+    max-width:420px;
+
+    border-radius:50px;
+
+    color:white;
+
+    font-size:15px;
+    font-weight:500;
+
+    backdrop-filter:blur(10px);
+
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+
+    z-index:999999;
+
+    animation:toastShow .35s ease;
+}
+
+.toast i{
+
+    font-size:20px;
+
+}
+
+/* Warna */
+
+.toast-success{
+
+    background:rgba(40,167,69,.95);
+
+}
+
+.toast-error{
+
+    background:rgba(220,53,69,.95);
+
+}
+
+.toast-warning{
+
+    background:rgba(255,193,7,.95);
+
+    color:#333;
+
+}
+
+.toast-info{
+
+    background:rgba(22,132,224,.95);
+
+}
+
+@keyframes toastShow{
+
+    from{
+
+        opacity:0;
+
+        transform:
+        translate(-50%,-25px);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+        translate(-50%,0);
+
+    }
+
+}
+
+.toast-hide{
+
+    animation:toastHide .35s forwards;
+
+}
+
+@keyframes toastHide{
+
+    from{
+
+        opacity:1;
+
+        transform:
+        translate(-50%,0);
+
+    }
+
+    to{
+
+        opacity:0;
+
+        transform:
+        translate(-50%,-20px);
+
+    }
+
+}
+
+/* ==========================
+   GLOBAL CONFIRM MODAL
+========================== */
+
+.confirm-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:999999;
+
+}
+
+.confirm-overlay.show{
+
+    display:flex;
+
+}
+
+.confirm-box{
+
+    width:420px;
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:30px;
+
+    text-align:center;
+
+    animation:popup .25s ease;
+
+}
+
+.confirm-icon{
+
+    width:75px;
+
+    height:75px;
+
+    margin:auto;
+
+    margin-bottom:20px;
+
+    border-radius:50%;
+
+    background:#fff3cd;
+
+    color:#f39c12;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:34px;
+
+}
+
+.confirm-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    margin-bottom:10px;
+
+}
+
+.confirm-text{
+
+    color:#666;
+
+    margin-bottom:25px;
+
+    line-height:1.6;
+
+}
+
+.confirm-actions{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:15px;
+
+}
+
+.btn-confirm{
+
+    background:#dc3545;
+
+    color:white;
+
+    border:none;
+
+    padding:12px 25px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+}
+
+.btn-cancel-modal{
+
+    background:#e9ecef;
+
+    color:#333;
+
+    border:none;
+
+    padding:12px 25px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+}
+
+@keyframes popup{
+
+    from{
+
+        opacity:0;
+
+        transform:scale(.9);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:scale(1);
+
+    }
+
+}
+
 </style>
 
 @yield('styles')
@@ -507,6 +781,73 @@ rel="stylesheet">
 
 
 <body>
+
+@if(session('success'))
+
+<div id="globalToast" class="toast toast-success">
+
+    <i class="fa-solid fa-circle-check"></i>
+
+    <span>
+
+        {{ session('success') }}
+
+    </span>
+
+</div>
+
+@endif
+
+
+@if(session('error'))
+
+<div id="globalToast" class="toast toast-error">
+
+    <i class="fa-solid fa-circle-xmark"></i>
+
+    <span>
+
+        {{ session('error') }}
+
+    </span>
+
+</div>
+
+@endif
+
+
+@if(session('warning'))
+
+<div id="globalToast" class="toast toast-warning">
+
+    <i class="fa-solid fa-triangle-exclamation"></i>
+
+    <span>
+
+        {{ session('warning') }}
+
+    </span>
+
+</div>
+
+@endif
+
+
+@if(session('info'))
+
+<div id="globalToast" class="toast toast-info">
+
+    <i class="fa-solid fa-circle-info"></i>
+
+    <span>
+
+        {{ session('info') }}
+
+    </span>
+
+</div>
+
+@endif
 
 <!-- SIDEBAR -->
 <div class="sidebar">
@@ -782,6 +1123,58 @@ rel="stylesheet">
 
 </div>
 
+<div id="confirmModal" class="confirm-overlay">
+
+    <div class="confirm-box">
+
+        <div class="confirm-icon">
+
+            <i class="fa-solid fa-triangle-exclamation"></i>
+
+        </div>
+
+        <div
+            id="confirmTitle"
+            class="confirm-title">
+
+            Konfirmasi
+
+        </div>
+
+        <div
+            id="confirmText"
+            class="confirm-text">
+
+            Apakah Anda yakin?
+
+        </div>
+
+        <div class="confirm-actions">
+
+            <button
+                type="button"
+                class="btn-cancel-modal"
+                onclick="closeConfirm()">
+
+                Batal
+
+            </button>
+
+            <button
+                type="button"
+                id="confirmButton"
+                class="btn-confirm">
+
+                Ya
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 <!-- CONTENT -->
 <div class="content">
     @yield('content')
@@ -927,5 +1320,75 @@ function toggleProfileMenu() {
 
 @yield('scripts')
 
+<script>
+
+const toast =
+document.getElementById('globalToast');
+
+if(toast){
+
+    setTimeout(function(){
+
+        toast.classList.add('toast-hide');
+
+        setTimeout(function(){
+
+            toast.remove();
+
+        },350);
+
+    },3000);
+
+}
+
+let confirmCallback = null;
+
+function showConfirm(
+    title,
+    message,
+    callback
+){
+
+    document
+    .getElementById('confirmTitle')
+    .innerText = title;
+
+    document
+    .getElementById('confirmText')
+    .innerText = message;
+
+    document
+    .getElementById('confirmModal')
+    .classList.add('show');
+
+    confirmCallback = callback;
+
+}
+
+function closeConfirm(){
+
+    document
+    .getElementById('confirmModal')
+    .classList.remove('show');
+
+}
+
+document
+.getElementById('confirmButton')
+.addEventListener('click',function(){
+
+    closeConfirm();
+
+    if(confirmCallback){
+
+        confirmCallback();
+
+    }
+
+});
+
+</script>
+
+@yield('scripts')
+
 </body>
-</html>

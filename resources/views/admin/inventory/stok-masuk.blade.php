@@ -215,87 +215,7 @@ table td{
     white-space:nowrap;
 }
 
-.toast-success{
-
-    position:fixed;
-
-    top:30px;
-
-    left:50%;
-
-    transform:translateX(-50%);
-
-    background:#28a745;
-
-    color:#fff;
-
-    padding:12px 22px;
-
-    border-radius:30px;
-
-    display:flex;
-
-    align-items:center;
-
-    gap:10px;
-
-    font-size:15px;
-
-    font-weight:600;
-
-    z-index:999999;
-
-    box-shadow:0 8px 25px rgba(0,0,0,.18);
-
-    animation:showToast .3s ease;
-}
-
-@keyframes showToast{
-
-    from{
-
-        opacity:0;
-
-        transform:
-        translate(-50%,-20px);
-
-    }
-
-    to{
-
-        opacity:1;
-
-        transform:
-        translate(-50%,0);
-
-    }
-
-}
-
-.toast-hide{
-
-    opacity:0;
-
-    transform:
-    translate(-50%,-20px);
-
-    transition:.4s;
-
-}
-
 </style>
-
-@if(session('success'))
-
-<div id="toastSuccess" class="toast-success">
-
-    <i class="fa-solid fa-circle-check"></i>
-
-    <span>{{ session('success') }}</span>
-
-</div>
-
-@endif
 
 <div class="page-header">
 
@@ -642,41 +562,25 @@ function bulkDelete()
         return;
     }
 
-    if(confirm('Hapus data yang dipilih?'))
-    {
-        document.getElementById('selectedIds').value =
-            ids.join(',');
+    showConfirm(
 
-        document
-            .getElementById('bulkDeleteForm')
-            .submit();
-    }
+        'Hapus Data',
+
+        'Apakah Anda yakin ingin menghapus data yang dipilih?',
+
+        function(){
+
+            document.getElementById('selectedIds').value =
+                ids.join(',');
+
+            document
+                .getElementById('bulkDeleteForm')
+                .submit();
+
+        }
+
+    );
 }
-
-</script>
-
-@if(session('success'))
-
-<script>
-
-setTimeout(function(){
-
-    const toast =
-    document.getElementById('toastSuccess');
-
-    if(toast){
-
-        toast.classList.add('toast-hide');
-
-        setTimeout(function(){
-
-            toast.remove();
-
-        },400);
-
-    }
-
-},3000);
 
 </script>
 
