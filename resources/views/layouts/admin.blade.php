@@ -601,8 +601,8 @@ rel="stylesheet">
     <div class="dropdown-content"
     id="inventoryDropdown">
 
-        <a href="/stok-masuk"
-        class="{{ request()->is('stok-masuk*') ? 'submenu-active' : '' }}">
+        <a href="{{ route('admin.stok-masuk.index') }}"
+        class="{{ request()->is('admin/stok-masuk*') ? 'submenu-active' : '' }}">
             Stok Masuk
         </a>
 

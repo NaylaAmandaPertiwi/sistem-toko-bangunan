@@ -131,6 +131,54 @@ Route::middleware('auth')->group(function () {
                 \App\Http\Controllers\Admin\SupplierController::class
             );
 
+            /*
+            |--------------------------------------------------------------------------
+            | INVENTORY
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/inventory',
+                [\App\Http\Controllers\Admin\InventoryController::class, 'index']
+            )->name('inventory');
+
+                /*
+                |--------------------------------------------------------------------------
+                | STOK MASUK
+                |--------------------------------------------------------------------------
+                */
+
+            Route::get(
+                '/stok-masuk',
+                [\App\Http\Controllers\Admin\StockInController::class, 'index']
+            )->name('stok-masuk.index');
+
+            Route::get(
+                '/stok-masuk/create',
+                [\App\Http\Controllers\Admin\StockInController::class, 'create']
+            )->name('stok-masuk.create');
+
+            Route::post(
+                '/stok-masuk',
+                [\App\Http\Controllers\Admin\StockInController::class, 'store']
+            )->name('stok-masuk.store');
+
+            Route::get(
+                '/stok-masuk/{id}/edit',
+                [\App\Http\Controllers\Admin\StockInController::class, 'edit']
+            )->name('stok-masuk.edit');
+
+            Route::put(
+                '/stok-masuk/{id}',
+                [\App\Http\Controllers\Admin\StockInController::class, 'update']
+            )->name('stok-masuk.update');
+
+            Route::delete(
+                '/stok-masuk/bulk-delete',
+                [\App\Http\Controllers\Admin\StockInController::class, 'bulkDelete']
+            )->name('stok-masuk.bulkDelete');
+
+        
 
             
 
