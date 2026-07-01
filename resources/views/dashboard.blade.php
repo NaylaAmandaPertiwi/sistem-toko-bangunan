@@ -1,249 +1,196 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Owner</title>
 
-@section('title', 'Dashboard')
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #f4f6f9;
+}
 
-@section('content')
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    height: 100vh;
+    background: #4e73df;
+    color: white;
+    position: fixed;
+    padding: 20px;
+}
 
-<div class="header">
-    <h2>Dashboard Owner</h2>
+.sidebar h2 {
+    margin-bottom: 20px;
+}
+
+.sidebar a {
+    display: block;
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.sidebar a:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* CONTENT */
+.content {
+    margin-left: 260px;
+    padding: 20px;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logout {
+    background: #6c757d;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: none;
+}
+
+/* CARDS */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    border: 2px solid #4e73df;
+}
+
+/* ROW */
+.row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.box {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    margin-top: 15px;
+}
+
+.status {
+    background: green;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 6px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h2>Nayla Bangunan</h2>
+
+    <a class="active">Dashboard</a>
+    <a>Data Barang</a>
+    <a>Kategori Barang</a>
+    <a>Stok Barang</a>
+    <a>Data Pengguna</a>
+    <a>Diskon</a>
+    <a>Laporan Keuangan</a>
 </div>
 
-<!-- CARD STATISTIK -->
-<div class="cards">
+<!-- CONTENT -->
+<div class="content">
 
-    <div class="card">
-        <h3>Total Produk</h3>
-        <p>{{ $data['total_produk'] ?? 250 }}</p>
+    <!-- HEADER -->
+    <div class="header">
+        <h2>Dashboard Owner</h2>
+
+        <form method="POST" action="/logout">
+            @csrf
+            <button class="logout">Logout</button>
+        </form>
     </div>
 
-    <div class="card">
-        <h3>Total Supplier</h3>
-        <p>{{ $data['total_supplier'] ?? 15 }}</p>
+    <!-- CARDS -->
+    <div class="cards">
+        <div class="card">
+            <b>Jumlah Transaksi</b><br>
+            {{ $data['total_transaksi'] }} Transaksi
+        </div>
+
+        <div class="card">
+            <b>Stok Menipis</b><br>
+            {{ $data['stok_menipis'] }} Barang
+        </div>
+
+        <div class="card">
+            <b>Total Penjualan</b><br>
+            Rp. {{ number_format($data['total_penjualan'],0,',','.') }}
+        </div>
+
+        <div class="card">
+            <b>Diskon Aktif</b><br>
+            {{ $data['diskon_aktif'] }} Diskon
+        </div>
     </div>
 
-    <div class="card">
-        <h3>Transaksi Hari Ini</h3>
-        <p>{{ $data['total_transaksi'] ?? 32 }}</p>
+    <!-- GRAFIK + PERINGATAN -->
+    <div class="row">
+        <div class="box">
+            <h4>Grafik Penjualan</h4>
+            <p>(Nanti pakai Chart.js)</p>
+        </div>
+
+        <div class="box">
+            <h4>Peringatan Stok</h4>
+            <p>Barang hampir habis...</p>
+        </div>
     </div>
 
-    <div class="card">
-        <h3>Pendapatan Hari Ini</h3>
-        <p>Rp {{ number_format($data['total_penjualan'] ?? 7500000,0,',','.') }}</p>
-    </div>
-
-</div>
-
-<!-- GRAFIK -->
-<div class="box" style="margin-bottom:25px;">
-
-    <h3>Grafik Penjualan 7 Hari Terakhir</h3>
-
-    <canvas id="salesChart" height="90"></canvas>
-
-</div>
-
-<!-- PERINGATAN STOK + PRODUK TERLARIS -->
-<div class="row">
-
+    <!-- TRANSAKSI -->
     <div class="box">
-
-        <h3>Peringatan Stok</h3>
+        <h4>Transaksi Terakhir</h4>
 
         <table>
             <tr>
-                <th>Produk</th>
-                <th>Stok</th>
+                <th>ID</th>
+                <th>Waktu</th>
+                <th>Kasir</th>
+                <th>Total</th>
+                <th>Status</th>
             </tr>
 
             <tr>
-                <td>Semen Padang</td>
-                <td>5</td>
+                <td>#TRX-94821</td>
+                <td>14:23</td>
+                <td>Budi</td>
+                <td>Rp. 156.000</td>
+                <td><span class="status">SUKSES</span></td>
             </tr>
-
-            <tr>
-                <td>Cat Avian</td>
-                <td>3</td>
-            </tr>
-
-            <tr>
-                <td>Paku 7 cm</td>
-                <td>4</td>
-            </tr>
-
         </table>
-
-    </div>
-
-    <div class="box">
-
-        <h3>Produk Terlaris</h3>
-
-        <table>
-
-            <tr>
-                <th>Produk</th>
-                <th>Terjual</th>
-            </tr>
-
-            <tr>
-                <td>Semen Padang</td>
-                <td>120</td>
-            </tr>
-
-            <tr>
-                <td>Cat Avian</td>
-                <td>95</td>
-            </tr>
-
-            <tr>
-                <td>Besi Beton</td>
-                <td>70</td>
-            </tr>
-
-        </table>
-
     </div>
 
 </div>
 
-<!-- TRANSAKSI TERAKHIR -->
-<div class="box" style="margin-bottom:25px;">
-
-    <h3>Transaksi Terakhir</h3>
-
-    <table>
-
-        <tr>
-            <th>Invoice</th>
-            <th>Kasir</th>
-            <th>Total</th>
-            <th>Status</th>
-        </tr>
-
-        <tr>
-            <td>INV001</td>
-            <td>Budi</td>
-            <td>Rp 350.000</td>
-            <td>
-                <span class="status">
-                    SUKSES
-                </span>
-            </td>
-        </tr>
-
-        <tr>
-            <td>INV002</td>
-            <td>Sinta</td>
-            <td>Rp 780.000</td>
-            <td>
-                <span class="status">
-                    SUKSES
-                </span>
-            </td>
-        </tr>
-
-    </table>
-
-</div>
-
-<!-- DISKON AKTIF -->
-<div class="box">
-
-    <h3>Diskon Aktif</h3>
-
-    <table>
-
-        <tr>
-            <th>Nama Diskon</th>
-            <th>Status</th>
-        </tr>
-
-        <tr>
-            <td>Diskon Cat Avian 10%</td>
-            <td>
-                <span class="status">
-                    AKTIF
-                </span>
-            </td>
-        </tr>
-
-        <tr>
-            <td>Diskon Semen Padang 5%</td>
-            <td>
-                <span class="status">
-                    AKTIF
-                </span>
-            </td>
-        </tr>
-
-    </table>
-
-</div>
-
-@endsection
-
-@section('scripts')
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-
-const ctx =
-document.getElementById('salesChart');
-
-new Chart(ctx, {
-
-    type: 'line',
-
-    data: {
-
-        labels: [
-            'Sen',
-            'Sel',
-            'Rab',
-            'Kam',
-            'Jum',
-            'Sab',
-            'Min'
-        ],
-
-        datasets: [{
-
-            label: 'Penjualan',
-
-            data: [
-                1200000,
-                950000,
-                1700000,
-                2300000,
-                1800000,
-                2600000,
-                2200000
-            ],
-
-            borderColor: '#355cc9',
-
-            tension: 0.4
-
-        }]
-    },
-
-    options: {
-
-        responsive: true,
-
-        plugins: {
-
-            legend: {
-                display: false
-            }
-
-        }
-
-    }
-
-});
-
-</script>
-
-@endsection
+</body>
+</html>

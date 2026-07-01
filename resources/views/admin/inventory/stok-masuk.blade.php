@@ -584,6 +584,4 @@ function bulkDelete()
 
 </script>
 
-@endif
-
 @endsection

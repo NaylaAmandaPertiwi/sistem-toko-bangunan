@@ -860,12 +860,11 @@ rel="stylesheet">
     
     <!-- DASHBOARD -->
 
-    <a href="/dashboard"
-    class="{{ request()->is('dashboard*') ? 'active' : '' }}">
+   <a href="{{ route('admin.dashboard') }}"
+    class="{{ request()->is('admin/dashboard*') ? 'active' : '' }}">
 
-
-    <i class="fa-solid fa-house"></i>
-    Dashboard
+        <i class="fa-solid fa-house"></i>
+        Dashboard
 
     </a>
 
@@ -891,8 +890,8 @@ rel="stylesheet">
     id="produkDropdown">
 
 
-        <a href="/produk"
-        class="{{ request()->is('produk*') ? 'submenu-active' : '' }}">
+        <a href="{{ route('admin.produk.index') }}"
+        class="{{ request()->is('admin/produk*') ? 'submenu-active' : '' }}">
             Produk
         </a>
 
@@ -912,7 +911,7 @@ rel="stylesheet">
 
     <!-- SUPPLIER -->
 
-    <a href="/supplier"
+    <a href="{{ route('admin.supplier.index') }}"
     class="{{ request()->is('supplier*') ? 'active' : '' }}">
 
     <i class="fa-solid fa-truck"></i>
@@ -947,8 +946,8 @@ rel="stylesheet">
             Stok Masuk
         </a>
 
-        <a href="/stok-opname"
-        class="{{ request()->is('stok-opname*') ? 'submenu-active' : '' }}">
+        <a href="{{ route('admin.stok-opname.index') }}"
+        class="{{ request()->is('admin/stok-opname*') ? 'submenu-active' : '' }}">
             Stok Opname
         </a>
 
@@ -1388,7 +1387,5 @@ document
 });
 
 </script>
-
-@yield('scripts')
 
 </body>

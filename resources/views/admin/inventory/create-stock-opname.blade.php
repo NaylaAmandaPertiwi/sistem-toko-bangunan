@@ -7,6 +7,7 @@
 <style>
 
 .page-card{
+    width:100%;
     background:white;
     border-radius:15px;
     overflow:hidden;
@@ -185,8 +186,6 @@
 
 </style>
 
-</style>
-
 <div class="page-card">
 
     <div class="page-header">
@@ -197,7 +196,7 @@
 
             <div>
 
-                <a href="{{ route('stok-opname.index') }}"
+                <a href="{{ route('admin.stok-opname.index') }}"
                    class="btn-cancel">
                     Batal
                 </a>
@@ -217,9 +216,35 @@
 
     <div class="form-body">
 
+        @if ($errors->any())
+
+        <div style="
+            background:#ffe5e5;
+            color:#b91c1c;
+            padding:15px;
+            border-radius:10px;
+            margin-bottom:20px;
+        ">
+
+            <b>Terjadi kesalahan:</b>
+
+            <ul style="margin-top:10px;margin-left:20px;">
+
+                @foreach ($errors->all() as $error)
+
+                    <li>{{ $error }}</li>
+
+                @endforeach
+
+            </ul>
+
+        </div>
+
+        @endif
+
         <form
             id="opnameForm"
-            action="{{ route('stok-opname.store') }}"
+            action="{{ route('admin.stok-opname.store') }}"
             method="POST"
             onsubmit="return validateOpname()">
 
@@ -244,7 +269,7 @@
                     type="date"
                     name="tanggal_opname"
                     class="form-control"
-                    value="{{ date('Y-m-d') }}"
+                    value="{{ old('tanggal_opname', date('Y-m-d')) }}"
                     required>
             </div>
 
@@ -272,19 +297,27 @@
                     name="status"
                     class="form-control">
 
-                    <option value="Draft">
+                    <option
+                        value="Draft"
+                        {{ old('status')=='Draft'?'selected':'' }}>
                         Draft
                     </option>
 
-                    <option value="Disetujui">
+                    <option
+                        value="Disetujui"
+                        {{ old('status')=='Disetujui'?'selected':'' }}>
                         Disetujui
                     </option>
 
-                    <option value="Selesai">
+                    <option
+                        value="Selesai"
+                        {{ old('status')=='Selesai'?'selected':'' }}>
                         Selesai
                     </option>
 
-                    <option value="Dibatalkan">
+                    <option
+                        value="Dibatalkan"
+                        {{ old('status')=='Dibatalkan'?'selected':'' }}>
                         Dibatalkan
                     </option>
 
@@ -296,7 +329,7 @@
                 <textarea
                     name="keterangan"
                     rows="3"
-                    class="form-control"></textarea>
+                    class="form-control">{{ old('keterangan') }}</textarea>
             </div>
 
             <div class="product-header">
@@ -447,9 +480,84 @@
 
 </div>
 
+<!-- MODAL EDIT PRODUK -->
+
+<div id="editModal" class="modal">
+
+    <div class="modal-content">
+
+        <h3>Edit Stok Fisik</h3>
+
+        <div class="form-group">
+
+            <label>Produk</label>
+
+            <input
+                type="text"
+                id="editNamaProduk"
+                class="form-control"
+                readonly>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Stok Sistem</label>
+
+            <input
+                type="number"
+                id="editStokSistem"
+                class="form-control"
+                readonly>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Stok Fisik</label>
+
+            <input
+                type="number"
+                id="editStokFisik"
+                class="form-control">
+
+        </div>
+
+        <div style="text-align:right">
+
+            <button
+                type="button"
+                class="btn-danger"
+                onclick="closeEditModal()">
+
+                Batal
+
+            </button>
+
+            <button
+                type="button"
+                class="btn-save"
+                onclick="saveEditProduct()">
+
+                Simpan
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+@endsection
+
+@push('scripts')
+
 <script>
 
 let rowIndex = 0;
+
+let currentEditRow = null;
 
 function openModal()
 {
@@ -531,13 +639,21 @@ function saveProduct()
 
     if(exists)
     {
-        alert('Produk sudah ditambahkan');
+        showToast(
+            'Produk sudah ditambahkan.',
+            'warning'
+        );
+
         return;
     }
 
     if(productSelect.value == '')
     {
-        alert('Pilih produk terlebih dahulu');
+        showToast(
+            'Silakan pilih produk terlebih dahulu.',
+            'warning'
+        );
+
         return;
     }
 
@@ -557,7 +673,11 @@ function saveProduct()
 
     if(stokFisik == '')
     {
-        alert('Isi stok fisik');
+        showToast(
+            'Silakan isi stok fisik.',
+            'warning'
+        );
+
         return;
     }
 
@@ -653,63 +773,71 @@ function saveProduct()
 
 function editRow(button)
 {
-    let row =
-        button.closest('tr');
+    currentEditRow = button.closest('tr');
 
-    let stokFisikCell =
-        row.children[3];
+    document.getElementById('editNamaProduk').value =
+        currentEditRow.children[0].innerText.trim();
 
-    let nilai =
-        stokFisikCell.innerText.trim();
+    document.getElementById('editStokSistem').value =
+        parseInt(currentEditRow.children[2].innerText);
 
-    let input =
-        prompt(
-            'Ubah stok fisik',
-            nilai
+    document.getElementById('editStokFisik').value =
+        parseInt(currentEditRow.children[3].innerText);
+
+    document.getElementById('editModal').style.display='block';
+}
+
+function closeEditModal()
+{
+    document.getElementById('editModal').style.display='none';
+
+    currentEditRow = null;
+}
+
+function saveEditProduct()
+{
+    if(currentEditRow==null)
+    {
+        return;
+    }
+
+    let stokFisik =
+        document.getElementById('editStokFisik').value;
+
+    if(stokFisik=='' || isNaN(stokFisik) || stokFisik<0)
+    {
+        showToast(
+            'Stok fisik tidak valid.',
+            'warning'
         );
 
-    if(input === null)
-    {
         return;
     }
-
-    if(isNaN(input) || input < 0)
-    {
-        alert('Stok fisik harus berupa angka dan tidak boleh negatif');
-        return;
-    }
-
-    // VALIDASI TAMBAHAN
-    if(isNaN(input) || input < 0)
-    {
-        alert('Stok fisik harus berupa angka dan tidak boleh negatif');
-        return;
-    }
-
-    stokFisikCell.innerHTML =
-        input +
-        `<input
-            type="hidden"
-            name="${
-                row.querySelector(
-                'input[name*="[stok_fisik]"]'
-                ).name
-            }"
-            value="${input}">`;
 
     let stokSistem =
         parseInt(
-            row.children[2]
-            .innerText
+            document.getElementById('editStokSistem').value
         );
 
     let selisih =
-        parseInt(input)
+        parseInt(stokFisik)
         - stokSistem;
 
-    row.children[4]
-        .innerText =
+    currentEditRow.children[3].innerHTML =
+        stokFisik +
+        `<input
+            type="hidden"
+            name="${
+                currentEditRow.querySelector(
+                    'input[name*="[stok_fisik]"]'
+                ).name
+            }"
+            value="${stokFisik}">`;
+
+    currentEditRow.children[4].innerText =
         selisih;
+
+    closeEditModal();
 }
 
 function removeRow(button)
@@ -728,8 +856,9 @@ function validateOpname()
 
     if(totalRow == 0)
     {
-        alert(
-            'Minimal harus ada 1 produk'
+        showToast(
+            'Minimal harus ada satu produk.',
+            'warning'
         );
 
         return false;
@@ -753,4 +882,4 @@ function(){
 
 </script>
 
-@endsection
+@endpush

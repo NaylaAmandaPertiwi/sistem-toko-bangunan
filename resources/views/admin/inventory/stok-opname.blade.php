@@ -205,7 +205,7 @@
             <div class="toolbar">
 
                 <a
-                    href="{{ route('stok-opname.create') }}"
+                    href="{{ route('admin.stok-opname.create') }}"
                     class="btn btn-primary">
 
                     <i class="fa-solid fa-plus"></i>
@@ -229,14 +229,15 @@
 
             <form
                 method="GET"
-                action="{{ route('stok-opname.index') }}">
+                action="{{ route('admin.stok-opname.index') }}">
 
                 <input
                     type="text"
                     name="search"
                     value="{{ request('search') }}"
                     class="search-box"
-                    placeholder="Cari No Opname / Produk / SKU">
+                    placeholder="Cari No Opname / Produk / SKU"
+                    onchange="this.form.submit()">
 
             </form>
 
@@ -334,7 +335,7 @@
                     </td>
 
                     <td>
-                        <a href="{{ route('stok-opname.show',$opname->id) }}">
+                        <a href="{{ route('admin.stok-opname.show',$opname->id) }}">
                             <i class="fa-solid fa-eye"></i>
                         </a>
                     </td>
@@ -438,7 +439,7 @@ function(){
     }
 
     fetch(
-        "{{ route('stok-opname.bulk-delete') }}",
+        "{{ route('admin.stok-opname.bulk-delete') }}",
         {
             method:'DELETE',
 
