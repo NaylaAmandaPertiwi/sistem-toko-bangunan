@@ -215,6 +215,11 @@ Route::middleware('auth')->group(function () {
             )->name('stok-opname.print');
 
             Route::get(
+                '/stok-opname/{id}/pdf',
+                [\App\Http\Controllers\Admin\StockOpnameController::class,'pdf']
+            )->name('stok-opname.pdf');
+
+            Route::get(
                 '/stok-opname/{id}',
                 [\App\Http\Controllers\Admin\StockOpnameController::class,'show']
             )->name('stok-opname.show');

@@ -355,6 +355,17 @@
 
                         </a>
 
+                        &nbsp;
+
+                        <a
+                            href="{{ route('admin.stok-opname.pdf',$opname->id) }}"
+                            title="Download PDF">
+
+                            <i class="fa-solid fa-file-pdf"
+                            style="color:#dc3545"></i>
+
+                        </a>
+
                     </td>
 
                 </tr>

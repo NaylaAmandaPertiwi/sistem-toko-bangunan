@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\StockOpname;
 use App\Models\StockOpnameDetail;
 use App\Models\StockMovement;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class StockOpnameController extends Controller
 {
@@ -221,6 +222,24 @@ class StockOpnameController extends Controller
         return view(
             'admin.inventory.print-stock-opname',
             compact('opname')
+        );
+    }
+
+    public function pdf($id)
+    {
+        $opname = StockOpname::with(
+            'details.product'
+        )->findOrFail($id);
+
+        $pdf = Pdf::loadView(
+            'admin.inventory.pdf-stock-opname',
+            compact('opname')
+        );
+
+        return $pdf->download(
+            'stok-opname-' .
+            $opname->nomor_opname .
+            '.pdf'
         );
     }
 }
