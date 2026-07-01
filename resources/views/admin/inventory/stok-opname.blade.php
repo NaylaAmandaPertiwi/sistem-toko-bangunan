@@ -335,9 +335,26 @@
                     </td>
 
                     <td>
-                        <a href="{{ route('admin.stok-opname.show',$opname->id) }}">
+
+                        <a
+                            href="{{ route('admin.stok-opname.show',$opname->id) }}"
+                            title="Detail">
+
                             <i class="fa-solid fa-eye"></i>
+
                         </a>
+
+                        &nbsp;
+
+                        <a
+                            href="{{ route('admin.stok-opname.print',$opname->id) }}"
+                            target="_blank"
+                            title="Cetak">
+
+                            <i class="fa-solid fa-print"></i>
+
+                        </a>
+
                     </td>
 
                 </tr>

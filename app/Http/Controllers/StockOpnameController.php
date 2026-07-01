@@ -218,7 +218,7 @@ class StockOpnameController extends Controller
         )->findOrFail($id);
 
         return view(
-            'inventory.print-stock-opname',
+            'admin.inventory.print-stock-opname',
             compact('opname')
         );
     }
