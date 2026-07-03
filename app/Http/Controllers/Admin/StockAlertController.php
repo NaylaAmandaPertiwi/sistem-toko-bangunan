@@ -12,6 +12,12 @@ class StockAlertController extends Controller
     {
         $query = Product::query();
 
+        $query->whereColumn(
+            'stok',
+            '<=',
+            'stok_minimum'
+        );
+
         if($request->filled('search'))
         {
             $query->where(

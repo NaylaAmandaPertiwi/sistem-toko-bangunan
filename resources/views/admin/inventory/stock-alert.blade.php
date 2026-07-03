@@ -188,63 +188,48 @@
 
             <tbody>
 
-                @foreach($products as $product)
+            @foreach($products as $product)
 
-                    @if($product->stok <= $product->stok_minimum)
+            <tr>
 
-                        <tr>
+                <td>{{ $product->nama_produk }}</td>
 
-                            <td>
-                                {{ $product->nama_produk }}
-                            </td>
+                <td>{{ $product->sku }}</td>
 
-                            <td>
-                                {{ $product->sku }}
-                            </td>
+                <td>{{ $product->stok }}</td>
 
-                            <td>
-                                {{ $product->stok }}
-                            </td>
+                <td>{{ $product->stok_minimum }}</td>
 
-                            <td>
-                                {{ $product->stok_minimum }}
-                            </td>
+                <td>
 
-                            <td>
+                    @if($product->stok == 0)
 
-                                @if($product->stok == 0)
+                        <span class="badge-danger">
+                            Stok Habis
+                        </span>
 
-                                    <span class="badge-danger">
-                                        Stok Habis
-                                    </span>
+                    @else
 
-                                @else
-
-                                    <span class="badge-warning">
-                                        Hampir Habis
-                                    </span>
-
-                                @endif
-
-                            </td>
-
-                            <td>
-
-                                <a
-                                    href="{{ route('stok-masuk.create') }}"
-                                    class="btn-restock">
-
-                                    Restock
-
-                                </a>
-
-                            </td>
-
-                        </tr>
+                        <span class="badge-warning">
+                            Hampir Habis
+                        </span>
 
                     @endif
 
-                @endforeach
+                </td>
+
+                <td>
+
+                    <a href="{{ route('admin.stok-masuk.create') }}"
+                    class="btn-restock">
+                        Restock
+                    </a>
+
+                </td>
+
+            </tr>
+
+            @endforeach
 
             </tbody>
 
