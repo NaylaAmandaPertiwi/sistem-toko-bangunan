@@ -234,6 +234,17 @@ Route::middleware('auth')->group(function () {
                 [\App\Http\Controllers\Admin\StockMovementController::class,'index']
             )->name('stock-movement.index');
 
+                /*
+                |--------------------------------------------------------------------------
+                | PERINGATAN STOK
+                |--------------------------------------------------------------------------
+                */ 
+
+            Route::get(
+                '/peringatan-stok',
+                [\App\Http\Controllers\Admin\StockAlertController::class,'index']
+            )->name('stock-alert.index');
+
             
 
         });
