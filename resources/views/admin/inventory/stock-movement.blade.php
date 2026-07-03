@@ -4,7 +4,7 @@
 
 @section('content')
 
-<style>
+<style>   
 
 .page-card{
     background:white;
@@ -13,16 +13,24 @@
     box-shadow:0 2px 10px rgba(0,0,0,.05);
 }
 
-.page-header{
-    background:#1684e0;
-    color:white;
-    padding:18px 25px;
-    font-size:30px;
-    font-weight:600;
-}
-
 .page-body{
     padding:25px;
+}
+
+.table-wrapper{
+    width:100%;
+    overflow-x:auto;
+}
+
+.stock-table{
+    width:100%;
+    min-width:1100px;
+    border-collapse:collapse;
+}
+
+.stock-table th,
+.stock-table td{
+    white-space:nowrap;
 }
 
 .top-header{
@@ -41,6 +49,8 @@
     display:flex;
     justify-content:space-between;
     align-items:center;
+    flex-wrap:wrap;
+    gap:20px;
     margin-bottom:20px;
 }
 
@@ -93,9 +103,8 @@
     cursor:pointer;
 }
 
-.stock-table{
-    width:100%;
-    border-collapse:collapse;
+.table-wrapper{
+    overflow-x:auto;
 }
 
 .stock-table th{
@@ -157,8 +166,7 @@
                 <h2>Pergerakan Stok</h2>
 
                 <span>
-                    {{ $movements->count() }}
-                    Data Pergerakan Stok
+                    {{ $movements->count() }} Data Pergerakan Stok
                 </span>
 
             </div>
@@ -168,11 +176,9 @@
         <div class="filter-bottom">
 
             <select class="filter-box">
-
                 <option>10 Baris</option>
                 <option>25 Baris</option>
                 <option>50 Baris</option>
-
             </select>
 
             <div class="toolbar">
@@ -202,25 +208,7 @@
 
                 </button>
 
-                <form
-                    id="dateFilterForm"
-                    method="GET">
-
-                    <input
-                        type="hidden"
-                        name="start_date"
-                        id="start_date">
-
-                    <input
-                        type="hidden"
-                        name="end_date"
-                        id="end_date">
-
-                </form>
-
-                <form
-                    id="dateFilterForm"
-                    method="GET">
+                <form id="dateFilterForm" method="GET">
 
                     <input
                         type="hidden"
@@ -242,189 +230,195 @@
 
     <div class="page-body">
 
-        <table class="stock-table">
+        <div class="table-wrapper">
 
-            <thead>
+            <table class="stock-table">
 
-                <tr>
+                <thead>
 
-                    <th>Tanggal</th>
+                    <tr>
 
-                    <th>
+                        <th>Tanggal</th>
 
-                        Produk
+                        <th>
 
-                        <form
-                            method="GET"
-                            id="filterProdukForm"
-                            style="display:inline;">
+                            Produk
 
-                            <select
-                                name="product_id"
-                                class="table-filter"
-                                onchange="this.form.submit()"
-                                style="
-                                    border:none;
-                                    background:transparent;
-                                    font-size:12px;
-                                    cursor:pointer;
-                                    width:18px;
-                                    color:#666;
-                                ">
+                            <form
+                                method="GET"
+                                id="filterProdukForm"
+                                style="display:inline;">
 
-                                <option value="" selected></option>
+                                <select
+                                    name="product_id"
+                                    class="table-filter"
+                                    onchange="this.form.submit()"
+                                    style="
+                                        border:none;
+                                        background:transparent;
+                                        font-size:12px;
+                                        cursor:pointer;
+                                        width:18px;
+                                        color:#666;
+                                    ">
 
-                                <option value="">
-                                    Semua Produk
-                                </option>
+                                    <option value="" selected></option>
 
-                                @foreach($products as $product)
-
-                                    <option
-                                        value="{{ $product->id }}"
-                                        {{ request('product_id') == $product->id ? 'selected' : '' }}>
-
-                                        {{ $product->nama_produk }}
-
+                                    <option value="">
+                                        Semua Produk
                                     </option>
 
-                                @endforeach
+                                    @foreach($products as $product)
 
-                            </select>
+                                        <option
+                                            value="{{ $product->id }}"
+                                            {{ request('product_id') == $product->id ? 'selected' : '' }}>
 
-                        </form>
+                                            {{ $product->nama_produk }}
 
-                    </th>
+                                        </option>
 
-                    <th>
+                                    @endforeach
 
-                        Status
+                                </select>
 
-                        <form
-                            method="GET"
-                            id="filterJenisForm"
-                            style="display:inline;">
+                            </form>
 
-                            <select
-                                name="jenis"
-                                class="table-filter"
-                                onchange="this.form.submit()"
-                                style="
-                                    border:none;
-                                    background:transparent;
-                                    font-size:12px;
-                                    cursor:pointer;
-                                    width:18px;
-                                    color:#666;
-                                ">
+                        </th>
 
-                                <option value=""></option>
+                        <th>
 
-                                <option value="">
-                                    Semua
-                                </option>
+                            Status
 
-                                <option
-                                    value="Masuk"
-                                    {{ request('jenis') == 'Masuk' ? 'selected' : '' }}>
+                            <form
+                                method="GET"
+                                id="filterJenisForm"
+                                style="display:inline;">
+
+                                <select
+                                    name="jenis"
+                                    class="table-filter"
+                                    onchange="this.form.submit()"
+                                    style="
+                                        border:none;
+                                        background:transparent;
+                                        font-size:12px;
+                                        cursor:pointer;
+                                        width:18px;
+                                        color:#666;
+                                    ">
+
+                                    <option value=""></option>
+
+                                    <option value="">
+                                        Semua
+                                    </option>
+
+                                    <option
+                                        value="Masuk"
+                                        {{ request('jenis') == 'Masuk' ? 'selected' : '' }}>
+                                        Masuk
+                                    </option>
+
+                                    <option
+                                        value="Keluar"
+                                        {{ request('jenis') == 'Keluar' ? 'selected' : '' }}>
+                                        Keluar
+                                    </option>
+
+                                    <option
+                                        value="Opname"
+                                        {{ request('jenis') == 'Opname' ? 'selected' : '' }}>
+                                        Opname
+                                    </option>
+
+                                </select>
+
+                            </form>
+
+                        </th>
+
+                        <th>Qty</th>
+
+                        <th>Stok Awal</th>
+                        <th>Stok Akhir</th>
+                        <th>Keterangan</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                @forelse($movements as $item)
+
+                    <tr>
+
+                        <td>
+                            {{ date('d-m-Y', strtotime($item->tanggal)) }}
+                        </td>
+
+                        <td>
+                            {{ optional($item->product)->nama_produk ?? '-' }}
+                        </td>
+
+                        <td>
+
+                            @if($item->jenis == 'Masuk')
+
+                                <span class="badge-masuk">
                                     Masuk
-                                </option>
+                                </span>
 
-                                <option
-                                    value="Keluar"
-                                    {{ request('jenis') == 'Keluar' ? 'selected' : '' }}>
+                            @elseif($item->jenis == 'Keluar')
+
+                                <span class="badge-keluar">
                                     Keluar
-                                </option>
+                                </span>
 
-                                <option
-                                    value="Opname"
-                                    {{ request('jenis') == 'Opname' ? 'selected' : '' }}>
+                            @else
+
+                                <span class="badge-opname">
                                     Opname
-                                </option>
+                                </span>
 
-                            </select>
+                            @endif
 
-                        </form>
+                        </td>
 
-                    </th>
+                        <td>{{ $item->qty }}</td>
 
-                    <th>Qty</th>
+                        <td>{{ $item->stok_awal }}</td>
 
-                    <th>Stok Awal</th>
-                    <th>Stok Akhir</th>
-                    <th>Keterangan</th>
+                        <td>{{ $item->stok_akhir }}</td>
 
-                </tr>
+                        <td>{{ $item->keterangan }}</td>
 
-            </thead>
+                    </tr>
 
-            <tbody>
+                @empty
 
-            @forelse($movements as $item)
+                    <tr>
 
-                <tr>
+                        <td colspan="7">
+                            Belum ada data
+                        </td>
 
-                    <td>
-                        {{ date('d-m-Y', strtotime($item->tanggal)) }}
-                    </td>
+                    </tr>
 
-                    <td>
-                        {{ optional($item->product)->nama_produk ?? '-' }}
-                    </td>
+                @endforelse
 
-                    <td>
+                </tbody>
 
-                        @if($item->jenis == 'Masuk')
+            </table>
 
-                            <span class="badge-masuk">
-                                Masuk
-                            </span>
-
-                        @elseif($item->jenis == 'Keluar')
-
-                            <span class="badge-keluar">
-                                Keluar
-                            </span>
-
-                        @else
-
-                            <span class="badge-opname">
-                                Opname
-                            </span>
-
-                        @endif
-
-                    </td>
-
-                    <td>{{ $item->qty }}</td>
-
-                    <td>{{ $item->stok_awal }}</td>
-
-                    <td>{{ $item->stok_akhir }}</td>
-
-                    <td>{{ $item->keterangan }}</td>
-
-                </tr>
-
-            @empty
-
-                <tr>
-
-                    <td colspan="7">
-                        Belum ada data
-                    </td>
-
-                </tr>
-
-            @endforelse
-
-            </tbody>
-
-        </table>
+        </div>
 
     </div>
 
 </div>
+
+@endsection
 
 @section('scripts')
 
@@ -492,7 +486,5 @@ $(function(){
 });
 
 </script>
-
-@endsection
 
 @endsection

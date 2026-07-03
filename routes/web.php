@@ -178,7 +178,7 @@ Route::middleware('auth')->group(function () {
                 [\App\Http\Controllers\Admin\StockInController::class, 'bulkDelete']
             )->name('stok-masuk.bulkDelete');
 
-            /*
+                /*
                 |--------------------------------------------------------------------------
                 | STOK OPNAME
                 |--------------------------------------------------------------------------
@@ -223,6 +223,17 @@ Route::middleware('auth')->group(function () {
                 '/stok-opname/{id}',
                 [\App\Http\Controllers\Admin\StockOpnameController::class,'show']
             )->name('stok-opname.show');
+
+                /*
+                |--------------------------------------------------------------------------
+                | PERGERAKAN STOK
+                |--------------------------------------------------------------------------
+                */
+            Route::get(
+                '/stock-movement',
+                [\App\Http\Controllers\Admin\StockMovementController::class,'index']
+            )->name('stock-movement.index');
+
             
 
         });

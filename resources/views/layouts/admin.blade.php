@@ -348,6 +348,27 @@ body{
     padding:30px;
 }
 
+/* Prevent accidental page scaling and keep content responsive */
+.content{
+    max-width: calc(100% - 260px);
+    box-sizing: border-box;
+    transform: none !important;
+    -webkit-transform: none !important;
+    zoom: 1;
+    overflow-x: hidden;
+}
+
+@media (max-width: 900px){
+    .content{
+        margin-left:0;
+        padding:20px;
+    }
+    .sidebar{
+        position:fixed;
+        transform:translateX(-100%);
+    }
+}
+
 /* HEADER */
 .header{
     display:flex;
@@ -951,8 +972,8 @@ rel="stylesheet">
             Stok Opname
         </a>
 
-        <a href="{{ route('stock-movement.index') }}"
-        class="{{ request()->is('stock-movement*') ? 'submenu-active' : '' }}">
+        <a href="{{ route('admin.stock-movement.index') }}"
+        class="{{ request()->is('admin/stock-movement*') ? 'submenu-active' : '' }}">
             Pergerakan Stok
         </a>
 
