@@ -916,13 +916,13 @@ rel="stylesheet">
             Produk
         </a>
 
-        <a href="/kategori-produk"
-        class="{{ request()->is('kategori-produk*') ? 'submenu-active' : '' }}">
+        <a href="{{ route('admin.kategori-produk.index') }}"
+        class="{{ request()->is('admin/kategori-produk*') ? 'submenu-active' : '' }}">
             Kategori
         </a>
 
-        <a href="/barcode"
-        class="{{ request()->is('barcode*') ? 'submenu-active' : '' }}">
+        <a href="{{ route('admin.barcode.index') }}"
+        class="{{ request()->is('admin/barcode*') ? 'submenu-active' : '' }}">
             Barcode
         </a>
 
@@ -933,7 +933,7 @@ rel="stylesheet">
     <!-- SUPPLIER -->
 
     <a href="{{ route('admin.supplier.index') }}"
-    class="{{ request()->is('supplier*') ? 'active' : '' }}">
+    class="{{ request()->is('admin/supplier*') ? 'active' : '' }}">
 
     <i class="fa-solid fa-truck"></i>
     Supplier
@@ -978,7 +978,7 @@ rel="stylesheet">
         </a>
 
         <a href="{{ route('admin.stock-alert.index') }}"
-        class="{{ request()->is('peringatan-stok*') ? 'submenu-active' : '' }}">
+        class="{{ request()->is('admin/stock-alert*') ? 'submenu-active' : '' }}">
             Peringatan Stok
         </a>
 
@@ -1028,8 +1028,8 @@ rel="stylesheet">
 
     <!-- DISKON -->
 
-    <a href="/diskon"
-    class="{{ request()->is('diskon*') ? 'active' : '' }}">
+    <a href="{{ route('admin.discount.index') }}"
+    class="{{ request()->routeIs('admin.discount.*') ? 'active' : '' }}">
 
     <i class="fa-solid fa-percent"></i>
     Diskon
@@ -1057,23 +1057,23 @@ rel="stylesheet">
     <div class="dropdown-content"
     id="laporanDropdown">
 
-        <a href="/laporan-penjualan"
-        class="{{ request()->is('laporan-penjualan*') ? 'submenu-active' : '' }}">
+        <a href="{{ route('admin.sales-report.index') }}"
+        class="{{ request()->is('admin/sales-report*') ? 'submenu-active' : '' }}">
             Penjualan
         </a>
 
-        <a href="/laporan-stok"
-        class="{{ request()->is('laporan-stok*') ? 'submenu-active' : '' }}">
+        <a href="{{ route('admin.stock-report.index') }}"
+        class="{{ request()->is('admin/stock-report*') ? 'submenu-active' : '' }}">
             Stok
         </a>
 
-        <a href="/laporan-barang-terlaris"
-        class="{{ request()->is('laporan-barang-terlaris*') ? 'submenu-active' : '' }}">
+        <a href="{{ route('admin.top-selling-products.index') }}"
+        class="{{ request()->is('admin/top-selling-products*') ? 'submenu-active' : '' }}">
             Barang Terlaris
         </a>
 
-        <a href="/laporan-keuangan"
-        class="{{ request()->is('laporan-keuangan*') ? 'submenu-active' : '' }}">
+        <a href="{{ route('admin.financial-report.index') }}"
+        class="{{ request()->is('admin/financial-report*') ? 'submenu-active' : '' }}">
             Keuangan
         </a>
 
