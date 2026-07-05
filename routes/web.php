@@ -21,6 +21,13 @@ use App\Http\Controllers\ReturnController;
 
 use App\Http\Controllers\DiscountController;
 
+
+
+use App\Http\Controllers\Kasir\DashboardController as KasirDashboardController;
+use App\Http\Controllers\Kasir\SaleController as KasirSaleController;
+use App\Http\Controllers\Kasir\ReturnController as KasirReturnController;
+use App\Http\Controllers\Kasir\HistoryController as KasirHistoryController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -291,14 +298,32 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::middleware('role:Kasir')
+    Route::middleware(['auth','role:Kasir'])
         ->prefix('kasir')
         ->name('kasir.')
         ->group(function () {
 
-            // Route Kasir akan dibuat nanti
+            Route::get('/dashboard',
+                [KasirDashboardController::class, 'index'])
+                ->name('dashboard');
 
-        });
+            Route::get('/penjualan',
+                [KasirSaleController::class, 'index'])
+                ->name('penjualan.index');
+
+            Route::get('/retur',
+                [KasirReturnController::class, 'index'])
+                ->name('retur.index');
+
+            Route::get('/riwayat-transaksi',
+                [KasirHistoryController::class, 'index'])
+                ->name('riwayat.index');
+
+
+
+
+
+    });
 
     /*
     |--------------------------------------------------------------------------

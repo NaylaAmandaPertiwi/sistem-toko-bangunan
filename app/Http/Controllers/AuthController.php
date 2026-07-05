@@ -22,8 +22,23 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+
             $request->session()->regenerate();
-            return redirect()->route('admin.dashboard');
+
+            if (Auth::user()->role == 'Admin') {
+                return redirect()->route('admin.dashboard');
+            }
+
+            if (Auth::user()->role == 'Kasir') {
+                return redirect()->route('kasir.dashboard');
+            }
+
+            Auth::logout();
+
+            return redirect('/login')
+                ->withErrors([
+                    'email' => 'Role tidak dikenali.'
+                ]);
         }
 
         return back()->withErrors([
