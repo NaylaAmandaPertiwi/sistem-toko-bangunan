@@ -245,6 +245,42 @@ Route::middleware('auth')->group(function () {
                 [\App\Http\Controllers\Admin\StockAlertController::class,'index']
             )->name('stock-alert.index');
 
+            /*
+            |--------------------------------------------------------------------------
+            | DISKON
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/diskon',
+                [\App\Http\Controllers\Admin\DiscountController::class,'index']
+            )->name('discount.index');
+
+            Route::get(
+                '/diskon/create',
+                [\App\Http\Controllers\Admin\DiscountController::class, 'create']
+            )->name('discount.create');
+
+            Route::get(
+                '/diskon/{discount}/edit',
+                [\App\Http\Controllers\Admin\DiscountController::class,'edit']
+            )->name('discount.edit');
+
+            Route::post(
+                '/diskon',
+                [\App\Http\Controllers\Admin\DiscountController::class, 'store']
+            )->name('discount.store');
+
+            Route::put(
+                '/diskon/{discount}',
+                [\App\Http\Controllers\Admin\DiscountController::class, 'update']
+            )->name('discount.update');
+
+            Route::delete(
+                '/diskon/{discount}',
+                [\App\Http\Controllers\Admin\DiscountController::class, 'destroy']
+            )->name('discount.destroy');
+
             
 
         });
