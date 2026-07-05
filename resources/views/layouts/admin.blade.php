@@ -978,7 +978,7 @@ rel="stylesheet">
         </a>
 
         <a href="{{ route('admin.stock-alert.index') }}"
-        class="{{ request()->is('admin/stock-alert*') ? 'submenu-active' : '' }}">
+        class="{{ request()->is('admin/peringatan-stok*') ? 'submenu-active' : '' }}">
             Peringatan Stok
         </a>
 
@@ -1007,20 +1007,20 @@ rel="stylesheet">
     <div class="dropdown-content"
     id="transactionDropdown">
 
-        <a href="/penjualan"
-        class="{{ request()->is('penjualan*') ? 'submenu-active' : '' }}">
+        {{--<a href="{{ route('admin.penjualan.index') }}"
+        class="{{ request()->is('admin/penjualan*') ? 'submenu-active' : '' }}">
             Data Penjualan
-        </a>
+        </a>--}}
 
-        <a href="/retur"
+        {{--<a href="{{ route('admin.retur.index') }}"
         class="{{ request()->is('retur*') ? 'submenu-active' : '' }}">
             Retur Penjualan
-        </a>
+        </a>--}}
 
-        <a href="/riwayat-transaksi"
+        {{--<a href="/riwayat-transaksi"
         class="{{ request()->is('riwayat-transaksi*') ? 'submenu-active' : '' }}">
             Riwayat Transaksi
-        </a>
+        </a>--}}
 
     </div>
 
