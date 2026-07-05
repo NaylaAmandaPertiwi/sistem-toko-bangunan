@@ -921,7 +921,7 @@ rel="stylesheet">
             Kategori
         </a>
 
-        <a href="{{ route('admin.barcode.index') }}"
+        <a href="{{ route('admin.barcode') }}"
         class="{{ request()->is('admin/barcode*') ? 'submenu-active' : '' }}">
             Barcode
         </a>
@@ -1057,25 +1057,25 @@ rel="stylesheet">
     <div class="dropdown-content"
     id="laporanDropdown">
 
-        <a href="{{ route('admin.sales-report.index') }}"
+    {{--<a href="{{ route('admin.sales-report.index') }}"
         class="{{ request()->is('admin/sales-report*') ? 'submenu-active' : '' }}">
             Penjualan
-        </a>
+        </a>--}}
 
-        <a href="{{ route('admin.stock-report.index') }}"
+    {{--<a href="{{ route('admin.stock-report.index') }}"
         class="{{ request()->is('admin/stock-report*') ? 'submenu-active' : '' }}">
             Stok
-        </a>
+        </a>--}}
 
-        <a href="{{ route('admin.top-selling-products.index') }}"
+    {{--<a href="{{ route('admin.top-selling-products.index') }}"
         class="{{ request()->is('admin/top-selling-products*') ? 'submenu-active' : '' }}">
             Barang Terlaris
-        </a>
+        </a>--}}
 
-        <a href="{{ route('admin.financial-report.index') }}"
+    {{--<a href="{{ route('admin.financial-report.index') }}"
         class="{{ request()->is('admin/financial-report*') ? 'submenu-active' : '' }}">
             Keuangan
-        </a>
+        </a>--}}
 
     </div>
 
