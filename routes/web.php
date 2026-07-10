@@ -303,21 +303,83 @@ Route::middleware('auth')->group(function () {
         ->name('kasir.')
         ->group(function () {
 
-            Route::get('/dashboard',
-                [KasirDashboardController::class, 'index'])
-                ->name('dashboard');
+            Route::get(
+                '/dashboard',
+                [KasirDashboardController::class,'index']
+            )->name('dashboard');
 
-            Route::get('/penjualan',
-                [KasirSaleController::class, 'index'])
-                ->name('penjualan.index');
+            /*
+            |--------------------------------------------------------------------------
+            | PENJUALAN
+            |--------------------------------------------------------------------------
+            */
 
-            Route::get('/retur',
-                [KasirReturnController::class, 'index'])
-                ->name('retur.index');
+            Route::get(
+                '/penjualan',
+                [KasirSaleController::class,'index']
+            )->name('penjualan.index');
 
-            Route::get('/riwayat-transaksi',
-                [KasirHistoryController::class, 'index'])
-                ->name('riwayat.index');
+            Route::get(
+                '/produk/search',
+                [KasirSaleController::class,'searchProduct']
+            )->name('produk.search');
+
+            Route::post(
+                '/penjualan',
+                [KasirSaleController::class, 'store']
+            )->name('penjualan.store');
+
+            Route::get(
+                '/penjualan/{sale}/print',
+                [KasirSaleController::class,'print']
+            )->name('penjualan.print');
+
+            
+
+            /*
+            |--------------------------------------------------------------------------
+            | RETUR
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/retur',
+                [KasirReturnController::class,'index']
+            )->name('retur.index');
+
+            Route::get(
+                '/retur/create',
+                [KasirReturnController::class,'create']
+            )->name('retur.create');
+
+            Route::post(
+                '/retur',
+                [KasirReturnController::class,'store']
+            )->name('retur.store');
+
+            Route::get(
+                '/retur/{retur}',
+                [KasirReturnController::class,'show']
+            )->name('retur.show');
+
+            Route::delete(
+                '/retur/{retur}',
+                [KasirReturnController::class,'destroy']
+            )->name('retur.destroy');
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | RIWAYAT TRANSAKSI
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/riwayat-transaksi',
+                [KasirHistoryController::class,'index']
+            )->name('riwayat.index');
+
+        });
 
 
 
@@ -341,263 +403,263 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    // produk
-    Route::delete(
-        '/produk/bulk-delete',
-        [ProductController::class, 'bulkDelete']
-    )->name('produk.bulkDelete');
+//     // produk
+//     Route::delete(
+//         '/produk/bulk-delete',
+//         [ProductController::class, 'bulkDelete']
+//     )->name('produk.bulkDelete');
 
-    Route::resource(
-        'produk',
-        ProductController::class
+//     Route::resource(
+//         'produk',
+//         ProductController::class
 
-    );
+//     );
 
-    // kategori produk
-    Route::resource(
-        'kategori-produk',
-        CategoryController::class
-    );
+//     // kategori produk
+//     Route::resource(
+//         'kategori-produk',
+//         CategoryController::class
+//     );
 
-    // barcode
-    Route::get('/barcode',
-        [ProductController::class, 'barcode']);
+//     // barcode
+//     Route::get('/barcode',
+//         [ProductController::class, 'barcode']);
 
 
-    /*
-    |--------------------------------------------------------------------------
-    |  SUPPLIER
-    |--------------------------------------------------------------------------
-    */
+//     /*
+//     |--------------------------------------------------------------------------
+//     |  SUPPLIER
+//     |--------------------------------------------------------------------------
+//     */
 
-    // supplier
-    Route::resource(
-        'supplier',
-        SupplierController::class
-    );
+//     // supplier
+//     Route::resource(
+//         'supplier',
+//         SupplierController::class
+//     );
 
-    Route::get(
-        '/supplier-export',
-        [SupplierController::class,'export']
-    )->name('supplier.export');
+//     Route::get(
+//         '/supplier-export',
+//         [SupplierController::class,'export']
+//     )->name('supplier.export');
         
 
-    /*
-    |--------------------------------------------------------------------------
-    | INVENTORY
-    |--------------------------------------------------------------------------
-    */    
+//     /*
+//     |--------------------------------------------------------------------------
+//     | INVENTORY
+//     |--------------------------------------------------------------------------
+//     */    
 
-    // Inventory
-    Route::get('/inventory',
-        [InventoryController::class,'index']);
+//     // Inventory
+//     Route::get('/inventory',
+//         [InventoryController::class,'index']);
 
-        /*
-        |--------------------------------------------------------------------------
-        | STOK MASUK
-        |--------------------------------------------------------------------------
-        */ 
+//         /*
+//         |--------------------------------------------------------------------------
+//         | STOK MASUK
+//         |--------------------------------------------------------------------------
+//         */ 
 
-    // Menampilkan daftar stok masuk
-    Route::get('/stok-masuk',
-        [StockInController::class,'index'])
-        ->name('stok-masuk.index');
+//     // Menampilkan daftar stok masuk
+//     Route::get('/stok-masuk',
+//         [StockInController::class,'index'])
+//         ->name('stok-masuk.index');
 
-    // Menampilkan form tambah stok masuk
-    Route::get('/stok-masuk/create',
-        [StockInController::class,'create'])
-        ->name('stok-masuk.create');
+//     // Menampilkan form tambah stok masuk
+//     Route::get('/stok-masuk/create',
+//         [StockInController::class,'create'])
+//         ->name('stok-masuk.create');
 
-    // Menyimpan data stok masuk baru
-    Route::post('/stok-masuk',
-        [StockInController::class,'store'])
-        ->name('stok-masuk.store');
+//     // Menyimpan data stok masuk baru
+//     Route::post('/stok-masuk',
+//         [StockInController::class,'store'])
+//         ->name('stok-masuk.store');
 
-    // Menampilkan form edit stok masuk
-    Route::get('/stok-masuk/{id}/edit',
-        [StockInController::class,'edit'])
-        ->name('stok-masuk.edit');
+//     // Menampilkan form edit stok masuk
+//     Route::get('/stok-masuk/{id}/edit',
+//         [StockInController::class,'edit'])
+//         ->name('stok-masuk.edit');
 
-    // Menyimpan hasil edit stok masuk
-    Route::put('/stok-masuk/{id}',
-        [StockInController::class,'update'])
-        ->name('stok-masuk.update');
+//     // Menyimpan hasil edit stok masuk
+//     Route::put('/stok-masuk/{id}',
+//         [StockInController::class,'update'])
+//         ->name('stok-masuk.update');
 
-    // Hapus banyak data sekaligus
-    Route::delete('/stok-masuk/bulk-delete',
-        [StockInController::class,'bulkDelete'])
-        ->name('stok-masuk.bulkDelete');
+//     // Hapus banyak data sekaligus
+//     Route::delete('/stok-masuk/bulk-delete',
+//         [StockInController::class,'bulkDelete'])
+//         ->name('stok-masuk.bulkDelete');
 
-        /*
-        |--------------------------------------------------------------------------
-        | STOK OPNAME
-        |--------------------------------------------------------------------------
-        */     
+//         /*
+//         |--------------------------------------------------------------------------
+//         | STOK OPNAME
+//         |--------------------------------------------------------------------------
+//         */     
 
-    // stok opname
+//     // stok opname
 
-    Route::get(
-        '/stok-opname',
-        [StockOpnameController::class,'index']
-    )->name('stok-opname.index');
+//     Route::get(
+//         '/stok-opname',
+//         [StockOpnameController::class,'index']
+//     )->name('stok-opname.index');
 
-    Route::get(
-        '/stok-opname/create',
-        [StockOpnameController::class,'create']
-    )->name('stok-opname.create');
+//     Route::get(
+//         '/stok-opname/create',
+//         [StockOpnameController::class,'create']
+//     )->name('stok-opname.create');
 
-    Route::post(
-        '/stok-opname',
-        [StockOpnameController::class,'store']
-    )->name('stok-opname.store');
+//     Route::post(
+//         '/stok-opname',
+//         [StockOpnameController::class,'store']
+//     )->name('stok-opname.store');
 
-    Route::delete(
-        '/stok-opname/bulk-delete',
-        [StockOpnameController::class,'bulkDelete']
-    )->name('stok-opname.bulk-delete');
+//     Route::delete(
+//         '/stok-opname/bulk-delete',
+//         [StockOpnameController::class,'bulkDelete']
+//     )->name('stok-opname.bulk-delete');
 
-   Route::put(
-        '/stok-opname/{id}/status',
-        [StockOpnameController::class,'updateStatus']
-    )->name('stok-opname.update-status');
+//    Route::put(
+//         '/stok-opname/{id}/status',
+//         [StockOpnameController::class,'updateStatus']
+//     )->name('stok-opname.update-status');
 
-    Route::get(
-        '/stok-opname/{id}/print',
-        [StockOpnameController::class,'print']
-    )->name('stok-opname.print');
+//     Route::get(
+//         '/stok-opname/{id}/print',
+//         [StockOpnameController::class,'print']
+//     )->name('stok-opname.print');
 
-    Route::get(
-        '/stok-opname/{id}',
-        [StockOpnameController::class,'show']
-    )->name('stok-opname.show');
+//     Route::get(
+//         '/stok-opname/{id}',
+//         [StockOpnameController::class,'show']
+//     )->name('stok-opname.show');
 
-    /*
-        |--------------------------------------------------------------------------
-        | PERGERAKAN STOK
-        |--------------------------------------------------------------------------
-        */ 
+//     /*
+//         |--------------------------------------------------------------------------
+//         | PERGERAKAN STOK
+//         |--------------------------------------------------------------------------
+//         */ 
     
-    // pergerakan stok    
-        Route::get(
-        '/stock-movement',
-        [StockMovementController::class,'index']
-    )->name('stock-movement.index');
+//     // pergerakan stok    
+//         Route::get(
+//         '/stock-movement',
+//         [StockMovementController::class,'index']
+//     )->name('stock-movement.index');
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | PERINGATAN STOK
-        |--------------------------------------------------------------------------
-        */ 
+//         /*
+//         |--------------------------------------------------------------------------
+//         | PERINGATAN STOK
+//         |--------------------------------------------------------------------------
+//         */ 
 
-    // peringatan stok
-    Route::get(
-        '/peringatan-stok',
-        [StockAlertController::class,'index']
-    )->name('stock-alert.index');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | TRANSAKSI
-    |--------------------------------------------------------------------------
-    */
-
-        /*
-        |--------------------------------------------------------------------------
-        | PENJUALAN
-        |--------------------------------------------------------------------------
-        */ 
-
-    // penjualan
-    Route::get(
-        '/penjualan',
-        [SaleController::class, 'index']
-    )->name('penjualan.index');
-
-    Route::post(
-    '/penjualan/simpan',
-        [SaleController::class,'store']
-    )->name('penjualan.store');
+//     // peringatan stok
+//     Route::get(
+//         '/peringatan-stok',
+//         [StockAlertController::class,'index']
+//     )->name('stock-alert.index');
 
 
-    /*
-        |--------------------------------------------------------------------------
-        | RETUR BARANG
-        |--------------------------------------------------------------------------
-        */ 
+//     /*
+//     |--------------------------------------------------------------------------
+//     | TRANSAKSI
+//     |--------------------------------------------------------------------------
+//     */
 
-    // retur barang
-    Route::get(
-        '/retur',
-        [ReturnController::class,'index']
-    )->name('retur.index');
+//         /*
+//         |--------------------------------------------------------------------------
+//         | PENJUALAN
+//         |--------------------------------------------------------------------------
+//         */ 
 
-    Route::get(
-        '/retur/create',
-        [ReturnController::class,'create']
-    )->name('retur.create');
+//     // penjualan
+//     Route::get(
+//         '/penjualan',
+//         [SaleController::class, 'index']
+//     )->name('penjualan.index');
 
-    Route::post(
-        '/retur',
-        [ReturnController::class,'store']
-    )->name('retur.store');
-
-    Route::get(
-        '/retur/{retur}',
-        [ReturnController::class,'show']
-    )->name('retur.show');
-
-    Route::delete(
-        '/retur/{retur}',
-        [ReturnController::class,'destroy']
-    )->name('retur.destroy');
+//     Route::post(
+//     '/penjualan/simpan',
+//         [SaleController::class,'store']
+//     )->name('penjualan.store');
 
 
+//     /*
+//         |--------------------------------------------------------------------------
+//         | RETUR BARANG
+//         |--------------------------------------------------------------------------
+//         */ 
 
-    // riwayat transaksi
-    Route::get('/riwayat-transaksi', function () {
-        return view('transaksi.riwayat-transaksi');
-    });
+//     // retur barang
+//     Route::get(
+//         '/retur',
+//         [ReturnController::class,'index']
+//     )->name('retur.index');
+
+//     Route::get(
+//         '/retur/create',
+//         [ReturnController::class,'create']
+//     )->name('retur.create');
+
+//     Route::post(
+//         '/retur',
+//         [ReturnController::class,'store']
+//     )->name('retur.store');
+
+//     Route::get(
+//         '/retur/{retur}',
+//         [ReturnController::class,'show']
+//     )->name('retur.show');
+
+//     Route::delete(
+//         '/retur/{retur}',
+//         [ReturnController::class,'destroy']
+//     )->name('retur.destroy');
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | DISKON
-    |--------------------------------------------------------------------------
-    */
 
-    // diskon
-    Route::resource(
-        'diskon',
-        DiscountController::class
-    );
+//     // riwayat transaksi
+//     Route::get('/riwayat-transaksi', function () {
+//         return view('transaksi.riwayat-transaksi');
+//     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | LAPORAN
-    |--------------------------------------------------------------------------
-    */
 
-    // laporan penjualan
-    Route::get('/laporan-penjualan', function () {
-        return view('laporan.penjualan');
-    });
+//     /*
+//     |--------------------------------------------------------------------------
+//     | DISKON
+//     |--------------------------------------------------------------------------
+//     */
 
-    // laporan stok
-    Route::get('/laporan-stok', function () {
-        return view('laporan.stok');
-    });
+//     // diskon
+//     Route::resource(
+//         'diskon',
+//         DiscountController::class
+//     );
 
-    // laporan barang terlaris
-    Route::get('/laporan-barang-terlaris', function () {
-        return view('laporan.barang-terlaris');
-    });
+//     /*
+//     |--------------------------------------------------------------------------
+//     | LAPORAN
+//     |--------------------------------------------------------------------------
+//     */
 
-    // laporan keuangan
-    Route::get('/laporan-keuangan', function () {
-        return view('laporan.keuangan');
-    });
+//     // laporan penjualan
+//     Route::get('/laporan-penjualan', function () {
+//         return view('laporan.penjualan');
+//     });
+
+//     // laporan stok
+//     Route::get('/laporan-stok', function () {
+//         return view('laporan.stok');
+//     });
+
+//     // laporan barang terlaris
+//     Route::get('/laporan-barang-terlaris', function () {
+//         return view('laporan.barang-terlaris');
+//     });
+
+//     // laporan keuangan
+//     Route::get('/laporan-keuangan', function () {
+//         return view('laporan.keuangan');
+//     });
 
     
-});
+// });*/

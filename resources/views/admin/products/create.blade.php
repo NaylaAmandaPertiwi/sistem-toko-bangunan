@@ -96,7 +96,7 @@
 
             <div>
 
-                <a href="{{ route('produk.index') }}"
+                <a href="{{ route('admin.produk.index') }}"
                    class="btn-cancel">
 
                     Batal
@@ -122,7 +122,7 @@
 
         <form
             id="productForm"
-            action="{{ route('produk.store') }}"
+            action="{{ route('admin.produk.store') }}"
             method="POST">
 
             @csrf

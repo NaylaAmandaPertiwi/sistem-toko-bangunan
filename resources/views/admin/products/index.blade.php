@@ -220,7 +220,7 @@ th i{
 
             <form
                 method="GET"
-                action="{{ route('produk.index') }}"
+                action="{{ route('admin.produk.index') }}"
                 style="display:flex;gap:15px;width:100%;">
 
                 <div class="left-filter">
@@ -269,7 +269,7 @@ th i{
 
                 </button>
 
-                <a href="{{ route('produk.create') }}"
+                <a href="{{ route('admin.produk.create') }}"
                 class="add-btn">
 
                     Tambah Produk
@@ -284,7 +284,7 @@ th i{
         <div class="table-section">
 
             <form id="bulkDeleteForm"
-                action="{{ route('produk.bulkDelete') }}"
+                action="{{ route('admin.produk.bulkDelete') }}"
                 method="POST">
 
                 @csrf
@@ -433,7 +433,7 @@ th i{
 
                             <td>
 
-                                <a href="{{ route('produk.edit',$product->id) }}"
+                                <a href="{{ route('admin.produk.edit',$product->id) }}"
                                 class="edit-btn">
 
                                     <i class="fa-solid fa-pen"></i>

@@ -2,34 +2,67 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+use App\Models\User;
+use App\Models\SaleDetail;
 
 class Sale extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
 
+        'user_id',
+
         'kode_penjualan',
+
         'tanggal',
+
         'subtotal',
+
         'diskon',
+
         'total_bayar',
+
         'bayar',
+
         'kembalian'
 
     ];
 
-    public function details()
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi Kasir
+    |--------------------------------------------------------------------------
+    */
+
+    public function user()
     {
-        return $this->hasMany(
-            SaleDetail::class
+        return $this->belongsTo(
+
+            User::class,
+
+            'user_id'
+
         );
     }
 
-    public function returns()
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi Detail Penjualan
+    |--------------------------------------------------------------------------
+    */
+
+    public function saleDetails()
     {
         return $this->hasMany(
-            ReturnSale::class
+
+            SaleDetail::class,
+
+            'sale_id'
+
         );
     }
 }
