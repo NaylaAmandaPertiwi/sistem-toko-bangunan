@@ -244,7 +244,7 @@ textarea{
 
                             class="btn btn-primary btn-sm"
 
-                            disabled>
+                            onclick="loadTransaction({{ $sale->id }})">
 
                             Pilih
 
@@ -286,12 +286,96 @@ textarea{
 
     <!-- Card Detail Barang -->
 
-    ...
+    <div class="card-retur">
+
+        <h5 class="card-title">
+
+            Detail Barang
+
+        </h5>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Produk</th>
+
+                        <th>Qty Beli</th>
+
+                        <th>Qty Retur</th>
+
+                        <th>Harga</th>
+
+                        <th>Subtotal</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="detailBody">
+
+                    <tr>
+
+                        <td colspan="5" class="text-center">
+
+                            Pilih transaksi terlebih dahulu.
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
     <!-- Card Ringkasan -->
 
     ...
 
 </div>
+
+@endsection
+
+@section('scripts')
+
+<script>
+
+async function loadTransaction(id){
+
+    try{
+
+        const response = await fetch(
+
+            "/kasir/retur/" +
+
+            id +
+
+            "/detail"
+
+        );
+
+        const data = await response.json();
+
+        console.log(data);
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+</script>
 
 @endsection
