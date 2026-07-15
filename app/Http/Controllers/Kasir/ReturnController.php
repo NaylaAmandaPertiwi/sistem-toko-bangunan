@@ -25,23 +25,17 @@ class ReturnController extends Controller
 
     public function index()
     {
-        $returns = ReturnSale::with([
+        $sales = Sale::with('user')
 
-            'sale',
+            ->latest()
 
-            'user'
-
-        ])
-
-        ->latest()
-
-        ->paginate(10);
+            ->paginate(10);
 
         return view(
 
             'kasir.retur.index',
 
-            compact('returns')
+            compact('sales')
 
         );
     }

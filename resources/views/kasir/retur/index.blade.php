@@ -174,7 +174,115 @@ textarea{
 
     <!-- Card Daftar Transaksi -->
 
-    ...
+    <div class="card-retur">
+
+        <h5 class="card-title">
+
+            Daftar Transaksi
+
+        </h5>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Kode</th>
+
+                        <th>Tanggal</th>
+
+                        <th>Kasir</th>
+
+                        <th>Total</th>
+
+                        <th width="120">
+
+                            Aksi
+
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                @forelse($sales as $sale)
+
+                <tr>
+
+                    <td>
+
+                        {{ $sale->kode_penjualan }}
+
+                    </td>
+
+                    <td>
+
+                        {{ $sale->tanggal }}
+
+                    </td>
+
+                    <td>
+
+                        {{ $sale->user->name }}
+
+                    </td>
+
+                    <td>
+
+                        Rp {{ number_format($sale->total_bayar,0,',','.') }}
+
+                    </td>
+
+                    <td>
+
+                        <button
+
+                            class="btn btn-primary btn-sm"
+
+                            disabled>
+
+                            Pilih
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+                @empty
+
+                <tr>
+
+                    <td colspan="5"
+
+                        class="text-center">
+
+                        Belum ada transaksi.
+
+                    </td>
+
+                </tr>
+
+                @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="mt-3">
+
+            {{ $sales->links() }}
+
+        </div>
+
+    </div>
 
     <!-- Card Detail Barang -->
 
