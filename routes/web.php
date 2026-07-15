@@ -352,6 +352,11 @@ Route::middleware('auth')->group(function () {
                 [KasirReturnController::class,'create']
             )->name('retur.create');
 
+            Route::get(
+                '/retur/{sale}/detail',
+                [KasirReturnController::class,'detail']
+            )->name('retur.detail');
+
             Route::post(
                 '/retur',
                 [KasirReturnController::class,'store']

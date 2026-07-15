@@ -40,6 +40,25 @@ class ReturnController extends Controller
         );
     }
 
+    public function detail(Sale $sale)
+    {
+        $sale->load([
+
+            'user',
+
+            'saleDetails.product'
+
+        ]);
+
+        return response()->json([
+
+            'success' => true,
+
+            'sale' => $sale
+
+        ]);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Form Tambah Retur
