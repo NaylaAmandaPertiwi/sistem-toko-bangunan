@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\SaleDetail;
+use App\Models\Product;
+use App\Models\ReturnSale;
+
 class ReturnDetail extends Model
 {
     use HasFactory;
@@ -12,9 +16,15 @@ class ReturnDetail extends Model
     protected $fillable = [
 
         'return_sale_id',
+
+        'sale_detail_id',
+
         'product_id',
+
         'qty',
+
         'harga',
+
         'subtotal'
 
     ];
@@ -30,6 +40,17 @@ class ReturnDetail extends Model
         return $this->belongsTo(
             ReturnSale::class
         );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi Detail Penjualan
+    |--------------------------------------------------------------------------
+    */
+
+    public function saleDetail()
+    {
+        return $this->belongsTo(SaleDetail::class);
     }
 
     /*
