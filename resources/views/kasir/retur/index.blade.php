@@ -338,7 +338,31 @@ textarea{
 
     <!-- Card Ringkasan -->
 
-    ...
+    <div class="card-retur">
+
+        <h5 class="card-title">
+
+            Ringkasan Retur
+
+        </h5>
+
+        <div class="summary-box">
+
+            <div class="d-flex justify-content-between">
+
+                <strong>Total Retur</strong>
+
+                <span id="totalRetur">
+
+                    Rp 0
+
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
@@ -517,6 +541,30 @@ function updateQty(index,value){
         .subtotal
 
         .toLocaleString("id-ID");
+
+    calculateTotalRetur();
+
+}
+
+function calculateTotalRetur(){
+
+    totalRetur = 0;
+
+    returnItems.forEach(function(item){
+
+        totalRetur += item.subtotal;
+
+    });
+
+    document.getElementById(
+
+        "totalRetur"
+
+    ).innerHTML =
+
+        "Rp " +
+
+        totalRetur.toLocaleString("id-ID");
 
 }
 
