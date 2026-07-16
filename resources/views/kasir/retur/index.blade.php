@@ -772,7 +772,16 @@ async function submitReturn() {
 
     const payload = prepareReturnPayload();
 
+    const btnSimpan = document.getElementById("btnSimpanRetur");
+
     try {
+
+        btnSimpan.disabled = true;
+
+        btnSimpan.innerHTML = `
+            <span class="spinner-border spinner-border-sm me-2"></span>
+            Menyimpan...
+        `;
 
         const response = await fetch("/kasir/retur", {
 
@@ -817,6 +826,13 @@ async function submitReturn() {
         console.error(error);
 
         alert(error.message);
+
+        btnSimpan.disabled = false;
+
+        btnSimpan.innerHTML = `
+            <i class="bi bi-check-circle me-1"></i>
+            Simpan Retur
+        `;
 
     }
 
