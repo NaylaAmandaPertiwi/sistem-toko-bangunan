@@ -348,23 +348,45 @@ textarea{
 
 <script>
 
+console.log("SCRIPT RETUR DIMUAT");
+
+let selectedSale = null;
+
+let returnItems = [];
+
 async function loadTransaction(id){
+
+    console.log("klik", id);
 
     try{
 
-        const response = await fetch(
+        const url = "/kasir/retur/" + id + "/detail";
 
-            "/kasir/retur/" +
+        console.log(url);
 
-            id +
+        const response = await fetch(url);
 
-            "/detail"
-
-        );
+        console.log(response.status);
 
         const data = await response.json();
 
         console.log(data);
+
+        if(!data.success){
+
+            alert("Transaksi tidak ditemukan.");
+
+            return;
+
+        }
+
+        selectedSale = data.sale;
+
+        console.log(selectedSale);
+
+        returnItems = [];
+
+        renderDetailTable();
 
     }
 
@@ -373,6 +395,61 @@ async function loadTransaction(id){
         console.error(error);
 
     }
+
+}
+
+function renderDetailTable(){
+
+    const tbody = document.getElementById("detailBody");
+
+    tbody.innerHTML = "";
+
+    selectedSale.sale_details.forEach(function(item){
+
+        tbody.innerHTML += `
+
+        <tr>
+
+            <td>
+
+                ${item.product.nama_produk}
+
+            </td>
+
+            <td>
+
+                ${item.qty}
+
+            </td>
+
+            <td>
+
+                <input
+                    type="number"
+                    class="form-control qty-retur"
+                    min="0"
+                    max="${item.qty}"
+                    value="0">
+
+            </td>
+
+            <td>
+
+                Rp ${Number(item.harga).toLocaleString("id-ID")}
+
+            </td>
+
+            <td>
+
+                Rp ${Number(item.subtotal).toLocaleString("id-ID")}
+
+            </td>
+
+        </tr>
+
+        `;
+
+    });
 
 }
 
