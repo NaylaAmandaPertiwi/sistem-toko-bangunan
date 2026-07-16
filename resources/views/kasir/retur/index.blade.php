@@ -354,6 +354,8 @@ let selectedSale = null;
 
 let returnItems = [];
 
+let totalRetur = 0;
+
 async function loadTransaction(id){
 
     console.log("klik", id);
@@ -404,7 +406,21 @@ function renderDetailTable(){
 
     tbody.innerHTML = "";
 
-    selectedSale.sale_details.forEach(function(item){
+    selectedSale.sale_details.forEach(function(item,index){
+
+        returnItems.push({
+
+            product_id : item.product_id,
+
+            qty_beli   : item.qty,
+
+            qty_retur  : 0,
+
+            harga      : Number(item.harga),
+
+            subtotal   : 0
+
+        });
 
         tbody.innerHTML += `
 
@@ -425,11 +441,20 @@ function renderDetailTable(){
             <td>
 
                 <input
+
                     type="number"
-                    class="form-control qty-retur"
+
+                    class="form-control"
+
                     min="0"
+
                     max="${item.qty}"
-                    value="0">
+
+                    value="0"
+
+                    onchange="updateQty(${index},this.value)"
+
+                >
 
             </td>
 
@@ -439,9 +464,9 @@ function renderDetailTable(){
 
             </td>
 
-            <td>
+            <td id="subtotal-${index}">
 
-                Rp ${Number(item.subtotal).toLocaleString("id-ID")}
+                Rp 0
 
             </td>
 
@@ -450,6 +475,48 @@ function renderDetailTable(){
         `;
 
     });
+
+}
+
+function updateQty(index,value){
+
+    value = parseInt(value);
+
+    if(isNaN(value)){
+
+        value = 0;
+
+    }
+
+    if(value > returnItems[index].qty_beli){
+
+        alert("Qty retur melebihi qty pembelian.");
+
+        value = returnItems[index].qty_beli;
+
+    }
+
+    returnItems[index].qty_retur = value;
+
+    returnItems[index].subtotal =
+
+        value *
+
+        returnItems[index].harga;
+
+    document.getElementById(
+
+        "subtotal-"+index
+
+    ).innerHTML =
+
+        "Rp " +
+
+        returnItems[index]
+
+        .subtotal
+
+        .toLocaleString("id-ID");
 
 }
 
