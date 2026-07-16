@@ -196,20 +196,102 @@ class ReturnController extends Controller
 
                 ]);
 
+                /*
+                |--------------------------------------------------------------------------
+                | Update Stok Produk
+                |--------------------------------------------------------------------------
+                */
+
+                $product = Product::findOrFail(
+                    $saleDetail->product_id
+                );
+
+                $stokAwal = $product->stok;
+
+                $product->increment(
+                    'stok',
+                    $item['qty']
+                );
+
+                $product->refresh();
+
+                $stokAkhir = $product->stok;
+
+                /*
+                |--------------------------------------------------------------------------
+                | Catat Riwayat Pergerakan Stok
+                |--------------------------------------------------------------------------
+                */
+
+                StockMovement::create([
+
+                    'product_id' => $product->id,
+
+                    'tanggal' => now(),
+
+                    'jenis' => 'retur',
+
+                    'qty' => $item['qty'],
+
+                    'stok_awal' => $stokAwal,
+
+                    'stok_akhir' => $stokAkhir,
+
+                    'keterangan' =>
+
+                        'Retur Penjualan ' .
+
+                        $returnSale->kode_retur
+
+                ]);
+
+                Product::where(
+
+                    'id',
+
+                    $saleDetail->product_id
+
+                )->increment(
+
+                    'stok',
+
+                    $item['qty']
+
+                );
+
             }
 
+            $returnSale->update([
+
+                'total_retur' => $totalRetur
+
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+
+                'success' => true,
+
+                'message' => 'Retur berhasil disimpan.',
+
+                'return_sale_id' => $returnSale->id
+
+            ]);
+
         }
+
         catch (\Exception $e) {
 
             DB::rollBack();
 
-            return back()->with(
+            return response()->json([
 
-                'error',
+                'success' => false,
 
-                $e->getMessage()
+                'message' => $e->getMessage()
 
-            );
+            ], 422);
 
         }
 
@@ -272,11 +354,14 @@ class ReturnController extends Controller
 
             DB::rollBack();
 
-            return back()
-                ->with(
-                    'error',
-                    $e->getMessage()
-                );
+            return response()->json([
+
+                'success' => false,
+
+                'message' => $e->getMessage()
+
+            ], 422);
+
         }
     }
 }

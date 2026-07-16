@@ -764,7 +764,67 @@ function prepareReturnPayload() {
 
 /*
 |--------------------------------------------------------------------------
-| Tombol Simpan Retur
+| Kirim Data Retur ke Backend
+|--------------------------------------------------------------------------
+*/
+
+async function submitReturn() {
+
+    const payload = prepareReturnPayload();
+
+    try {
+
+        const response = await fetch("/kasir/retur", {
+
+            method: "POST",
+
+            headers: {
+
+                "Content-Type": "application/json",
+
+                "Accept": "application/json",
+
+                "X-CSRF-TOKEN": document
+                    .querySelector('meta[name="csrf-token"]')
+                    .getAttribute("content")
+
+            },
+
+            body: JSON.stringify(payload)
+
+        });
+
+        const result = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(result.message);
+
+        }
+
+        alert(result.message);
+
+        setTimeout(function () {
+
+            window.location.reload();
+
+        }, 300);
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        alert(error.message);
+
+    }
+
+}
+
+/*
+|--------------------------------------------------------------------------
+| Event Tombol Simpan Retur
 |--------------------------------------------------------------------------
 */
 
@@ -782,18 +842,24 @@ document.getElementById("btnSimpanRetur").addEventListener("click", function () 
     // Ambil payload
     const payload = prepareReturnPayload();
 
-    // Minimal harus ada satu barang yang diretur
+    // Minimal satu barang diretur
     if (payload.items.length === 0) {
 
-        alert("Silakan masukkan minimal satu Qty Retur.");
+        alert("Silakan masukkan Qty Retur minimal 1.");
 
         return;
 
     }
 
-    console.log("Payload Retur:");
+    // Konfirmasi sebelum menyimpan
+    if (!confirm("Apakah Anda yakin ingin menyimpan retur ini?")) {
 
-    console.log(payload);
+        return;
+
+    }
+
+    // Kirim ke backend
+    submitReturn();
 
 });
 
