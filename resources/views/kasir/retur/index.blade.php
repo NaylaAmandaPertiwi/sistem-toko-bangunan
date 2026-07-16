@@ -762,15 +762,40 @@ function prepareReturnPayload() {
 
 }
 
-document
-    .getElementById("btnSimpanRetur")
-    .addEventListener("click", function(){
+/*
+|--------------------------------------------------------------------------
+| Tombol Simpan Retur
+|--------------------------------------------------------------------------
+*/
 
-        const payload = prepareReturnPayload();
+document.getElementById("btnSimpanRetur").addEventListener("click", function () {
 
-        console.log(payload);
+    // Pastikan transaksi sudah dipilih
+    if (!selectedSale) {
 
-    });
+        alert("Silakan pilih transaksi terlebih dahulu.");
+
+        return;
+
+    }
+
+    // Ambil payload
+    const payload = prepareReturnPayload();
+
+    // Minimal harus ada satu barang yang diretur
+    if (payload.items.length === 0) {
+
+        alert("Silakan masukkan minimal satu Qty Retur.");
+
+        return;
+
+    }
+
+    console.log("Payload Retur:");
+
+    console.log(payload);
+
+});
 
 </script>
 
