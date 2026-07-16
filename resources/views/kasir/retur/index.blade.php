@@ -56,10 +56,21 @@
 
 textarea{
 
+    width:100% !important;
+
+    min-height:140px;
+
+    padding:16px;
+
     border-radius:12px !important;
 
-}
+    resize:vertical;
 
+    line-height:1.7;
+
+    font-size:15px;
+
+}
 .btn-primary{
 
     border-radius:12px;
@@ -123,6 +134,38 @@ textarea{
     border-radius:15px;
 
     padding:20px;
+
+}
+
+.summary-box textarea{
+
+    width:100%;
+
+    min-height:140px;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    resize:vertical;
+
+    font-size:15px;
+
+    line-height:1.6;
+
+}
+
+.summary-box label{
+
+    font-weight:600;
+
+    margin-bottom:10px;
+
+}
+
+.summary-box .btn-success{
+
+    min-width:170px;
 
 }
 
@@ -348,15 +391,73 @@ textarea{
 
         <div class="summary-box">
 
-            <div class="d-flex justify-content-between">
+            <div class="row">
 
-                <strong>Total Retur</strong>
+                <div class="col-12">
 
-                <span id="totalRetur">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
 
-                    Rp 0
+                        <h6 class="mb-0 fw-bold">
 
-                </span>
+                            Total Retur
+
+                        </h6>
+
+                        <span
+                            id="totalRetur"
+                            class="summary-total">
+
+                            Rp 0
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div class="col-12">
+
+                    <label
+                        for="keteranganRetur"
+                        class="form-label fw-bold mb-2">
+
+                        Keterangan Retur
+
+                    </label>
+
+                    <textarea
+
+                        id="keteranganRetur"
+
+                        class="form-control"
+
+                        rows="5"
+
+                        placeholder="Contoh:
+        • Barang rusak
+        • Kemasan sobek
+        • Salah ukuran
+        • Barang tidak sesuai pesanan"></textarea>
+
+                </div>
+
+                <div class="col-12 text-end mt-4">
+
+                    <button
+
+                        type="button"
+
+                        id="btnSimpanRetur"
+
+                        class="btn btn-success px-4">
+
+                        <i class="bi bi-check-circle me-1"></i>
+
+                        Simpan Retur
+
+                    </button>
+
+                </div>
 
             </div>
 
@@ -434,6 +535,8 @@ function renderDetailTable(){
 
         returnItems.push({
 
+            sale_detail_id : item.id,
+
             product_id : item.product_id,
 
             qty_beli   : item.qty,
@@ -476,7 +579,9 @@ function renderDetailTable(){
 
                     value="0"
 
-                    onchange="updateQty(${index},this.value)"
+                    onclick="this.select()"
+                    
+                    oninput="updateQty(${index}, this)"
 
                 >
 
@@ -502,25 +607,67 @@ function renderDetailTable(){
 
 }
 
-function updateQty(index,value){
+function updateQty(index, input){
 
-    value = parseInt(value);
+    let value = parseInt(input.value);
 
-    if(isNaN(value)){
+    /*
+    |--------------------------------------------------------------------------
+    | Jika kosong atau bukan angka
+    |--------------------------------------------------------------------------
+    */
+
+    if(input.value === ""){
 
         value = 0;
 
+        input.value = 0;
+
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tidak boleh negatif
+    |--------------------------------------------------------------------------
+    */
+
+    if(value < 0){
+
+        value = 0;
+
+        input.value = 0;
+
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tidak boleh melebihi Qty Pembelian
+    |--------------------------------------------------------------------------
+    */
 
     if(value > returnItems[index].qty_beli){
 
-        alert("Qty retur melebihi qty pembelian.");
+        alert("Qty retur tidak boleh melebihi Qty Pembelian.");
 
         value = returnItems[index].qty_beli;
 
+        input.value = value;
+
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Simpan Qty Retur
+    |--------------------------------------------------------------------------
+    */
+
     returnItems[index].qty_retur = value;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Hitung Subtotal Retur
+    |--------------------------------------------------------------------------
+    */
 
     returnItems[index].subtotal =
 
@@ -528,9 +675,23 @@ function updateQty(index,value){
 
         returnItems[index].harga;
 
+    /*
+    |--------------------------------------------------------------------------
+    | Update Nilai Input
+    |--------------------------------------------------------------------------
+    */
+
+    input.value = value;
+
+    /*
+    |--------------------------------------------------------------------------
+    | Update Subtotal
+    |--------------------------------------------------------------------------
+    */
+
     document.getElementById(
 
-        "subtotal-"+index
+        "subtotal-" + index
 
     ).innerHTML =
 
@@ -538,9 +699,15 @@ function updateQty(index,value){
 
         returnItems[index]
 
-        .subtotal
+            .subtotal
 
-        .toLocaleString("id-ID");
+            .toLocaleString("id-ID");
+
+    /*
+    |--------------------------------------------------------------------------
+    | Hitung Total
+    |--------------------------------------------------------------------------
+    */
 
     calculateTotalRetur();
 
@@ -567,6 +734,43 @@ function calculateTotalRetur(){
         totalRetur.toLocaleString("id-ID");
 
 }
+
+function prepareReturnPayload() {
+
+    return {
+
+        sale_id: selectedSale.id,
+
+        items: returnItems
+
+            .filter(item => item.qty_retur > 0)
+
+            .map(item => ({
+
+                sale_detail_id: item.sale_detail_id,
+
+                qty: item.qty_retur
+
+            })),
+
+        keterangan: document
+            .getElementById("keteranganRetur")
+            .value
+            .trim()
+
+    };
+
+}
+
+document
+    .getElementById("btnSimpanRetur")
+    .addEventListener("click", function(){
+
+        const payload = prepareReturnPayload();
+
+        console.log(payload);
+
+    });
 
 </script>
 
