@@ -144,7 +144,7 @@ class SaleController extends Controller
 
                     'tanggal'    => now(),
 
-                    'jenis'      => 'Penjualan',
+                    'jenis'      => 'Keluar',
 
                     'qty'        => $item['qty'],
 

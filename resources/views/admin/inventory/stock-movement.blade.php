@@ -132,6 +132,13 @@
     border-radius:20px;
 }
 
+.badge-retur{
+    background:#fff3cd;
+    color:#856404;
+    padding:6px 12px;
+    border-radius:20px;
+}
+
 .badge-opname{
     background:#d1ecf1;
     color:#0c5460;
@@ -317,13 +324,19 @@
                                     <option
                                         value="Masuk"
                                         {{ request('jenis') == 'Masuk' ? 'selected' : '' }}>
-                                        Masuk
+                                        Stok Masuk
                                     </option>
 
                                     <option
                                         value="Keluar"
                                         {{ request('jenis') == 'Keluar' ? 'selected' : '' }}>
-                                        Keluar
+                                        Penjualan
+                                    </option>
+
+                                    <option
+                                        value="retur"
+                                        {{ request('jenis') == 'retur' ? 'selected' : '' }}>
+                                        Retur
                                     </option>
 
                                     <option
@@ -364,25 +377,47 @@
 
                         <td>
 
-                            @if($item->jenis == 'Masuk')
+                            @switch(strtolower($item->jenis))
 
-                                <span class="badge-masuk">
-                                    Masuk
-                                </span>
+                                @case('masuk')
 
-                            @elseif($item->jenis == 'Keluar')
+                                    <span class="badge-masuk">
+                                        Stok Masuk
+                                    </span>
 
-                                <span class="badge-keluar">
-                                    Keluar
-                                </span>
+                                    @break
 
-                            @else
+                                @case('keluar')
 
-                                <span class="badge-opname">
-                                    Opname
-                                </span>
+                                    <span class="badge-keluar">
+                                        Penjualan
+                                    </span>
 
-                            @endif
+                                    @break
+
+                                @case('retur')
+
+                                    <span class="badge-masuk">
+                                        Retur
+                                    </span>
+
+                                    @break
+
+                                @case('opname')
+
+                                    <span class="badge-opname">
+                                        Opname
+                                    </span>
+
+                                    @break
+
+                                @default
+
+                                    <span class="badge bg-secondary">
+                                        {{ ucfirst($item->jenis) }}
+                                    </span>
+
+                            @endswitch
 
                         </td>
 
