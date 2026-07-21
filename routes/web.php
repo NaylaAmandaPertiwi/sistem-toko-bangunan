@@ -384,6 +384,16 @@ Route::middleware('auth')->group(function () {
                 [KasirHistoryController::class,'index']
             )->name('riwayat.index');
 
+            Route::get(
+                '/riwayat-transaksi/penjualan/{sale}',
+                [KasirHistoryController::class,'showSale']
+            )->name('riwayat.sale.show');
+
+            Route::get(
+                '/riwayat-transaksi/retur/{returnSale}',
+                [KasirHistoryController::class,'showReturn']
+            )->name('riwayat.return.show');
+
         });
 
 

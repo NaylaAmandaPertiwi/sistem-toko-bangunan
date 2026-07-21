@@ -31,4 +31,44 @@ class HistoryController extends Controller
             )
         );
     }
+
+    public function showSale(Sale $sale)
+    {
+        $sale->load([
+
+            'user',
+
+            'saleDetails.product'
+
+        ]);
+
+        return view(
+
+            'kasir.riwayat.detail-penjualan',
+
+            compact('sale')
+
+        );
+    }
+
+    public function showReturn(ReturnSale $returnSale)
+    {
+        $returnSale->load([
+
+            'user',
+
+            'sale',
+
+            'details.product'
+
+        ]);
+
+        return view(
+
+            'kasir.riwayat.detail-retur',
+
+            compact('returnSale')
+
+        );
+    }
 }

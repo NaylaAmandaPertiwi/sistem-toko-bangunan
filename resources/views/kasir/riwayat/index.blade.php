@@ -214,25 +214,33 @@ table tbody td{
 
     gap:6px;
 
-    background:#355cc9;
-
-    color:white;
-
-    border:none;
+    min-width:82px;
 
     padding:7px 14px;
 
-    border-radius:8px;
+    background:#355cc9;
 
-    cursor:pointer;
+    color:#fff;
+
+    text-decoration:none;
+
+    border-radius:8px;
 
     font-size:12px;
 
     font-weight:600;
 
-    min-width:78px;
-
     transition:.25s;
+
+}
+
+.btn-detail:hover{
+
+    background:#2748a8;
+
+    color:#fff;
+
+    text-decoration:none;
 
 }
 
@@ -304,6 +312,110 @@ table tbody td{
 .action-column{
 
     text-align:center;
+
+}
+
+/* =====================================
+   DETAIL MODAL
+===================================== */
+
+.detail-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:999999;
+
+}
+
+.detail-overlay.show{
+
+    display:flex;
+
+}
+
+.detail-modal{
+
+    width:900px;
+
+    max-width:95%;
+
+    max-height:90vh;
+
+    overflow:auto;
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:28px;
+
+    animation:popup .25s ease;
+
+}
+
+.detail-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+.detail-header h2{
+
+    color:#2d3748;
+
+    font-size:24px;
+
+}
+
+.detail-close{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#edf2f7;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.detail-close:hover{
+
+    background:#355cc9;
+
+    color:white;
+
+}
+
+.detail-loading{
+
+    text-align:center;
+
+    padding:60px;
+
+    color:#888;
 
 }
 
@@ -453,14 +565,15 @@ table tbody td{
 
                     <td class="action-column">
 
-                        <button
+                        <a
+                            href="{{ route('kasir.riwayat.sale.show', $sale->id) }}"
                             class="btn-detail">
 
                             <i class="fa-solid fa-eye"></i>
 
                             Detail
 
-                        </button>
+                        </a>
 
                     </td>
 
@@ -572,14 +685,15 @@ table tbody td{
 
                     <td class="action-column">
 
-                        <button
+                        <a
+                            href="{{ route('kasir.riwayat.return.show', $return->id) }}"
                             class="btn-detail">
 
                             <i class="fa-solid fa-eye"></i>
 
                             Detail
 
-                        </button>
+                        </a>
 
                     </td>
 
@@ -606,6 +720,49 @@ table tbody td{
             </tbody>
 
         </table>
+
+    </div>
+
+</div>
+
+{{-- ========================================= --}}
+{{-- MODAL DETAIL TRANSAKSI --}}
+{{-- ========================================= --}}
+
+<div
+    id="detailModal"
+    class="detail-overlay">
+
+    <div class="detail-modal">
+
+        <div class="detail-header">
+
+            <h2 id="detailTitle">
+
+                Detail Transaksi
+
+            </h2>
+
+            <button
+                class="detail-close"
+                onclick="closeDetailModal()">
+
+                <i class="fa-solid fa-xmark"></i>
+
+            </button>
+
+        </div>
+
+        <div
+            id="detailContent">
+
+            <div class="detail-loading">
+
+                Pilih transaksi untuk melihat detail.
+
+            </div>
+
+        </div>
 
     </div>
 
@@ -650,6 +807,22 @@ btnRetur.onclick = function(){
     panelRetur.classList.add('active');
 
     panelPenjualan.classList.remove('active');
+
+}
+
+function openDetailModal(){
+
+    document
+    .getElementById('detailModal')
+    .classList.add('show');
+
+}
+
+function closeDetailModal(){
+
+    document
+    .getElementById('detailModal')
+    .classList.remove('show');
 
 }
 
