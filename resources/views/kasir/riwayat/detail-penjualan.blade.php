@@ -357,192 +357,274 @@
 
 }
 
-/* ======================================================
-   PRINT INVOICE
-====================================================== */
-
-@media print{
-
-    body{
-
-        background:white !important;
-
-    }
-
-    .sidebar,
-    .navbar,
-    .page-header{
-
-        display:none !important;
-
-    }
-
-    .content{
-
-        margin:0 !important;
-
-        padding:0 !important;
-
-    }
-
-    .detail-container{
-
-        max-width:100%;
-
-        margin:0;
-
-        padding:0;
-
-    }
-
-    .invoice-card{
-
-        box-shadow:none;
-
-        border:none;
-
-        padding:0;
-
-    }
-
-    .invoice-title{
-
-        color:#000;
-
-        font-size:28px;
-
-        margin-bottom:8px;
-
-    }
-
-    .invoice-information{
-
-        display:block;
-
-        margin-bottom:25px;
-
-    }
-
-    .info-item{
-
-        background:none;
-
-        padding:0;
-
-        margin-bottom:8px;
-
-        border:none;
-
-    }
-
-    .info-item span{
-
-        display:inline-block;
-
-        width:150px;
-
-        color:#000;
-
-        font-weight:600;
-
-    }
-
-    .info-item strong{
-
-        color:#000;
-
-        font-weight:normal;
-
-    }
-
-    .table-wrapper table{
-
-        width:100%;
-
-        border-collapse:collapse;
-
-    }
-
-    .table-wrapper table th{
-
-        background:#000 !important;
-
-        color:#fff !important;
-
-    }
-
-    .table-wrapper table th,
-    .table-wrapper table td{
-
-        border:1px solid #000;
-
-        padding:8px;
-
-    }
-
-    .payment-card{
-
-        width:320px;
-
-        margin-left:auto;
-
-        margin-top:25px;
-
-    }
-
-    .payment-card table td{
-
-        border:none;
-
-        padding:6px 0;
-
-    }
-
-    .invoice-footer{
-
-        margin-top:40px;
-
-        border-top:1px dashed #000;
-
-        padding-top:15px;
-
-        color:#000;
-
-    }
-
-}
-
-.store-header{
+/* ===========================================================
+   PRINT RECEIPT
+   Disembunyikan pada tampilan normal
+=========================================================== */
+
+.print-receipt{
 
     display:none;
 
 }
 
+/* ===========================================================
+   PRINT MODE - THERMAL RECEIPT
+=========================================================== */
+
 @media print{
 
-.store-header{
+    @page{
 
-    display:block;
+        size:80mm auto;
 
-    text-align:center;
+        margin:4mm;
 
-    margin-bottom:25px;
+    }
 
-}
 
-.store-header h2{
+    /* Sembunyikan halaman aplikasi */
 
-    margin:0;
+    body *{
 
-    font-size:28px;
+        visibility:hidden;
 
-}
+    }
 
-.store-header p{
 
-    margin:3px 0;
+    /* Tampilkan hanya struk */
 
-}
+    .print-receipt,
+    .print-receipt *{
+
+        visibility:visible;
+
+    }
+
+
+    .print-receipt{
+
+        display:block;
+
+        position:absolute;
+
+        left:0;
+
+        top:0;
+
+         width:76mm;
+
+        max-width:76mm;
+
+        margin:auto;
+
+        padding:4mm;
+
+        background:#ffffff;
+
+        color:#000000;
+
+        font-family:"Courier New", monospace;
+
+        font-size:11px;
+
+        line-height:1.4;
+
+    }
+
+
+    /* Header */
+
+    .receipt-header{
+
+        text-align:center;
+
+        margin-bottom:5px;
+
+    }
+
+    .receipt-header h2{
+
+        font-size:22px;
+
+        font-weight:700;
+
+        letter-spacing:2px;
+
+        margin-bottom:6px;
+
+    }
+
+    .receipt-header p{
+
+        font-size:11px;
+
+        margin:2px 0;
+
+    }
+
+
+    /* Garis */
+
+    .receipt-divider{
+        border-top:1px dashed #000;
+        margin:8px 0;
+        height:0;
+    }
+
+
+    /* Judul */
+
+    .receipt-title{
+
+        text-align:center;
+
+        font-size:15px;
+
+        font-weight:700;
+
+        letter-spacing:1px;
+
+        margin:5px 0;
+
+    }
+
+
+    /* Informasi transaksi */
+
+    .receipt-info{
+
+        margin:6px 0;
+
+    }
+
+    .receipt-info div{
+
+        display:flex;
+
+        justify-content:space-between;
+
+        gap:8px;
+
+        margin:2px 0;
+
+    }
+
+    .receipt-info div span:first-child{
+
+        flex:0 0 78px;
+
+    }
+
+    .receipt-info div span:last-child{
+
+        flex:1;
+
+        text-align:right;
+
+        word-break:break-word;
+
+    }
+
+
+    /* Barang */
+
+    .receipt-items{
+
+        margin:5px 0;
+
+    }
+
+    .receipt-item{
+
+        margin-bottom:7px;
+
+    }
+
+    .receipt-product{
+
+        font-weight:700;
+
+        font-size:11px;
+
+        margin-bottom:3px;
+
+    }
+
+    .receipt-item-detail{
+
+        display:flex;
+
+        justify-content:space-between;
+
+        gap:10px;
+
+        padding-left:8px;
+
+        font-size:10px;
+
+    }
+
+
+    /* Ringkasan */
+
+    .receipt-summary div{
+
+        display:flex;
+
+        justify-content:space-between;
+
+        gap:10px;
+
+        margin:3px 0;
+
+    }
+
+
+    /* Total */
+
+    .receipt-total{
+
+        display:flex;
+
+        justify-content:space-between;
+
+        font-size:15px;
+
+        font-weight:700;
+
+        padding:4px 0;
+
+    }
+
+
+    /* Footer */
+
+    .receipt-footer{
+
+        text-align:center;
+
+        font-size:10px;
+
+        margin-top:12px;
+
+    }
+
+    .receipt-footer p{
+
+        margin:2px 0;
+
+    }
+
+    .receipt-footer strong{
+
+        display:block;
+
+        margin:3px 0 7px;
+
+        font-size:12px;
+
+    }
 
 }
 
@@ -807,6 +889,204 @@
             </div>
 
         </div>
+
+    </div>
+
+</div>
+
+
+{{-- =========================================================
+     STRUK KHUSUS CETAK
+========================================================= --}}
+
+<div class="print-receipt">
+
+    {{-- Header Toko --}}
+    <div class="receipt-header">
+
+        <h2>NAYLA BANGUNAN</h2>
+
+        <p>Toko Bahan Bangunan</p>
+
+        <p>Jl. Kerinci, Jambi</p>
+
+        <p>Telp. 08xxxxxxxxxx</p>
+
+    </div>
+
+    <div class="receipt-divider">
+        
+    </div>
+
+    <div class="receipt-title">
+
+        STRUK PENJUALAN
+
+    </div>
+
+    <div class="receipt-divider">
+        
+    </div>
+
+
+    {{-- Informasi Transaksi --}}
+    <div class="receipt-info">
+
+        <div>
+            <span>No. Transaksi</span>
+            <span>{{ $sale->kode_penjualan }}</span>
+        </div>
+
+        <div>
+            <span>Tanggal</span>
+            <span>
+                {{ \Carbon\Carbon::parse($sale->tanggal)->format('d/m/Y') }}
+            </span>
+        </div>
+
+        <div>
+            <span>Kasir</span>
+            <span>{{ $sale->user->name ?? '-' }}</span>
+        </div>
+
+    </div>
+
+
+    <div class="receipt-divider">
+        
+    </div>
+
+
+    {{-- Daftar Barang --}}
+    <div class="receipt-items">
+
+        @foreach($sale->saleDetails as $detail)
+
+            <div class="receipt-item">
+
+                <div class="receipt-product">
+
+                    {{ $detail->product->nama_produk ?? '-' }}
+
+                </div>
+
+                <div class="receipt-item-detail">
+
+                    <span>
+
+                        {{ $detail->qty }}
+                        x
+                        {{ number_format($detail->harga,0,',','.') }}
+
+                    </span>
+
+                    <span>
+
+                        {{ number_format($detail->subtotal,0,',','.') }}
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        @endforeach
+
+    </div>
+
+
+    <div class="receipt-divider">
+        
+    </div>
+
+
+    {{-- Ringkasan Pembayaran --}}
+    <div class="receipt-summary">
+
+        <div>
+
+            <span>Subtotal</span>
+
+            <span>
+                Rp {{ number_format($sale->subtotal,0,',','.') }}
+            </span>
+
+        </div>
+
+        <div>
+
+            <span>Diskon</span>
+
+            <span>
+                Rp {{ number_format($sale->diskon,0,',','.') }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="receipt-divider">
+        
+    </div>
+
+
+    <div class="receipt-total">
+
+        <span>TOTAL</span>
+
+        <span>
+            Rp {{ number_format($sale->total_bayar,0,',','.') }}
+        </span>
+
+    </div>
+
+
+    <div class="receipt-divider">
+        
+    </div>
+
+
+    <div class="receipt-summary">
+
+        <div>
+
+            <span>Bayar</span>
+
+            <span>
+                Rp {{ number_format($sale->bayar,0,',','.') }}
+            </span>
+
+        </div>
+
+        <div>
+
+            <span>Kembalian</span>
+
+            <span>
+                Rp {{ number_format($sale->kembalian,0,',','.') }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="receipt-divider">
+        
+    </div>
+
+
+    {{-- Footer --}}
+    <div class="receipt-footer">
+
+        <p>Terima kasih telah berbelanja di</p>
+
+        <strong>Nayla Bangunan</strong>
+
+        <p>Barang yang sudah dibeli</p>
+
+        <p>harap diperiksa kembali.</p>
 
     </div>
 
