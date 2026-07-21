@@ -59,7 +59,9 @@ class HistoryController extends Controller
 
             'sale',
 
-            'details.product'
+            'details.product',
+
+            'details.saleDetail'
 
         ]);
 

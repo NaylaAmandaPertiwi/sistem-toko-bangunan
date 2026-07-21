@@ -1,6 +1,6 @@
 @extends('layouts.kasir')
 
-@section('title','Detail Penjualan')
+@section('title','Detail Retur')
 
 @section('styles')
 
@@ -641,10 +641,10 @@
 
         <div>
 
-            <h1>Detail Penjualan</h1>
+            <h1>Detail Retur</h1>
 
             <p>
-                Informasi lengkap transaksi penjualan.
+                Informasi lengkap transaksi retur.
             </p>
 
         </div>
@@ -683,11 +683,11 @@
 
             <div>
 
-                <h2>Transaksi Penjualan</h2>
+                <h2>Transaksi Retur</h2>
 
                 <span>
 
-                    {{ $sale->kode_penjualan }}
+                    {{ $returnSale->kode_retur }}
 
                 </span>
 
@@ -695,7 +695,9 @@
 
             <div class="status-success">
 
-                Selesai
+                <i class="fa-solid fa-rotate-left"></i>
+
+                Retur Selesai
 
             </div>
 
@@ -706,11 +708,11 @@
 
             <div class="info-card">
 
-                <span>Tanggal</span>
+                <span>Tanggal Retur</span>
 
                 <strong>
 
-                    {{ \Carbon\Carbon::parse($sale->tanggal)->translatedFormat('d F Y') }}
+                    {{ \Carbon\Carbon::parse($returnSale->tanggal)->translatedFormat('d F Y') }}
 
                 </strong>
 
@@ -722,7 +724,7 @@
 
                 <strong>
 
-                    {{ $sale->user->name }}
+                    {{ $returnSale->user->name }}
 
                 </strong>
 
@@ -730,11 +732,11 @@
 
             <div class="info-card">
 
-                <span>Total Bayar</span>
+                <span>Kode Penjualan</span>
 
                 <strong>
 
-                    Rp {{ number_format($sale->total_bayar,0,',','.') }}
+                    {{ $returnSale->sale->kode_penjualan }}
 
                 </strong>
 
@@ -742,11 +744,11 @@
 
             <div class="info-card">
 
-                <span>Total Item</span>
+                <span>Total Retur</span>
 
                 <strong>
 
-                    {{ $sale->saleDetails->count() }}
+                    Rp {{ number_format($returnSale->total_retur,0,',','.') }}
 
                 </strong>
 
@@ -759,11 +761,11 @@
 
             <div class="summary-card">
 
-                <span>Subtotal</span>
+                <span>Jumlah Item Diretur</span>
 
                 <strong>
 
-                    Rp {{ number_format($sale->subtotal,0,',','.') }}
+                    {{ $returnSale->details->count() }}
 
                 </strong>
 
@@ -771,11 +773,11 @@
 
             <div class="summary-card">
 
-                <span>Diskon</span>
+                <span>Total Qty Retur</span>
 
                 <strong>
 
-                    Rp {{ number_format($sale->diskon,0,',','.') }}
+                    {{ $returnSale->details->sum('qty') }}
 
                 </strong>
 
@@ -787,7 +789,7 @@
 
                 <strong>
 
-                    Rp {{ number_format($sale->bayar,0,',','.') }}
+                    Rp {{ number_format($returnSale->total_retur,0,',','.') }}
 
                 </strong>
 
@@ -795,11 +797,11 @@
 
             <div class="summary-card">
 
-                <span>Kembalian</span>
+                <span>Keterangan</span>
 
                 <strong>
 
-                    Rp {{ number_format($sale->kembalian,0,',','.') }}
+                    {{ $returnSale->keterangan }}
 
                 </strong>
 
@@ -832,11 +834,13 @@
 
                             <th>Produk</th>
 
+                            <th>Qty Dibeli</th>
+
+                            <th>Qty Retur</th>
+
                             <th>Harga</th>
 
-                            <th>Qty</th>
-
-                            <th>Subtotal</th>
+                            <th>Subtotal Retur</th>
 
                         </tr>
 
@@ -844,7 +848,7 @@
 
                     <tbody>
 
-                        @foreach($sale->saleDetails as $detail)
+                        @foreach($returnSale->details as $detail)
 
                             <tr>
 
@@ -862,13 +866,19 @@
 
                                 <td>
 
-                                    Rp {{ number_format($detail->harga,0,',','.') }}
+                                    {{ $detail->saleDetail->qty }}
 
                                 </td>
 
                                 <td>
 
                                     {{ $detail->qty }}
+
+                                </td>
+
+                                <td>
+
+                                    Rp {{ number_format($detail->harga,0,',','.') }}
 
                                 </td>
 
@@ -920,7 +930,7 @@
 
     <div class="receipt-title">
 
-        STRUK PENJUALAN
+        STRUK RETUR
 
     </div>
 
@@ -933,20 +943,39 @@
     <div class="receipt-info">
 
         <div>
-            <span>No. Transaksi</span>
-            <span>{{ $sale->kode_penjualan }}</span>
+
+            <span>No. Retur</span>
+
+            <span>
+
+                {{ $returnSale->kode_retur }}
+
+            </span>
+
+        </div>
+
+        <div>
+
+            <span>No. Jual</span>
+
+            <span>
+
+                {{ $returnSale->sale->kode_penjualan }}
+
+            </span>
+
         </div>
 
         <div>
             <span>Tanggal</span>
             <span>
-                {{ \Carbon\Carbon::parse($sale->tanggal)->format('d/m/Y') }}
+                {{ \Carbon\Carbon::parse($returnSale->tanggal)->format('d/m/Y') }}
             </span>
         </div>
 
         <div>
             <span>Kasir</span>
-            <span>{{ $sale->user->name ?? '-' }}</span>
+            <span>{{ $returnSale->user->name }}</span>
         </div>
 
     </div>
@@ -960,13 +989,13 @@
     {{-- Daftar Barang --}}
     <div class="receipt-items">
 
-        @foreach($sale->saleDetails as $detail)
+        @foreach($returnSale->details as $detail)
 
             <div class="receipt-item">
 
                 <div class="receipt-product">
 
-                    {{ $detail->product->nama_produk ?? '-' }}
+                    {{ $detail->product->nama_produk }}
 
                 </div>
 
@@ -975,7 +1004,9 @@
                     <span>
 
                         {{ $detail->qty }}
+
                         x
+
                         {{ number_format($detail->harga,0,',','.') }}
 
                     </span>
@@ -1005,20 +1036,20 @@
 
         <div>
 
-            <span>Subtotal</span>
+            <span>Jumlah Item Diretur</span>
 
             <span>
-                Rp {{ number_format($sale->subtotal,0,',','.') }}
+                {{ $returnSale->details->count() }}
             </span>
 
         </div>
 
         <div>
 
-            <span>Diskon</span>
+            <span>Total Qty Retur</span>
 
             <span>
-                Rp {{ number_format($sale->diskon,0,',','.') }}
+                {{ $returnSale->details->sum('qty') }}
             </span>
 
         </div>
@@ -1033,10 +1064,16 @@
 
     <div class="receipt-total">
 
-        <span>TOTAL</span>
+        <span>
+
+            TOTAL RETUR
+
+        </span>
 
         <span>
-            Rp {{ number_format($sale->total_bayar,0,',','.') }}
+
+            Rp {{ number_format($returnSale->total_retur,0,',','.') }}
+
         </span>
 
     </div>
@@ -1051,20 +1088,20 @@
 
         <div>
 
-            <span>Bayar</span>
+            <span>Nominal Retur</span>
 
             <span>
-                Rp {{ number_format($sale->bayar,0,',','.') }}
+                Rp {{ number_format($returnSale->total_retur,0,',','.') }}
             </span>
 
         </div>
 
         <div>
 
-            <span>Kembalian</span>
+            <span>Keterangan</span>
 
             <span>
-                Rp {{ number_format($sale->kembalian,0,',','.') }}
+                {{ $returnSale->keterangan }}
             </span>
 
         </div>
@@ -1080,13 +1117,13 @@
     {{-- Footer --}}
     <div class="receipt-footer">
 
-        <p>Terima kasih telah berbelanja</p>
+        <p>Retur berhasil diproses</p>
 
         <strong>Nayla Bangunan</strong>
 
-        <p>Barang yang sudah dibeli</p>
+        <p>Simpan struk ini sebagai</p>
 
-        <p>harap diperiksa kembali.</p>
+        <p>bukti retur</p>
 
     </div>
 
