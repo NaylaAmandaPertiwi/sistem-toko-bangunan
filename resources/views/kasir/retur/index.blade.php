@@ -6,9 +6,21 @@
 
 .page-title{
 
-    font-size:40px;
+    font-size:28px;
 
     font-weight:700;
+
+    color:#2d3748;
+
+    margin-bottom:6px;
+
+}
+
+.page-description{
+
+    font-size:15px;
+
+    color:#6b7280;
 
     margin-bottom:30px;
 
@@ -211,9 +223,59 @@ textarea{
 
     </h2>
 
+    <p class="page-description">
+
+        Pilih transaksi penjualan untuk diproses menjadi retur barang.
+
+    </p>
+
     <!-- Card Cari Transaksi -->
 
-    ...
+    <div class="card-retur">
+
+        <h5 class="card-title">
+
+            Cari Transaksi
+
+        </h5>
+
+        <div class="row g-3">
+
+        <div class="col-md-6">
+
+            <label class="form-label fw-semibold">
+
+                Cari Kode Transaksi
+
+            </label>
+
+            <input
+                id="searchTransaction"
+                type="text"
+                class="form-control"
+                placeholder="Contoh: 124329"
+                autocomplete="off">
+
+        </div>
+
+        <div class="col-md-3">
+
+            <label class="form-label fw-semibold">
+
+                Tanggal
+
+            </label>
+
+            <input
+                id="searchDate"
+                type="date"
+                class="form-control">
+
+        </div>
+
+    </div>
+
+    </div>
 
     <!-- Card Daftar Transaksi -->
 
@@ -251,77 +313,34 @@ textarea{
 
                 </thead>
 
-                <tbody>
+                <tbody id="transactionTable">
 
-                @forelse($sales as $sale)
+                    <tr>
 
-                <tr>
+                        <td colspan="5" class="text-center">
 
-                    <td>
+                            Memuat data transaksi...
 
-                        {{ $sale->kode_penjualan }}
+                        </td>
 
-                    </td>
-
-                    <td>
-
-                        {{ $sale->tanggal }}
-
-                    </td>
-
-                    <td>
-
-                        {{ $sale->user->name }}
-
-                    </td>
-
-                    <td>
-
-                        Rp {{ number_format($sale->total_bayar,0,',','.') }}
-
-                    </td>
-
-                    <td>
-
-                        <button
-
-                            class="btn btn-primary btn-sm"
-
-                            onclick="loadTransaction({{ $sale->id }})">
-
-                            Pilih
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-                @empty
-
-                <tr>
-
-                    <td colspan="5"
-
-                        class="text-center">
-
-                        Belum ada transaksi.
-
-                    </td>
-
-                </tr>
-
-                @endforelse
+                    </tr>
 
                 </tbody>
 
             </table>
 
-        </div>
+            <div class="text-center mt-3">
 
-        <div class="mt-3">
+                <button
+                    id="btnLoadMore"
+                    class="btn btn-outline-primary"
+                    style="display:none">
 
-            {{ $sales->links() }}
+                    Muat Lebih Banyak
+
+                </button>
+
+            </div>
 
         </div>
 
@@ -480,6 +499,14 @@ let selectedSale = null;
 let returnItems = [];
 
 let totalRetur = 0;
+
+let transactionOffset = 0;
+
+const transactionLimit = 10;
+
+let hasMoreTransaction = true;
+
+let isLoadingTransaction = false;
 
 async function loadTransaction(id){
 
@@ -876,6 +903,364 @@ document.getElementById("btnSimpanRetur").addEventListener("click", function () 
 
     // Kirim ke backend
     submitReturn();
+
+});
+
+const searchInput = document.getElementById("searchTransaction");
+
+const dateInput = document.getElementById("searchDate");
+
+let timer = null;
+
+searchInput.addEventListener("keyup", function(){
+
+    clearTimeout(timer);
+
+    timer = setTimeout(function(){
+
+        searchTransaction();
+
+    },300);
+
+});
+
+dateInput.addEventListener("change", function(){
+
+    searchTransaction();
+
+});
+
+async function fetchTransactions(
+
+    keyword = "",
+
+    tanggal = "",
+
+    offset = transactionOffset
+
+){
+
+    const response = await fetch(
+
+        "/kasir/retur/transactions?" +
+
+        new URLSearchParams({
+
+            search: keyword,
+
+            tanggal: tanggal,
+
+            offset: offset,
+
+            limit: transactionLimit
+
+        })
+
+    );
+
+    if(!response.ok){
+
+        throw new Error(
+
+            "Gagal mengambil data transaksi."
+
+        );
+
+    }
+
+    return await response.json();
+
+}
+
+async function searchTransaction(){
+
+    transactionOffset = 0;
+
+    const keyword =
+
+        document.getElementById(
+
+            "searchTransaction"
+
+        ).value;
+
+    const tanggal =
+
+        document.getElementById(
+
+            "searchDate"
+
+        ).value;
+
+    try{
+
+        const result =
+
+            await fetchTransactions(
+
+                keyword,
+
+                tanggal,
+
+                transactionOffset
+
+            );
+
+        hasMoreTransaction =
+
+            result.hasMore;
+
+        transactionOffset =
+
+            result.nextOffset;
+
+        renderTransactionTable(
+
+            result.data
+
+        );
+
+        toggleLoadMoreButton();
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+    }
+
+}
+
+async function loadMoreTransactions(){
+
+    if(!hasMoreTransaction || isLoadingTransaction){
+
+        return;
+
+    }
+
+    isLoadingTransaction = true;
+
+    const button = document.getElementById("btnLoadMore");
+
+    button.disabled = true;
+
+    button.innerHTML = `
+        <span class="spinner-border spinner-border-sm me-2"></span>
+        Memuat...
+    `;
+
+    const keyword = document
+        .getElementById("searchTransaction")
+        .value;
+
+    const tanggal = document
+        .getElementById("searchDate")
+        .value;
+
+    try{
+
+        const result = await fetchTransactions(
+
+            keyword,
+
+            tanggal,
+
+            transactionOffset
+
+        );
+
+        renderTransactionTable(
+
+            result.data,
+
+            true
+
+        );
+
+        hasMoreTransaction = result.hasMore;
+
+        transactionOffset = result.nextOffset;
+
+        toggleLoadMoreButton();
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        alert("Gagal memuat transaksi.");
+
+    }
+
+    finally{
+
+        isLoadingTransaction = false;
+
+        button.disabled = false;
+
+        button.innerHTML = "Muat Lebih Banyak";
+
+    }
+
+}
+
+function buildTransactionRow(sale){
+
+    return `
+
+    <tr>
+
+        <td>
+
+            ${sale.kode_penjualan}
+
+        </td>
+
+        <td>
+
+            ${sale.tanggal}
+
+        </td>
+
+        <td>
+
+            ${sale.user.name}
+
+        </td>
+
+        <td>
+
+            Rp ${Number(sale.total_bayar).toLocaleString("id-ID")}
+
+        </td>
+
+        <td>
+
+            <button
+
+                class="btn btn-primary btn-sm"
+
+                onclick="loadTransaction(${sale.id})">
+
+                Pilih
+
+            </button>
+
+        </td>
+
+    </tr>
+
+    `;
+
+}
+
+function renderTransactionTable(data, append = false){
+
+    const tbody = document.getElementById("transactionTable");
+
+    if(!append){
+
+        tbody.innerHTML = "";
+
+    }
+
+    if(data.length === 0){
+
+        if(!append){
+
+            tbody.innerHTML = `
+
+                <tr>
+
+                    <td colspan="5" class="text-center">
+
+                        Data tidak ditemukan.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+        return;
+
+    }
+
+    data.forEach(function(sale){
+
+        tbody.insertAdjacentHTML(
+
+            "beforeend",
+
+            buildTransactionRow(sale)
+
+        );
+
+    });
+
+}
+
+function toggleLoadMoreButton(){
+
+    const button =
+
+        document.getElementById(
+
+            "btnLoadMore"
+
+        );
+
+    button.style.display =
+
+        hasMoreTransaction
+
+            ? "inline-block"
+
+            : "none";
+
+}
+
+document
+    .getElementById("btnLoadMore")
+    .addEventListener("click", function(){
+
+        loadMoreTransactions();
+
+    });
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    searchTransaction();
+
+});
+
+window.addEventListener("scroll", function(){
+
+    // Tidak perlu memuat jika data sudah habis
+    if(!hasMoreTransaction){
+
+        return;
+
+    }
+
+    // Tidak perlu memuat jika masih proses request
+    if(isLoadingTransaction){
+
+        return;
+
+    }
+
+    // Jika pengguna sudah mendekati bagian bawah halaman
+    if(window.innerHeight + window.scrollY >= document.body.offsetHeight - 150){
+
+        loadMoreTransactions();
+
+    }
 
 });
 

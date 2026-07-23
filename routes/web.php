@@ -348,6 +348,11 @@ Route::middleware('auth')->group(function () {
             )->name('retur.index');
 
             Route::get(
+                '/retur/transactions', 
+                [KasirReturnController::class,'transactionData']
+            )->name('retur.transactions');
+
+            Route::get(
                 '/retur/create',
                 [KasirReturnController::class,'create']
             )->name('retur.create');

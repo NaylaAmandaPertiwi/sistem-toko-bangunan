@@ -25,19 +25,75 @@ class ReturnController extends Controller
 
     public function index()
     {
-        $sales = Sale::with('user')
+        return view('kasir.retur.index');
+    }
 
-            ->latest()
+    public function transactionData(Request $request)
+    {
+        $query = Sale::with('user');
 
-            ->paginate(10);
+        /*
+        |--------------------------------------------------------------------------
+        | Filter Kode Transaksi
+        |--------------------------------------------------------------------------
+        */
 
-        return view(
+        if ($request->filled('search')) {
 
-            'kasir.retur.index',
+            $query->where(
+                'kode_penjualan',
+                'like',
+                '%' . trim($request->search) . '%'
+            );
 
-            compact('sales')
+        }
 
-        );
+        /*
+        |--------------------------------------------------------------------------
+        | Filter Tanggal
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('tanggal')) {
+
+            $query->whereDate(
+                'tanggal',
+                $request->tanggal
+            );
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Ambil Data
+        |--------------------------------------------------------------------------
+        */
+
+        $limit = $request->integer('limit', 10);
+
+        $offset = $request->integer('offset', 0);
+
+        $total = (clone $query)->count();
+
+        $sales = $query
+                    ->latest()
+                    ->offset($offset)
+                    ->limit($limit)
+                    ->get();
+
+        return response()->json([
+
+            'success' => true,
+
+            'data' => $sales,
+
+            'hasMore' => ($offset + $limit) < $total,
+
+            'nextOffset' => $offset + $limit,
+
+            'total' => $total
+
+        ]);
     }
 
     public function detail(Sale $sale)
