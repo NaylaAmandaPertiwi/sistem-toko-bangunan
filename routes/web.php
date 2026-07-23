@@ -303,10 +303,20 @@ Route::middleware('auth')->group(function () {
         ->name('kasir.')
         ->group(function () {
 
+            /*
+            |--------------------------------------------------------------------------
+            | DASHBOARD
+            |--------------------------------------------------------------------------
+            */
+
             Route::get(
                 '/dashboard',
                 [KasirDashboardController::class,'index']
             )->name('dashboard');
+
+            Route::get('/dashboard/data', 
+                [KasirDashboardController::class, 'getDashboardData']
+            )->name('kasir.dashboard.data');
 
             /*
             |--------------------------------------------------------------------------

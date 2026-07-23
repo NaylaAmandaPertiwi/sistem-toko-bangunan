@@ -56,8 +56,8 @@ class DashboardController extends Controller
 
                 'tanggal' => $date->translatedFormat('D'),
 
-                'total' => Sale::whereDate('tanggal', $date)
-                                ->sum('total_bayar')
+                'total' => (float) Sale::whereDate('tanggal', $date)
+                                        ->sum('total_bayar')
 
             ];
 
@@ -77,15 +77,28 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        $topProducts->transform(function ($item) {
+
+            $item->total_terjual = (int) $item->total_terjual;
+
+            return $item;
+
+        });
+
         return [
 
-            'salesToday' => $salesToday,
-            'returnsToday' => $returnsToday,
-            'revenueToday' => $revenueToday,
-            'productsSoldToday' => $productsSoldToday,
+            'salesToday' => (int) $salesToday,
+            'returnsToday' => (int) $returnsToday,
+            'revenueToday' => (float) $revenueToday,
+            'productsSoldToday' => (int) $productsSoldToday,
             'weeklySales' => $weeklySales,
             'topProducts' => $topProducts,
 
         ];
+    }
+
+    public function getDashboardData()
+    {
+        return response()->json($this->dashboardData());
     }
 }
