@@ -28,8 +28,14 @@
 .hero-right{
 
     display:flex;
+
     gap:20px;
+
     align-items:flex-start;
+
+    position:relative;
+
+    z-index:100;
 
 }
 
@@ -91,10 +97,13 @@
 
 .notification-widget{
 
-    width:190px;
+    width:180px;
 
-    height:80px;
+    height:90px;
 
+    position:relative;
+
+    flex-shrink:0;
 
 }
 
@@ -206,25 +215,43 @@
 
     position:absolute;
 
-    top:calc(100% + 12px);
+    top:calc(100% + 14px);
 
-    right:0;
+    left:50%;
 
-    width:380px;
+    transform:translateX(-50%);
 
-    background:#fff;
+    width:360px;
 
-    border-radius:18px;
+    background:#ffffff;
 
-    border:1px solid #edf2f7;
-
-    box-shadow:0 20px 45px rgba(0,0,0,.15);
-
-    display:none;
+    border-radius:22px;
 
     overflow:hidden;
 
+    box-shadow:0 18px 40px rgba(0,0,0,.15);
+
     z-index:9999;
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:.25s;
+
+}
+
+.notification-dropdown.show{
+
+    opacity:1;
+
+    visibility:visible;
+
+}
+
+.notification-dropdown.show{
+
+    display:block;
 
 }
 
@@ -254,6 +281,10 @@
 
 .notification-header{
 
+    background:#355cc9;
+
+    color:#ffffff;
+
     display:flex;
 
     justify-content:space-between;
@@ -261,10 +292,6 @@
     align-items:center;
 
     padding:18px 22px;
-
-    background:linear-gradient(135deg,#355cc9,#4f6edb);
-
-    color:white;
 
 }
 
@@ -276,19 +303,21 @@
 
     gap:10px;
 
-    font-size:16px;
+    font-weight:600;
 
-    font-weight:700;
+    color:#ffffff;
 
 }
 
 .notification-total{
 
-    background:rgba(255,255,255,.15);
+    background:rgba(255,255,255,.18);
 
-    padding:6px 12px;
+    color:#ffffff;
 
-    border-radius:30px;
+    padding:6px 14px;
+
+    border-radius:999px;
 
     font-size:13px;
 
@@ -312,7 +341,7 @@
 
 .notification-body::-webkit-scrollbar-thumb{
 
-    background:#d1d5db;
+    background:#fff;
 
     border-radius:20px;
 
@@ -1323,17 +1352,11 @@ const notificationWidget =
 const notificationDropdown =
     document.getElementById("notificationDropdown");
 
-notificationWidget.addEventListener("click", function () {
+notificationWidget.addEventListener("click", function(e){
 
-    if(notificationDropdown.style.display === "block"){
+    e.stopPropagation();
 
-        notificationDropdown.style.display = "none";
-
-    }else{
-
-        notificationDropdown.style.display = "block";
-
-    }
+    notificationDropdown.classList.toggle("show");
 
 });
 
@@ -1341,7 +1364,7 @@ document.addEventListener("click", function(e){
 
     if(!notificationWidget.contains(e.target)){
 
-        notificationDropdown.style.display = "none";
+        notificationDropdown.classList.remove("show");
 
     }
 
