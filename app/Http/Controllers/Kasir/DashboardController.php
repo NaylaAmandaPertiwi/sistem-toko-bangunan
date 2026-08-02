@@ -9,17 +9,31 @@ use App\Models\SaleDetail;
 use App\Models\ReturnSale;
 use App\Models\Product;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\App;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        return view('kasir.dashboard', $this->dashboardData());
+
+        App::setLocale('id');
+        Carbon::setLocale('id');
+
+        $selectedDate = request('date')
+            ? Carbon::parse(request('date'))
+            : Carbon::today();
+
+        return view(
+            'kasir.dashboard',
+            $this->dashboardData($selectedDate) + [
+                'selectedDate'=>$selectedDate
+            ]
+        );
     }
 
-    private function dashboardData()
+    private function dashboardData(Carbon $selectedDate)
     {
-        $today = Carbon::today();
+        $today = $selectedDate;
 
         /*
         |--------------------------------------------------------------------------
@@ -50,14 +64,14 @@ class DashboardController extends Controller
 
         for ($i = 6; $i >= 0; $i--) {
 
-            $date = Carbon::today()->subDays($i);
+            $date = $today->copy()->subDays($i);
 
             $weeklySales[] = [
 
-                'tanggal' => $date->translatedFormat('D'),
+                'tanggal' => $date->translatedFormat('d M'),
 
                 'total' => (float) Sale::whereDate('tanggal', $date)
-                                        ->sum('total_bayar')
+                                ->sum('total_bayar')
 
             ];
 
@@ -88,6 +102,11 @@ class DashboardController extends Controller
         $topProducts = SaleDetail::select('product_id')
             ->selectRaw('SUM(qty) as total_terjual')
             ->with('product')
+            ->whereHas('sale', function ($query) use ($today) {
+
+                $query->whereDate('tanggal', $today);
+
+            })
             ->groupBy('product_id')
             ->orderByDesc('total_terjual')
             ->limit(5)
@@ -100,6 +119,14 @@ class DashboardController extends Controller
             return $item;
 
         });
+
+        $chartStartDate = $selectedDate
+            ->copy()
+            ->subDays(6)
+            ->translatedFormat('d M Y');
+
+        $chartEndDate = $selectedDate
+            ->translatedFormat('d M Y');
 
         return [
 
@@ -116,11 +143,20 @@ class DashboardController extends Controller
             'lowStockProducts'  => $lowStockProducts,
             'lowStockCount'     => $lowStockCount,
 
+            'chartStartDate'    => $chartStartDate,
+            'chartEndDate'      => $chartEndDate,
+
         ];
     }
 
-    public function getDashboardData()
+    public function getDashboardData(Request $request)
     {
-        return response()->json($this->dashboardData());
+        $selectedDate = $request->date
+            ? Carbon::parse($request->date)
+            : Carbon::today();
+
+        return response()->json(
+            $this->dashboardData($selectedDate)
+        );
     }
 }

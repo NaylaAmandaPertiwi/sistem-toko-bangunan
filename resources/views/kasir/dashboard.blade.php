@@ -767,6 +767,216 @@
 
 }
 
+/* ==========================================================
+   DATE MODAL
+========================================================== */
+
+.date-modal-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(15,23,42,.45);
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    opacity:0;
+
+    visibility:hidden;
+
+    transition:.25s;
+
+    z-index:5000;
+
+}
+
+.date-modal-overlay.show{
+
+    opacity:1;
+
+    visibility:visible;
+
+}
+
+.date-modal{
+
+    width:420px;
+
+    background:#ffffff;
+
+    border-radius:24px;
+
+    overflow:hidden;
+
+    box-shadow:0 20px 60px rgba(0,0,0,.18);
+
+    animation:modalScale .25s ease;
+
+}
+
+@keyframes modalScale{
+
+    from{
+
+        transform:scale(.92);
+
+        opacity:0;
+
+    }
+
+    to{
+
+        transform:scale(1);
+
+        opacity:1;
+
+    }
+
+}
+
+.date-modal-header{
+
+    padding:20px 24px;
+
+    background:#355cc9;
+
+    color:#ffffff;
+
+}
+
+.date-modal-header h5{
+
+    margin:0;
+
+    font-size:18px;
+
+    font-weight:700;
+
+}
+
+.date-modal-body{
+
+    padding:28px 24px;
+
+}
+
+.date-input-wrapper{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+}
+
+.date-label{
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#374151;
+
+}
+
+.date-input{
+
+    width:100%;
+
+    padding:12px 15px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:12px;
+
+    font-size:15px;
+
+    outline:none;
+
+    transition:.2s;
+
+}
+
+.date-input:focus{
+
+    border-color:#355cc9;
+
+    box-shadow:0 0 0 3px rgba(53,92,201,.15);
+
+}
+
+.date-modal-footer{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:12px;
+
+    padding:20px 24px;
+
+    border-top:1px solid #edf2f7;
+
+}
+
+.btn-date-cancel{
+
+    border:none;
+
+    background:#e5e7eb;
+
+    color:#374151;
+
+    padding:10px 18px;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.btn-date-cancel:hover{
+
+    background:#d1d5db;
+
+}
+
+.btn-date-save{
+
+    border:none;
+
+    background:#355cc9;
+
+    color:#ffffff;
+
+    padding:10px 20px;
+
+    border-radius:12px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.btn-date-save:hover{
+
+    background:#2748a5;
+
+}
+
 </style>
 
 @endsection
@@ -925,7 +1135,9 @@
             </div>
 
             {{-- Tanggal --}}
-            <div class="header-widget calendar-widget">
+            <div
+                class="header-widget calendar-widget"
+                id="calendarWidget">
 
                 <div class="widget-icon calendar">
 
@@ -935,15 +1147,18 @@
 
                 <div class="widget-content">
 
-                    <div class="widget-title">
+                    <div
+                        class="widget-title"
+                        id="calendarDay">
 
-                        {{ now()->translatedFormat('l, d F Y') }}
+                        {{ $selectedDate->translatedFormat('l') }}
 
                     </div>
 
-                    <small>
+                    <small
+                        id="calendarDate">
 
-                        {{ now()->translatedFormat('d F Y') }}
+                        {{ $selectedDate->translatedFormat('d F Y') }}
 
                     </small>
 
@@ -1001,9 +1216,11 @@
 
             </div>
 
-            <div class="stats-value" id="salesToday">
+            <div
+                class="stats-value"
+                id="salesToday">
 
-                {{ number_format($salesToday) }}
+                {{ $salesToday }}
 
             </div>
 
@@ -1030,7 +1247,9 @@
 
             </div>
 
-            <div class="stats-value" id="revenueToday">
+            <div
+                class="stats-value"
+                id="revenueToday">
 
                 Rp {{ number_format($revenueToday,0,',','.') }}
 
@@ -1059,9 +1278,11 @@
 
             </div>
 
-            <div class="stats-value" id="returnsToday">
+            <div
+                class="stats-value"
+                id="returnsToday">
 
-                {{ number_format($returnsToday) }}
+                {{ $returnsToday }}
 
             </div>
 
@@ -1088,9 +1309,11 @@
 
             </div>
 
-            <div class="stats-value" id="productsSoldToday">
+            <div
+                class="stats-value"
+                id="productsSoldToday">
 
-                {{ number_format($productsSoldToday) }}
+                {{ $productsSoldToday }}
 
             </div>
 
@@ -1120,13 +1343,16 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
 
-                    <h5 class="fw-bold mb-0">
+                    <h3 id="chartTitle">
 
-                        <i class="bi bi-graph-up-arrow text-primary me-2"></i>
+                        <i class="bi bi-graph-up-arrow"></i>
 
-                        Penjualan 7 Hari Terakhir
+                        Penjualan
+                        {{ $chartStartDate }}
+                        –
+                        {{ $chartEndDate }}
 
-                    </h5>
+                    </h3>
 
                     <span class="badge bg-light text-primary">
 
@@ -1185,7 +1411,7 @@
 
                         </thead>
 
-                        <tbody>
+                        <tbody id="topProductsBody">
 
                             @forelse($topProducts as $index => $product)
 
@@ -1252,6 +1478,76 @@
 </div>
 
 {{-- ==========================================================
+     MODAL PILIH TANGGAL
+========================================================== --}}
+
+<div class="date-modal-overlay" id="dateModal">
+
+    <div class="date-modal">
+
+        <div class="date-modal-header">
+
+            <h5>
+
+                <i class="bi bi-calendar3"></i>
+
+                Pilih Tanggal
+
+            </h5>
+
+        </div>
+
+        <div class="date-modal-body">
+
+            <div class="date-input-wrapper">
+
+                <label class="date-label">
+
+                    Pilih Tanggal Dashboard
+
+                </label>
+
+                <input
+                    type="date"
+                    id="dashboardDate"
+                    class="date-input"
+                    value="{{ request('date', now()->format('Y-m-d')) }}">
+
+            </div>
+
+        </div>
+
+        <div class="date-modal-footer">
+
+            <button
+                type="button"
+                class="btn-date-cancel"
+                id="closeDateModal">
+
+                Batal
+
+            </button>
+
+            <button
+                type="button"
+                class="btn-date-save"
+                id="saveDate">
+
+                Simpan
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+@endsection
+
+@section('scripts')
+
+{{-- ==========================================================
      JAVASCRIPT
 ========================================================== --}}
 
@@ -1259,7 +1555,7 @@
 
 <script>
 
-{{-- Sales Chart --}}
+// Sales Chart
 
 const salesData = @json($weeklySales);
 
@@ -1267,7 +1563,7 @@ const labels = salesData.map(item => item.tanggal);
 
 const totals = salesData.map(item => item.total);
 
-new Chart(
+const salesChart = new Chart(
 
     document.getElementById("salesChart"),
 
@@ -1331,7 +1627,7 @@ new Chart(
 
 );
 
-{{-- Clock --}}
+// Clock
 
 function updateClock(){
 
@@ -1367,6 +1663,176 @@ document.addEventListener("click", function(e){
         notificationDropdown.classList.remove("show");
 
     }
+
+});
+
+const dateModal =
+    document.getElementById("dateModal");
+
+const calendarWidget =
+    document.getElementById("calendarWidget");
+
+const closeDateModal =
+    document.getElementById("closeDateModal");
+
+calendarWidget.addEventListener("click", function(){
+
+    dateModal.classList.add("show");
+
+});
+
+closeDateModal.addEventListener("click", function(){
+
+    dateModal.classList.remove("show");
+
+});
+
+dateModal.addEventListener("click", function(e){
+
+    if(e.target === dateModal){
+
+        dateModal.classList.remove("show");
+
+    }
+
+});
+
+function formatRupiah(number){
+
+    return "Rp " + Number(number).toLocaleString("id-ID");
+
+}
+
+const saveDate =
+    document.getElementById("saveDate");
+
+saveDate.addEventListener("click", function(){
+
+    const selectedDate =
+        document.getElementById("dashboardDate").value;
+
+    if(!selectedDate){
+
+        alert("Silakan pilih tanggal terlebih dahulu.");
+
+        return;
+
+    }
+
+    fetch(`/kasir/dashboard/data?date=${selectedDate}`)
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            console.log(data);
+
+            dateModal.classList.remove("show");
+
+            history.pushState(
+                {},
+                "",
+                `/kasir/dashboard?date=${selectedDate}`
+            );
+
+            document.getElementById("salesToday").innerText =
+                data.salesToday;
+
+            document.getElementById("revenueToday").innerText =
+                formatRupiah(data.revenueToday);
+
+            document.getElementById("returnsToday").innerText =
+                data.returnsToday;
+
+            document.getElementById("productsSoldToday").innerText =
+                data.productsSoldToday;
+
+            salesChart.data.labels =
+                data.weeklySales.map(item => item.tanggal);
+
+            salesChart.data.datasets[0].data =
+                data.weeklySales.map(item => item.total);
+
+            salesChart.update();
+
+            const topProductsBody =
+                document.getElementById("topProductsBody");
+
+            topProductsBody.innerHTML = "";
+
+            if(data.topProducts.length === 0){
+
+                topProductsBody.innerHTML = `
+
+                    <tr>
+
+                        <td colspan="3"
+                            class="text-center text-muted py-4">
+
+                            Belum ada data.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }else{
+
+                data.topProducts.forEach((product,index)=>{
+
+                    topProductsBody.innerHTML += `
+
+                        <tr>
+
+                            <td>
+
+                                <span class="rank-number">
+
+                                    ${index + 1}
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <div class="product-name">
+
+                                    ${product.product.nama_produk}
+
+                                </div>
+
+                            </td>
+
+                            <td class="text-end">
+
+                                <span class="qty-badge">
+
+                                    ${Number(product.total_terjual)}
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                });
+
+            }
+
+            document.getElementById("chartTitle").innerText =
+                data.chartTitle;
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+        });
 
 });
 
