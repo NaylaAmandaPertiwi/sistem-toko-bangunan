@@ -363,11 +363,31 @@ PROMO DISKON
 
 }
 
+/* ==========================================================
+   PAGE TITLE
+========================================================== */
+
+.hero-title{
+
+    font-size:32px;
+
+    font-weight:700;
+
+    color:#24324a;
+
+    margin-bottom:6px;
+
+    line-height:1.2;
+
+}
+
 </style>
 
 <div class="header">
 
-    <h2>Penjualan</h2>
+    <h1 class="hero-title">
+        Penjualan
+    </h1>
 
 </div>
 

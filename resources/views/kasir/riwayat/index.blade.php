@@ -419,6 +419,34 @@ table tbody td{
 
 }
 
+.hero-title{
+
+    font-size:32px;
+
+    font-weight:700;
+
+    color:#24324a;
+
+    margin-bottom:6px;
+
+    line-height:1.2;
+
+}
+
+.hero-subtitle{
+
+    font-size:16px;
+
+    font-weight:400;
+
+    color:#667085;
+
+    margin-top:4px;
+
+    line-height:1.5;
+
+}
+
 </style>
 
 @endsection
@@ -429,11 +457,9 @@ table tbody td{
 
     <div>
 
-        <h2 class="page-title">
-
+        <h1 class="hero-title">
             Riwayat Transaksi
-
-        </h2>
+        </h1>
 
         <div class="page-subtitle">
 

@@ -11,12 +11,15 @@
 ========================================================== */
 
 .hero-header{
+
     display:flex;
+
     justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:20px;
-    margin-bottom:30px;
+
+    align-items:flex-start;
+
+    margin-bottom:20px;
+
 }
 
 .hero-left{
@@ -29,29 +32,39 @@
 
     display:flex;
 
-    gap:20px;
+    align-items:center;
 
-    align-items:flex-start;
+    gap:12px;
 
-    position:relative;
-
-    z-index:100;
+    margin-left:auto;
 
 }
 
 .hero-title{
 
-    font-size:28px;
+    font-size:32px;
+
     font-weight:700;
-    color:#2d3748;
-    margin-bottom:8px;
+
+    color:#24324a;
+
+    margin-bottom:6px;
+
+    line-height:1.2;
 
 }
 
 .hero-subtitle{
 
     font-size:16px;
-    color:#6b7280;
+
+    font-weight:400;
+
+    color:#667085;
+
+    margin-top:4px;
+
+    line-height:1.5;
 
 }
 
@@ -71,13 +84,13 @@
 
     border-radius:22px;
 
-    padding:22px;
+    padding:14px 18px;
 
     display:flex;
 
     align-items:center;
 
-    gap:16px;
+    gap:12px;
 
     box-shadow:0 12px 30px rgba(0,0,0,.06);
 
@@ -97,9 +110,9 @@
 
 .notification-widget{
 
-    width:180px;
+    width:150px;
 
-    height:90px;
+    height:70px;
 
     position:relative;
 
@@ -109,25 +122,25 @@
 
 .calendar-widget{
 
-    width:200px;
+    width:170px;
 
-    height:80px;
+    height:70px;
 
 }
 
 .live-widget{
 
-    width:180px;
+    width:150px;
 
-    height:80px;
+    height:70px;
 
 }
 
 .widget-icon{
 
-    width:44px;
+    width:38px;
 
-    height:44px;
+    height:38px;
 
     border-radius:18px;
 
@@ -137,7 +150,7 @@
 
     justify-content:center;
 
-    font-size:24px;
+    font-size:18px;
 
     background:#edf4ff;
 
@@ -183,7 +196,7 @@
 
 .widget-title{
 
-    font-size:14px;
+    font-size:13px;
 
     font-weight:600;
 
@@ -458,7 +471,7 @@
     display:block;
     margin-top:3px;
 
-    font-size:13px;
+    font-size:11px;
 
     color:#6b7280;
 
@@ -466,7 +479,7 @@
 
 .header-live-time{
 
-    font-size:22px;
+    font-size:18px;
 
     font-weight:700;
 
@@ -478,7 +491,7 @@
 
     display:inline-block;
 
-    margin-top:8px;
+    margin-top:4px;
 
     background:#dcfce7;
 
@@ -645,8 +658,8 @@
 
     .hero-right{
 
-        width:100%;
         justify-content:flex-start;
+
         flex-wrap:wrap;
 
     }
