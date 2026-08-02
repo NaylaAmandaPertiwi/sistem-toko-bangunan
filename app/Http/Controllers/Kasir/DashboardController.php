@@ -65,6 +65,22 @@ class DashboardController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | Notifikasi Barang Stok Minimum
+        |--------------------------------------------------------------------------
+        */
+
+        $lowStockProducts = Product::whereColumn(
+                'stok',
+                '<=',
+                'stok_minimum'
+            )
+            ->orderBy('stok', 'asc')
+            ->get();
+
+        $lowStockCount = $lowStockProducts->count();
+
+        /*
+        |--------------------------------------------------------------------------
         | Top 5 Produk Terlaris
         |--------------------------------------------------------------------------
         */
@@ -87,12 +103,18 @@ class DashboardController extends Controller
 
         return [
 
-            'salesToday' => (int) $salesToday,
-            'returnsToday' => (int) $returnsToday,
-            'revenueToday' => (float) $revenueToday,
+            'salesToday'        => (int) $salesToday,
+            'returnsToday'      => (int) $returnsToday,
+            'revenueToday'      => (float) $revenueToday,
             'productsSoldToday' => (int) $productsSoldToday,
-            'weeklySales' => $weeklySales,
-            'topProducts' => $topProducts,
+
+            'weeklySales'       => $weeklySales,
+
+            'topProducts'       => $topProducts,
+
+            // Notifikasi
+            'lowStockProducts'  => $lowStockProducts,
+            'lowStockCount'     => $lowStockCount,
 
         ];
     }

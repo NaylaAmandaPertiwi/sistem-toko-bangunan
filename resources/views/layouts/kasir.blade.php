@@ -13,6 +13,9 @@
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+<link rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"> 
+
 <style>
 
 *{
@@ -272,32 +275,6 @@ body{
 .menu-divider{
     height:1px;
     background:#eaeaea;
-}
-
-.profile{
-    cursor:pointer;
-}
-
-.profile-menu{
-
-    position:absolute;
-
-    left:20px;
-    right:20px;
-
-    bottom:95px;
-
-    background:white;
-
-    border-radius:15px;
-
-    overflow:hidden;
-
-    display:none;
-
-    box-shadow:0 5px 20px rgba(0,0,0,.15);
-
-    z-index:9999;
 }
 
 .profile-menu.show{

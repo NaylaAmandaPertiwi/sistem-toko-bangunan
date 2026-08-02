@@ -6,78 +6,319 @@
 
 <style>
 
-.page-title{
-    font-size:28px;
-    font-weight:700;
-    color:#2d3748;
-    margin-bottom:6px;
-}
+/* ==========================================================
+   HERO HEADER
+========================================================== */
 
-.page-description{
-    color:#6b7280;
+.hero-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:20px;
     margin-bottom:30px;
 }
 
-.dashboard-card{
-    background:#fff;
-    border-radius:18px;
-    padding:24px;
-    box-shadow:0 10px 30px rgba(0,0,0,.06);
-    transition:.25s;
-    height:100%;
+.hero-left{
+
+    flex:1;
+
 }
 
-.dashboard-card:hover{
-    transform:translateY(-4px);
-}
+.hero-right{
 
-.dashboard-icon{
-    width:60px;
-    height:60px;
-    border-radius:16px;
     display:flex;
-    align-items:center;
-    justify-content:center;
+    gap:20px;
+    align-items:flex-start;
+
+}
+
+.hero-title{
+
     font-size:28px;
-    color:#fff;
-    margin-bottom:20px;
-}
-
-.icon-sales{
-    background:#355cc9;
-}
-
-.icon-return{
-    background:#f59e0b;
-}
-
-.icon-money{
-    background:#10b981;
-}
-
-.icon-product{
-    background:#8b5cf6;
-}
-
-.card-title{
-    color:#6b7280;
-    font-size:15px;
-    margin-bottom:8px;
-}
-
-.card-value{
-    font-size:30px;
     font-weight:700;
     color:#2d3748;
+    margin-bottom:8px;
+
 }
 
-.card-footer{
-    margin-top:12px;
-    color:#9ca3af;
+.hero-subtitle{
+
+    font-size:16px;
+    color:#6b7280;
+
+}
+
+.hero-subtitle strong{
+
+    color:#2563eb;
+
+}
+
+/* ==========================================================
+   HERO WIDGET
+========================================================== */
+
+.header-widget{
+
+    background:#fff;
+
+    border-radius:22px;
+
+    padding:22px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.06);
+
+    transition:.3s;
+
+}
+
+.header-widget:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:0 16px 40px rgba(37,99,235,.12);
+
+}
+
+/* Ukuran masing-masing widget */
+
+.notification-widget{
+
+    width:190px;
+
+    height:80px;
+
+
+}
+
+.calendar-widget{
+
+    width:200px;
+
+    height:80px;
+
+}
+
+.live-widget{
+
+    width:180px;
+
+    height:80px;
+
+}
+
+.widget-icon{
+
+    width:44px;
+
+    height:44px;
+
+    border-radius:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:24px;
+
+    background:#edf4ff;
+
+    color:#3563ff;
+
+    position:relative;
+
+}
+
+.notification-count{
+
+    position:absolute;
+
+    top:-4px;
+
+    right:-4px;
+
+    min-width:22px;
+
+    height:22px;
+
+    padding:0 6px;
+
+    border-radius:999px;
+
+    background:#ef4444;
+
+    color:#fff;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    box-shadow:0 3px 8px rgba(239,68,68,.3);
+
+}
+
+.widget-title{
+
     font-size:14px;
+
+    font-weight:600;
+
+    color:#374151;
+
 }
 
-.top-product-item{
+.widget-content{
+
+    line-height:1.4;
+
+}
+
+.notification-widget{
+
+    position:relative;
+
+    cursor:pointer;
+
+    display:flex;
+
+    align-items:center;
+
+    overflow:visible;
+
+}
+
+.notification-dropdown{
+
+    position:absolute;
+
+    top:calc(100% + 12px);
+
+    right:0;
+
+    width:380px;
+
+    background:#fff;
+
+    border-radius:18px;
+
+    border:1px solid #edf2f7;
+
+    box-shadow:0 20px 45px rgba(0,0,0,.15);
+
+    display:none;
+
+    overflow:hidden;
+
+    z-index:9999;
+
+}
+
+.notification-dropdown::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:-8px;
+
+    right:120px;
+
+    width:16px;
+
+    height:16px;
+
+    background:white;
+
+    transform:rotate(45deg);
+
+    border-left:1px solid #edf2f7;
+
+    border-top:1px solid #edf2f7;
+
+}
+
+.notification-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:18px 22px;
+
+    background:linear-gradient(135deg,#355cc9,#4f6edb);
+
+    color:white;
+
+}
+
+.notification-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    font-size:16px;
+
+    font-weight:700;
+
+}
+
+.notification-total{
+
+    background:rgba(255,255,255,.15);
+
+    padding:6px 12px;
+
+    border-radius:30px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.notification-body{
+
+    max-height:340px;
+
+    overflow-y:auto;
+
+}
+
+.notification-body::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+.notification-body::-webkit-scrollbar-thumb{
+
+    background:#d1d5db;
+
+    border-radius:20px;
+
+}
+
+.notification-item{
 
     display:flex;
 
@@ -85,29 +326,45 @@
 
     justify-content:space-between;
 
-    padding:15px 0;
+    padding:18px 20px;
 
-    border-bottom:1px solid #edf2f7;
+    border-bottom:1px solid #f1f5f9;
+
+    transition:.25s;
+
+    cursor:pointer;
 
 }
 
-.top-product-item:last-child{
+.notification-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+.notification-item:last-child{
 
     border-bottom:none;
 
 }
 
-.ranking{
+.notification-item:hover{
+
+    background:#f8fbff;
+
+}
+
+.notification-item-icon{
 
     width:42px;
 
     height:42px;
 
-    background:#355cc9;
-
-    color:#fff;
-
-    border-radius:12px;
+    border-radius:50%;
 
     display:flex;
 
@@ -115,9 +372,369 @@
 
     justify-content:center;
 
-    font-weight:bold;
+    background:#f3f4f6;
 
-    margin-right:15px;
+    font-size:20px;
+
+}
+
+.notification-product{
+
+    font-weight:600;
+
+    color:#2d3748;
+
+    font-size:14px;
+
+}
+
+.notification-stock{
+
+    margin-top:3px;
+
+    font-size:13px;
+
+    color:#6b7280;
+
+}
+
+.notification-empty{
+
+    padding:30px;
+
+    text-align:center;
+
+    color:#6b7280;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.notification-empty i{
+
+    font-size:36px;
+
+}
+
+.widget-subtitle{
+
+    display:block;
+    margin-top:3px;
+
+    font-size:13px;
+
+    color:#6b7280;
+
+}
+
+.header-live-time{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    color:#2563eb;
+
+}
+
+.header-live-badge{
+
+    display:inline-block;
+
+    margin-top:8px;
+
+    background:#dcfce7;
+
+    color:#16a34a;
+
+    padding:6px 14px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+/* ==========================================================
+   STATISTIC CARD
+========================================================== */
+
+.stats-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:20px;
+
+    margin-bottom:30px;
+
+}
+
+.stats-card{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:20px;
+
+    min-height:150px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.06);
+
+    border:1px solid #edf2f7;
+
+    transition:.3s;
+
+}
+
+.stats-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 18px 40px rgba(53,92,201,.15);
+
+}
+
+.stats-icon{
+
+    width:58px;
+    height:58px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:16px;
+
+    font-size:24px;
+
+    color:white;
+
+    margin-bottom:18px;
+
+}
+
+.stats-title{
+
+    color:#6b7280;
+
+    font-size:14px;
+
+    margin-bottom:8px;
+
+}
+
+.stats-value{
+
+    font-size:28px;
+
+    font-weight:700;
+
+    color:#1f2937;
+
+    margin-bottom:5px;
+
+}
+
+.stats-subtitle{
+
+    color:#9ca3af;
+
+    font-size:13px;
+
+}
+
+.bg-sales{
+
+    background:#355cc9;
+
+}
+
+.bg-money{
+
+    background:#10b981;
+
+}
+
+.bg-return{
+
+    background:#f59e0b;
+
+}
+
+.bg-product{
+
+    background:#8b5cf6;
+
+}
+
+/* ==========================================================
+   DASHBOARD CARD
+========================================================== */
+
+.dashboard-card{
+
+    background:#ffffff;
+
+    border-radius:22px;
+
+    padding:25px;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.06);
+
+    border:1px solid #edf2f7;
+
+    height:100%;
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+/* Laptop */
+
+@media(max-width:1200px){
+
+    .hero-header{
+
+        flex-direction:column;
+        align-items:flex-start;
+
+    }
+
+    .hero-right{
+
+        width:100%;
+        justify-content:flex-start;
+        flex-wrap:wrap;
+
+    }
+
+    .stats-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+/* Tablet */
+
+@media(max-width:768px){
+
+    .stats-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
+/* =====================================================
+   TOP PRODUCT TABLE
+===================================================== */
+
+.top-product-table{
+
+    margin-bottom:0;
+
+}
+
+.top-product-table thead th{
+
+    border:none;
+
+    font-size:13px;
+
+    color:#6b7280;
+
+    font-weight:600;
+
+    padding-bottom:12px;
+
+}
+
+.top-product-table tbody td{
+
+    border-top:1px solid #edf2f7;
+
+    padding:14px 0;
+
+    vertical-align:middle;
+
+}
+
+.top-product-table tbody tr:first-child td{
+
+    border-top:none;
+
+}
+
+.rank-number{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    width:24px;
+
+    height:24px;
+
+    border-radius:50%;
+
+    background:#355cc9;
+
+    color:#fff;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+.product-name{
+
+    font-size:14px;
+
+    font-weight:600;
+
+    color:#2d3748;
+
+}
+
+.qty-badge{
+
+    display:inline-block;
+
+    min-width:48px;
+
+    text-align:center;
+
+    background:#edf4ff;
+
+    color:#355cc9;
+
+    padding:5px 10px;
+
+    border-radius:30px;
+
+    font-size:13px;
+
+    font-weight:600;
 
 }
 
@@ -129,137 +746,202 @@
 
 <div class="container-fluid">
 
-    <h2 class="page-title">
-        Dashboard Kasir
-    </h2>
+    {{-- ==========================================================
+        HEADER DASHBOARD
+    ========================================================== --}}
 
-    <p class="page-description">
-        Ringkasan aktivitas kasir hari ini.
-    </p>
+    <div class="hero-header">
 
-    <div class="row g-4">
+        <div class="hero-left">
 
-        <div class="col-lg-3 col-md-6">
+            <h1 class="hero-title">
+                Dashboard Kasir
+            </h1>
 
-            <div class="dashboard-card">
+            <p class="hero-subtitle">
+                Selamat datang kembali,
+                <strong>{{ Auth::user()->name }}</strong> 👋
+            </p>
 
-                <div class="dashboard-icon icon-sales">
+        </div>
 
-                    <i class="bi bi-cart-check"></i>
+        <div class="hero-right">
+
+            {{-- ===============================
+                NOTIFIKASI STOK MINIMUM
+            ================================ --}}
+            <div class="header-widget notification-widget" id="notificationWidget">
+
+                <div class="widget-icon notification">
+
+                    <i class="bi bi-bell"></i>
+
+                    @if($lowStockCount > 0)
+
+                        <span class="notification-count">
+                            {{ $lowStockCount }}
+                        </span>
+
+                    @endif
 
                 </div>
 
-                <div class="card-title">
+                <div class="widget-content">
 
-                    Penjualan Hari Ini
+                    <div class="widget-title">
+                        Notifikasi
+                    </div>
+
+                    <small class="widget-subtitle">
+
+                        @if($lowStockCount > 0)
+
+                            {{ $lowStockCount }} Barang Minimum
+
+                        @else
+
+                            Semua stok aman
+
+                        @endif
+
+                    </small>
 
                 </div>
 
-                <div class="card-value">
+                {{-- Dropdown Notifikasi --}}
+                <div class="notification-dropdown" id="notificationDropdown">
 
-                    {{ number_format($salesToday) }}
+                    <div class="notification-header">
 
-                </div>
+                        <div class="notification-title">
 
-                <div class="card-footer">
+                            <i class="bi bi-bell-fill"></i>
 
-                    Transaksi
+                            Notifikasi Stok
+
+                        </div>
+
+                        <div class="notification-total">
+
+                            {{ $lowStockCount }} Barang
+
+                        </div>
+
+                    </div>
+
+                    <div class="notification-body">
+
+                        @forelse($lowStockProducts as $product)
+
+                            <div class="notification-item">
+
+                                <div class="notification-left">
+
+                                    <div class="notification-item-icon">
+
+                                        @if($product->stok == 0)
+
+                                            <i class="bi bi-x-octagon-fill text-danger"></i>
+
+                                        @else
+
+                                            <i class="bi bi-exclamation-circle-fill text-warning"></i>
+
+                                        @endif
+
+                                    </div>
+
+                                    <div>
+
+                                        <div class="notification-product">
+
+                                            {{ $product->nama_produk }}
+
+                                        </div>
+
+                                        <div class="notification-stock">
+
+                                            Stok
+
+                                            <strong>{{ $product->stok }}</strong>
+
+                                            • Minimum
+
+                                            <strong>{{ $product->stok_minimum }}</strong>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        @empty
+
+                            <div class="notification-empty">
+
+                                <i class="bi bi-check-circle-fill text-success"></i>
+
+                                <span>Semua stok masih aman.</span>
+
+                            </div>
+
+                        @endforelse
+
+                    </div>
 
                 </div>
 
             </div>
 
-        </div>
+            {{-- Tanggal --}}
+            <div class="header-widget calendar-widget">
 
-        <div class="col-lg-3 col-md-6">
+                <div class="widget-icon calendar">
 
-            <div class="dashboard-card">
-
-                <div class="dashboard-icon icon-return">
-
-                    <i class="bi bi-arrow-counterclockwise"></i>
+                    <i class="bi bi-calendar3"></i>
 
                 </div>
 
-                <div class="card-title">
+                <div class="widget-content">
 
-                    Retur Hari Ini
+                    <div class="widget-title">
 
-                </div>
+                        {{ now()->translatedFormat('l, d F Y') }}
 
-                <div class="card-value">
+                    </div>
 
-                    {{ number_format($returnsToday) }}
+                    <small>
 
-                </div>
+                        {{ now()->translatedFormat('d F Y') }}
 
-                <div class="card-footer">
-
-                    Retur
+                    </small>
 
                 </div>
 
             </div>
 
-        </div>
+            {{-- Jam --}}
+            <div class="header-widget live-widget">
 
-        <div class="col-lg-3 col-md-6">
+                <div class="widget-icon clock">
 
-            <div class="dashboard-card">
-
-                <div class="dashboard-icon icon-money">
-
-                    <i class="bi bi-cash-stack"></i>
+                    <i class="bi bi-clock"></i>
 
                 </div>
 
-                <div class="card-title">
+                <div>
 
-                    Omzet Hari Ini
+                    <div id="currentTime" class="header-live-time">
 
-                </div>
+                    </div>
 
-                <div class="card-value">
+                    <span class="header-live-badge">
 
-                    Rp {{ number_format($revenueToday,0,',','.') }}
+                        ● LIVE
 
-                </div>
-
-                <div class="card-footer">
-
-                    Total Penjualan
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-
-            <div class="dashboard-card">
-
-                <div class="dashboard-icon icon-product">
-
-                    <i class="bi bi-box-seam"></i>
-
-                </div>
-
-                <div class="card-title">
-
-                    Barang Terjual
-
-                </div>
-
-                <div class="card-value">
-
-                    {{ number_format($productsSoldToday) }}
-
-                </div>
-
-                <div class="card-footer">
-
-                    Item
+                    </span>
 
                 </div>
 
@@ -269,18 +951,161 @@
 
     </div>
 
-    <div class="row mt-4">
+    {{-- ==========================================================
+        STATISTIC CARDS
+    ========================================================== --}}
 
-        {{-- Grafik Penjualan --}}
-        <div class="col-lg-8">
+    <div class="stats-grid">
+
+        {{-- Penjualan --}}
+        <div class="stats-card">
+
+            <div class="stats-icon bg-sales">
+
+                <i class="bi bi-cart-check-fill"></i>
+
+            </div>
+
+            <div class="stats-title">
+
+                Penjualan Hari Ini
+
+            </div>
+
+            <div class="stats-value" id="salesToday">
+
+                {{ number_format($salesToday) }}
+
+            </div>
+
+            <div class="stats-subtitle">
+
+                Transaksi
+
+            </div>
+
+        </div>
+
+        {{-- Omzet --}}
+        <div class="stats-card">
+
+            <div class="stats-icon bg-money">
+
+                <i class="bi bi-cash-stack"></i>
+
+            </div>
+
+            <div class="stats-title">
+
+                Omzet Hari Ini
+
+            </div>
+
+            <div class="stats-value" id="revenueToday">
+
+                Rp {{ number_format($revenueToday,0,',','.') }}
+
+            </div>
+
+            <div class="stats-subtitle">
+
+                Total Penjualan
+
+            </div>
+
+        </div>
+
+        {{-- Retur --}}
+        <div class="stats-card">
+
+            <div class="stats-icon bg-return">
+
+                <i class="bi bi-arrow-counterclockwise"></i>
+
+            </div>
+
+            <div class="stats-title">
+
+                Retur Hari Ini
+
+            </div>
+
+            <div class="stats-value" id="returnsToday">
+
+                {{ number_format($returnsToday) }}
+
+            </div>
+
+            <div class="stats-subtitle">
+
+                Retur
+
+            </div>
+
+        </div>
+
+        {{-- Barang --}}
+        <div class="stats-card">
+
+            <div class="stats-icon bg-product">
+
+                <i class="bi bi-box-seam-fill"></i>
+
+            </div>
+
+            <div class="stats-title">
+
+                Barang Terjual
+
+            </div>
+
+            <div class="stats-value" id="productsSoldToday">
+
+                {{ number_format($productsSoldToday) }}
+
+            </div>
+
+            <div class="stats-subtitle">
+
+                Item Terjual
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {{-- ==========================================================
+        ANALYTICS
+    ========================================================== --}}
+
+    <div class="row g-4 mt-2">
+
+        {{-- =========================
+            SALES CHART
+        ========================= --}}
+
+        <div class="col-xl-8 col-lg-7">
 
             <div class="dashboard-card">
 
-                <h5 class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
 
-                    Grafik Penjualan 7 Hari Terakhir
+                    <h5 class="fw-bold mb-0">
 
-                </h5>
+                        <i class="bi bi-graph-up-arrow text-primary me-2"></i>
+
+                        Penjualan 7 Hari Terakhir
+
+                    </h5>
+
+                    <span class="badge bg-light text-primary">
+
+                        Live Data
+
+                    </span>
+
+                </div>
 
                 <canvas id="salesChart" height="100"></canvas>
 
@@ -288,58 +1113,106 @@
 
         </div>
 
-        {{-- Top Produk --}}
-        <div class="col-lg-4">
+        {{-- =========================
+            TOP PRODUCTS
+        ========================= --}}
+        <div class="col-xl-4 col-lg-5">
 
             <div class="dashboard-card">
 
-                <h5 class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
 
-                    Top 5 Produk Terlaris
+                    <h5 class="fw-bold mb-0">
 
-                </h5>
+                        <i class="bi bi-trophy-fill text-warning me-2"></i>
 
-                @forelse($topProducts as $index => $product)
+                        Top 5 Produk
 
-                    <div class="top-product-item">
+                    </h5>
 
-                        <div class="d-flex align-items-center">
+                    <span class="badge bg-light text-warning">
 
-                            <div class="ranking">
+                        Terlaris
 
-                                {{ $index + 1 }}
+                    </span>
 
-                            </div>
+                </div>
 
-                            <div>
+                <div class="table-responsive">
 
-                                <div class="fw-bold">
+                    <table class="table table-borderless align-middle top-product-table">
 
-                                    {{ $product->product->nama_produk }}
+                        <thead>
 
-                                </div>
+                            <tr>
 
-                                <small class="text-muted">
+                                <th width="40">#</th>
 
-                                    {{ number_format($product->total_terjual) }} Item Terjual
+                                <th>Produk</th>
 
-                                </small>
+                                <th class="text-end">Qty</th>
 
-                            </div>
+                            </tr>
 
-                        </div>
+                        </thead>
 
-                    </div>
+                        <tbody>
 
-                @empty
+                            @forelse($topProducts as $index => $product)
 
-                    <div class="text-center text-muted">
+                                <tr>
 
-                        Belum ada data penjualan.
+                                    <td>
 
-                    </div>
+                                        <span class="rank-number">
 
-                @endforelse
+                                            {{ $index + 1 }}
+
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <div class="product-name">
+
+                                            {{ $product->product->nama_produk }}
+
+                                        </div>
+
+                                    </td>
+
+                                    <td class="text-end">
+
+                                        <span class="qty-badge">
+
+                                            {{ number_format($product->total_terjual) }}
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                            @empty
+
+                                <tr>
+
+                                    <td colspan="3" class="text-center text-muted py-4">
+
+                                        Belum ada data.
+
+                                    </td>
+
+                                </tr>
+
+                            @endforelse
+
+                        </tbody>
+
+                    </table>
+
+                </div>
 
             </div>
 
@@ -349,9 +1222,15 @@
 
 </div>
 
+{{-- ==========================================================
+     JAVASCRIPT
+========================================================== --}}
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
+
+{{-- Sales Chart --}}
 
 const salesData = @json($weeklySales);
 
@@ -422,6 +1301,51 @@ new Chart(
     }
 
 );
+
+{{-- Clock --}}
+
+function updateClock(){
+
+    const now = new Date();
+
+    document.getElementById("currentTime").innerHTML =
+        now.toLocaleTimeString("id-ID");
+
+}
+
+updateClock();
+
+setInterval(updateClock,1000);
+
+const notificationWidget =
+    document.getElementById("notificationWidget");
+
+const notificationDropdown =
+    document.getElementById("notificationDropdown");
+
+notificationWidget.addEventListener("click", function () {
+
+    if(notificationDropdown.style.display === "block"){
+
+        notificationDropdown.style.display = "none";
+
+    }else{
+
+        notificationDropdown.style.display = "block";
+
+    }
+
+});
+
+document.addEventListener("click", function(e){
+
+    if(!notificationWidget.contains(e.target)){
+
+        notificationDropdown.style.display = "none";
+
+    }
+
+});
 
 </script>
 
