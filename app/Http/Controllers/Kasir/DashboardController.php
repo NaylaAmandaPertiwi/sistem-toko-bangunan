@@ -146,6 +146,9 @@ class DashboardController extends Controller
             'chartStartDate'    => $chartStartDate,
             'chartEndDate'      => $chartEndDate,
 
+            'calendarDay'       => $selectedDate->translatedFormat('l'),
+            'calendarDate'      => $selectedDate->translatedFormat('d F Y'),
+
         ];
     }
 

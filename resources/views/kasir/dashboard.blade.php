@@ -1760,6 +1760,12 @@ saveDate.addEventListener("click", function(){
             document.getElementById("productsSoldToday").innerText =
                 data.productsSoldToday;
 
+            document.getElementById("calendarDay").innerText =
+                data.calendarDay;
+
+            document.getElementById("calendarDate").innerText =
+                data.calendarDate;
+
             salesChart.data.labels =
                 data.weeklySales.map(item => item.tanggal);
 
