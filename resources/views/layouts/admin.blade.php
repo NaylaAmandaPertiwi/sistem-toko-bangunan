@@ -1007,20 +1007,19 @@ rel="stylesheet">
     <div class="dropdown-content"
     id="transactionDropdown">
 
-        {{--<a href="{{ route('admin.penjualan.index') }}"
-        class="{{ request()->is('admin/penjualan*') ? 'submenu-active' : '' }}">
-            Data Penjualan
-        </a>--}}
+        <a href="{{ route('admin.transaksi.penjualan') }}"
+        class="{{ request()->is('admin/transaksi/penjualan*') ? 'submenu-active' : '' }}">
 
-        {{--<a href="{{ route('admin.retur.index') }}"
-        class="{{ request()->is('retur*') ? 'submenu-active' : '' }}">
-            Retur Penjualan
-        </a>--}}
+            Penjualan
 
-        {{--<a href="/riwayat-transaksi"
-        class="{{ request()->is('riwayat-transaksi*') ? 'submenu-active' : '' }}">
-            Riwayat Transaksi
-        </a>--}}
+        </a>
+
+        <a href="{{ route('admin.transaksi.retur') }}"
+        class="{{ request()->is('admin/transaksi/retur*') ? 'submenu-active' : '' }}">
+
+            Retur
+
+        </a>
 
     </div>
 

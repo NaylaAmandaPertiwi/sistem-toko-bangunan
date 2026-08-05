@@ -254,6 +254,41 @@ Route::middleware('auth')->group(function () {
 
             /*
             |--------------------------------------------------------------------------
+            | TRANSAKSI
+            |--------------------------------------------------------------------------
+            */
+                /*
+                |--------------------------------------------------------------------------
+                | PENJUALAN
+                |--------------------------------------------------------------------------
+                */ 
+
+            Route::get(
+                '/transaksi/penjualan',
+                [\App\Http\Controllers\Admin\TransactionController::class, 'penjualan']
+            )->name('transaksi.penjualan');
+
+            Route::get(
+                '/transaksi/penjualan/search',
+                [\App\Http\Controllers\Admin\TransactionController::class, 'search']
+            )->name('transaksi.penjualan.search');
+
+                /*
+                |--------------------------------------------------------------------------
+                | RETUR
+                |--------------------------------------------------------------------------
+                */
+
+            Route::get(
+                '/transaksi/retur',
+                [\App\Http\Controllers\Admin\TransactionController::class, 'retur']
+            )->name('transaksi.retur');
+            
+
+
+
+            /*
+            |--------------------------------------------------------------------------
             | DISKON
             |--------------------------------------------------------------------------
             */
@@ -288,6 +323,12 @@ Route::middleware('auth')->group(function () {
                 [\App\Http\Controllers\Admin\DiscountController::class, 'destroy']
             )->name('discount.destroy');
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | LAPORAN
+            |--------------------------------------------------------------------------
+            */
             
 
         });
