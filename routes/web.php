@@ -28,6 +28,9 @@ use App\Http\Controllers\Kasir\SaleController as KasirSaleController;
 use App\Http\Controllers\Kasir\ReturnController as KasirReturnController;
 use App\Http\Controllers\Kasir\HistoryController as KasirHistoryController;
 
+use App\Http\Controllers\SalePrintController;
+use App\Http\Controllers\ReturnPrintController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -273,6 +276,16 @@ Route::middleware('auth')->group(function () {
                 [\App\Http\Controllers\Admin\TransactionController::class, 'search']
             )->name('transaksi.penjualan.search');
 
+            Route::get(
+                '/transaksi/penjualan/{sale}',
+                [\App\Http\Controllers\Admin\TransactionController::class, 'show']
+            )->name('transaksi.penjualan.show');
+
+            Route::get(
+                '/transaksi/penjualan/{sale}/print',
+                [\App\Http\Controllers\Admin\TransactionController::class, 'print']
+            )->name('transaksi.penjualan.print');
+
                 /*
                 |--------------------------------------------------------------------------
                 | RETUR
@@ -452,12 +465,25 @@ Route::middleware('auth')->group(function () {
 
         });
 
+    /*
+    |--------------------------------------------------------------------------
+    | PRINT GLOBAL
+    |--------------------------------------------------------------------------
+    */
 
+        Route::get(
+            '/print/sale/{sale}',
+            [SalePrintController::class, 'print']
+        )->name('print.sale');
+
+        Route::get(
+            '/print/return/{returnSale}',
+            [ReturnPrintController::class, 'print']
+        )->name('print.return');
 
 
 
     });
-
     /*
     |--------------------------------------------------------------------------
     | DASHBOARD

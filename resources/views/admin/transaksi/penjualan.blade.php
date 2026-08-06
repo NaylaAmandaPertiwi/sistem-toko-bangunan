@@ -428,29 +428,71 @@
    PAGINATION
 ========================================================== */
 
+#paginationContainer{
+
+    margin-left:auto;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:4px;
+
+}
+
 .pagination-btn{
-
-    min-width:38px;
-
-    height:38px;
-
-    margin:0 3px;
 
     border:none;
 
-    border-radius:8px;
+    background:transparent;
+
+    color:#6b7280;
 
     cursor:pointer;
 
-    background:#f4f6fb;
+    font-size:14px;
+
+    font-weight:500;
+
+    padding:4px 6px;
+
+    transition:.2s;
+
+}
+
+.pagination-btn:hover{
+
+    color:#355cc9;
 
 }
 
 .pagination-btn.active{
 
-    background:#355cc9;
+    color:#355cc9;
 
-    color:white;
+    font-weight:700;
+
+}
+
+.pagination-btn:disabled{
+
+    color:#cbd5e1;
+
+    cursor:default;
+
+}
+
+.pagination-ellipsis{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:0 6px;
+
+    color:#999;
+
+    font-size:14px;
 
 }
 
@@ -734,13 +776,15 @@
 
                         <td>
 
-                            <button class="btn-detail">
+                            <a
+                                href="{{ route('admin.transaksi.penjualan.show', $sale) }}"
+                                class="btn-detail">
 
                                 <i class="fa-solid fa-eye"></i>
 
                                 Detail
 
-                            </button>
+                            </a>
 
                         </td>
 
@@ -766,19 +810,37 @@
 
         </div>
 
-        <div style="margin-top:20px">
-
-            {{ $sales->links() }}
-
-        </div>
-
         <div class="table-footer">
 
             <div class="footer-left">
 
-                <select class="filter-box">
+                <select
+                    id="perPage"
+                    class="filter-box">
 
-                    <option>10/page</option>
+                    <option
+                        value="10"
+                        {{ request('per_page',10)==10 ? 'selected' : '' }}>
+
+                        10/page
+
+                    </option>
+
+                    <option
+                        value="25"
+                        {{ request('per_page')==25 ? 'selected' : '' }}>
+
+                        25/page
+
+                    </option>
+
+                    <option
+                        value="50"
+                        {{ request('per_page')==50 ? 'selected' : '' }}>
+
+                        50/page
+
+                    </option>
 
                 </select>
 
@@ -790,11 +852,7 @@
 
             </div>
 
-            <div id="paginationContainer">
-
-                {{ $sales->links() }}
-
-            </div>
+            <div id="paginationContainer"></div>
 
         </div>
 
@@ -1009,7 +1067,7 @@ function renderSaleRow(sale)
     return `
         <tr>
 
-            <td> 
+            <td>
 
                 ${formatTanggal(sale.tanggal)}
 
@@ -1045,13 +1103,15 @@ function renderSaleRow(sale)
 
             <td>
 
-                <button class="btn-detail">
+                <a
+                    href="/admin/transaksi/penjualan/${sale.id}?${window.location.search.substring(1)}"
+                    class="btn-detail">
 
                     <i class="fa-solid fa-eye"></i>
 
                     Detail
 
-                </button>
+                </a>
 
             </td>
 
@@ -1072,26 +1132,52 @@ function renderPagination(data)
     let html = "";
 
     // Tombol Previous
-    if (data.current_page > 1) {
+   html += `
+    <button
+        class="pagination-btn"
+        ${data.current_page == 1 ? 'disabled' : ''}
+        onclick="${data.current_page > 1 ? `fetchData(${data.current_page - 1})` : ''}">
+
+        &laquo;
+
+    </button>
+    `;
+
+    // ================================
+    // Nomor Halaman ala Laravel
+    // ================================
+
+    let start = Math.max(1, data.current_page - 2);
+
+    let end = Math.min(data.last_page, data.current_page + 2);
+
+    // Halaman pertama
+    if(start > 1){
 
         html += `
             <button
                 class="pagination-btn"
-                onclick="fetchData(${data.current_page - 1})">
+                onclick="fetchData(1)">
 
-                &laquo;
+                1
 
             </button>
         `;
 
+        if(start > 2){
+
+            html += `<span class="pagination-ellipsis">...</span>`;
+
+        }
+
     }
 
-    // Nomor halaman
-    for(let i = 1; i <= data.last_page; i++){
+    // Halaman tengah
+    for(let i = start; i <= end; i++){
 
         html += `
             <button
-                class="pagination-btn ${i === data.current_page ? 'active' : ''}"
+                class="pagination-btn ${i == data.current_page ? 'active' : ''}"
                 onclick="fetchData(${i})">
 
                 ${i}
@@ -1101,20 +1187,38 @@ function renderPagination(data)
 
     }
 
-    // Tombol Next
-    if (data.current_page < data.last_page) {
+    // Halaman terakhir
+    if(end < data.last_page){
+
+        if(end < data.last_page - 1){
+
+            html += `<span class="pagination-ellipsis">...</span>`;
+
+        }
 
         html += `
             <button
                 class="pagination-btn"
-                onclick="fetchData(${data.current_page + 1})">
+                onclick="fetchData(${data.last_page})">
 
-                &raquo;
+                ${data.last_page}
 
             </button>
         `;
 
     }
+
+    // Tombol Next
+    html += `
+    <button
+        class="pagination-btn"
+        ${data.current_page == data.last_page ? 'disabled' : ''}
+        onclick="${data.current_page < data.last_page ? `fetchData(${data.current_page + 1})` : ''}">
+
+        &raquo;
+
+    </button>
+    `;
 
     document.getElementById("paginationContainer").innerHTML = html;
 
@@ -1132,6 +1236,8 @@ function fetchData(page = 1)
 
     const tanggal = document.querySelector('input[name="tanggal"]').value;
 
+    const perPage = document.getElementById("perPage").value;
+
     const params = new URLSearchParams({
 
         kode: kode,
@@ -1142,6 +1248,8 @@ function fetchData(page = 1)
 
         tanggal: tanggal,
 
+        per_page: perPage,
+
         page: page
 
     });
@@ -1149,6 +1257,8 @@ function fetchData(page = 1)
     const url = new URL(window.location);
 
     url.searchParams.set("page", page);
+
+    url.searchParams.set("per_page", perPage);
 
     if (kode) {
 
@@ -1229,6 +1339,18 @@ history.replaceState({}, "", url);
         .catch(error => console.error(error));
 
 }
+
+document
+.getElementById("perPage")
+.addEventListener("change", function () {
+
+    fetchData(1);
+
+});
+
+fetchData(
+    {{ $sales->currentPage() }}
+);
 
 </script>
 

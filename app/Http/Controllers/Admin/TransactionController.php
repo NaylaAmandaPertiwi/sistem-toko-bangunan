@@ -9,11 +9,22 @@ use App\Models\User;
 
 class TransactionController extends Controller
 {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Controller Penjualan
+    |--------------------------------------------------------------------------
+    */
+
     public function penjualan(Request $request)
     {
 
+        $perPage = $request->get('per_page', 10);
+
+        $perPage = $request->integer('per_page', 10);
+
         $sales = $this->filterSales($request)
-            ->paginate(10)
+            ->paginate($perPage)
             ->withQueryString();
 
         $cashiers = User::where('role', 'Kasir')
@@ -34,8 +45,12 @@ class TransactionController extends Controller
 
     public function search(Request $request)
     {
+        $perPage = $request->get('per_page', 10);
+
+        $perPage = $request->integer('per_page', 10);
+
         $sales = $this->filterSales($request)
-            ->paginate(10);
+            ->paginate($perPage);
 
         return response()->json($sales);
     }
@@ -132,6 +147,39 @@ class TransactionController extends Controller
 
         return $query->latest('tanggal');
     }
+
+    public function show(Sale $sale)
+    {
+        $sale->load([
+            'user',
+            'saleDetails.product'
+        ]);
+
+        return view(
+            'admin.transaksi.detail-penjualan',
+            compact('sale')
+        );
+    }
+
+
+    public function print(Sale $sale)
+    {
+        $sale->load([
+            'user',
+            'saleDetails.product'
+        ]);
+
+        return view(
+            'shared.print',
+            compact('sale')
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Controller Retur
+    |--------------------------------------------------------------------------
+    */
 
     public function retur()
     {

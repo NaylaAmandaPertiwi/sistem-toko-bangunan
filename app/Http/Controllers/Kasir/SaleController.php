@@ -169,7 +169,7 @@ class SaleController extends Controller
                 'kode_penjualan' => $sale->kode_penjualan,
 
                 'print_url' => route(
-                    'kasir.penjualan.print',
+                    'print.sale',
                     $sale->id
                 )
 
@@ -202,7 +202,7 @@ class SaleController extends Controller
 
         return view(
 
-            'kasir.penjualan.print',
+            'shared.print',
 
             compact('sale')
 
