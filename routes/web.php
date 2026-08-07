@@ -297,6 +297,20 @@ Route::middleware('auth')->group(function () {
                 [\App\Http\Controllers\Admin\TransactionController::class, 'retur']
             )->name('transaksi.retur');
             
+            Route::get(
+                '/transaksi/retur/search',
+                [\App\Http\Controllers\Admin\TransactionController::class, 'searchReturn']
+            )->name('transaksi.retur.search');
+
+            Route::get(
+                '/transaksi/retur/{returnSale}',
+                [\App\Http\Controllers\Admin\TransactionController::class, 'showReturn']
+            )->name('transaksi.retur.show');
+
+            Route::get(
+                '/transaksi/retur/{returnSale}/print',
+                [TransactionController::class, 'printReturn']
+            )->name('transaksi.retur.print');
 
 
 

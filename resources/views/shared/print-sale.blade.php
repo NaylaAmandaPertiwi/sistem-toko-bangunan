@@ -436,8 +436,7 @@
 
         <p>HARAP BAWA KEMBALI INVOICE INI BILA ADA BARANG YANG RUSAK, TIDAK SESUAI, ATAU INGIN MELAKUKAN PENUKARAN</p>
 
-
-        <P>☺︎ Terima Kasih ☺︎</P>
+        <p>☺︎ Terima Kasih ☺︎</p>
         <p>Telah Berbelanja di Nayla Bangunan</p>
 
     </div>

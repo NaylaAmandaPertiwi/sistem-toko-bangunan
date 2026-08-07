@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Sale;
+use App\Models\ReturnSale;
 use App\Models\User;
 
 class TransactionController extends Controller
@@ -53,6 +54,17 @@ class TransactionController extends Controller
             ->paginate($perPage);
 
         return response()->json($sales);
+    }
+
+    public function searchReturn(Request $request)
+    {
+        $returns = $this->filterReturns($request)
+            ->paginate(
+                $request->get('per_page', 10)
+            )
+            ->withQueryString();
+
+        return response()->json($returns);
     }
 
     private function filterSales(Request $request)
@@ -148,6 +160,110 @@ class TransactionController extends Controller
         return $query->latest('tanggal');
     }
 
+    private function filterReturns(Request $request)
+    {
+        $query = ReturnSale::with([
+            'user',
+            'sale'
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER TANGGAL
+        |--------------------------------------------------------------------------
+        */
+
+        $filter = $request->get('filter', 'all');
+
+        switch ($filter) {
+
+            case 'today':
+
+                $query->whereDate('tanggal', now());
+
+                break;
+
+            case 'yesterday':
+
+                $query->whereDate(
+                    'tanggal',
+                    now()->subDay()
+                );
+
+                break;
+
+            case 'week':
+
+                $query->whereBetween(
+                    'tanggal',
+                    [
+                        now()->subDays(6)->startOfDay(),
+                        now()->endOfDay()
+                    ]
+                );
+
+                break;
+
+            case 'month':
+
+                $query->whereMonth(
+                    'tanggal',
+                    now()->month
+                )->whereYear(
+                    'tanggal',
+                    now()->year
+                );
+
+                break;
+
+            case 'custom':
+
+                if ($request->filled('tanggal')) {
+
+                    $query->whereDate(
+                        'tanggal',
+                        $request->tanggal
+                    );
+
+                }
+
+                break;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER KASIR
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('kasir')) {
+
+            $query->where(
+                'user_id',
+                $request->kasir
+            );
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER KODE RETUR
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('kode')) {
+
+            $query->where(
+                'kode_retur',
+                'like',
+                '%' . trim($request->kode) . '%'
+            );
+
+        }
+
+        return $query->latest('tanggal');
+    }
+
     public function show(Sale $sale)
     {
         $sale->load([
@@ -158,6 +274,20 @@ class TransactionController extends Controller
         return view(
             'admin.transaksi.detail-penjualan',
             compact('sale')
+        );
+    }
+
+    public function showReturn(ReturnSale $returnSale)
+    {
+        $returnSale->load([
+            'user',
+            'sale',
+            'details.product'
+        ]);
+
+        return view(
+            'admin.transaksi.detail-retur',
+            compact('returnSale')
         );
     }
 
@@ -181,8 +311,27 @@ class TransactionController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function retur()
+    public function retur(Request $request)
     {
-        return view('admin.transaksi.retur');
+        $returns = $this->filterReturns($request)
+            ->paginate(
+                $request->get('per_page', 10)
+            )
+            ->withQueryString();
+
+        $cashiers = User::where('role', 'Kasir')
+            ->orderBy('name')
+            ->get();
+
+        $filter = $request->get('filter', 'all');
+
+        return view(
+            'admin.transaksi.retur',
+            compact(
+                'returns',
+                'cashiers',
+                'filter'
+            )
+        );
     }
 }

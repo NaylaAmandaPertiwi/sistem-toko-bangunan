@@ -1,276 +1,147 @@
-<style>
+<!DOCTYPE html>
+<html lang="id">
 
-.print-receipt{
+<head>
 
-    display:none;
+    <meta charset="UTF-8">
 
-}
+    <title>Invoice Retur</title>
 
-@media print{
+    <style>
 
-    @page{
+        body{
 
-        size:80mm auto;
+            margin:0;
+            padding:0;
+            background:#ffffff;
+            color:#000;
+            font-family:"Courier New", monospace;
+            font-size:11px;
+            line-height:1.4;
 
-        margin:4mm;
+        }
 
-    }
+        .print-receipt{
 
+            width:76mm;
+            max-width:76mm;
+            margin:auto;
+            padding:4mm;
 
-    /* Sembunyikan halaman aplikasi */
+        }
 
-    body *{
+        .receipt-header{
 
-        visibility:hidden;
+            text-align:center;
+            margin-bottom:6px;
 
-    }
+        }
 
+        .receipt-header h2{
 
-    /* Tampilkan hanya struk */
+            margin:0;
+            font-size:22px;
+            letter-spacing:2px;
 
-    .print-receipt,
-    .print-receipt *{
+        }
 
-        visibility:visible;
+        .receipt-header p{
 
-    }
+            margin:2px 0;
 
+        }
 
-    .print-receipt{
+        .receipt-divider{
 
-        display:block;
+            border-top:1px dashed #000;
+            margin:8px 0;
 
-        position:absolute;
+        }
 
-        left:0;
+        .receipt-title{
 
-        top:0;
+            text-align:center;
+            font-size:15px;
+            font-weight:bold;
 
-         width:76mm;
+        }
 
-        max-width:76mm;
+        .receipt-info div{
 
-        margin:auto;
+            display:flex;
+            justify-content:space-between;
+            margin:3px 0;
 
-        padding:4mm;
+        }
 
-        background:#ffffff;
+        .receipt-items{
 
-        color:#000000;
+            margin-top:5px;
 
-        font-family:"Courier New", monospace;
+        }
 
-        font-size:11px;
+        .receipt-item{
 
-        line-height:1.4;
+            margin-bottom:8px;
 
-    }
+        }
 
+        .receipt-product{
 
-    /* Header */
+            font-weight:bold;
 
-    .receipt-header{
+        }
 
-        text-align:center;
+        .receipt-item-detail{
 
-        margin-bottom:5px;
+            display:flex;
+            justify-content:space-between;
+            padding-left:8px;
+            font-size:10px;
 
-    }
+        }
 
-    .receipt-header h2{
+        .receipt-summary div{
 
-        font-size:22px;
+            display:flex;
+            justify-content:space-between;
+            margin:3px 0;
 
-        font-weight:700;
+        }
 
-        letter-spacing:2px;
+        .receipt-total{
 
-        margin-bottom:6px;
+            display:flex;
+            justify-content:space-between;
+            font-weight:bold;
+            font-size:15px;
+            margin:5px 0;
 
-    }
+        }
 
-    .receipt-header p{
+        .receipt-footer{
 
-        font-size:11px;
+            text-align:center;
+            margin-top:15px;
+            font-size:10px;
 
-        margin:2px 0;
+        }
 
-    }
+        @page{
 
+            size:80mm auto;
+            margin:4mm;
 
-    /* Garis */
+        }
 
-    .receipt-divider{
-        border-top:1px dashed #000;
-        margin:8px 0;
-        height:0;
-    }
+    </style>
 
+</head>
 
-    /* Judul */
-
-    .receipt-title{
-
-        text-align:center;
-
-        font-size:15px;
-
-        font-weight:700;
-
-        letter-spacing:1px;
-
-        margin:5px 0;
-
-    }
-
-
-    /* Informasi transaksi */
-
-    .receipt-info{
-
-        margin:6px 0;
-
-    }
-
-    .receipt-info div{
-
-        display:flex;
-
-        justify-content:space-between;
-
-        gap:8px;
-
-        margin:2px 0;
-
-    }
-
-    .receipt-info div span:first-child{
-
-        flex:0 0 78px;
-
-    }
-
-    .receipt-info div span:last-child{
-
-        flex:1;
-
-        text-align:right;
-
-        word-break:break-word;
-
-    }
-
-
-    /* Barang */
-
-    .receipt-items{
-
-        margin:5px 0;
-
-    }
-
-    .receipt-item{
-
-        margin-bottom:7px;
-
-    }
-
-    .receipt-product{
-
-        font-weight:700;
-
-        font-size:11px;
-
-        margin-bottom:3px;
-
-    }
-
-    .receipt-item-detail{
-
-        display:flex;
-
-        justify-content:space-between;
-
-        gap:10px;
-
-        padding-left:8px;
-
-        font-size:10px;
-
-    }
-
-
-    /* Ringkasan */
-
-    .receipt-summary div{
-
-        display:flex;
-
-        justify-content:space-between;
-
-        gap:10px;
-
-        margin:3px 0;
-
-    }
-
-
-    /* Total */
-
-    .receipt-total{
-
-        display:flex;
-
-        justify-content:space-between;
-
-        font-size:15px;
-
-        font-weight:700;
-
-        padding:4px 0;
-
-    }
-
-
-    /* Footer */
-
-    .receipt-footer{
-
-        text-align:center;
-
-        font-size:10px;
-
-        margin-top:12px;
-
-    }
-
-    .receipt-footer p{
-
-        margin:2px 0;
-
-    }
-
-    .receipt-footer strong{
-
-        display:block;
-
-        margin:3px 0 7px;
-
-        font-size:12px;
-
-    }
-
-}
-
-</style>
-
-{{-- =========================================================
-     STRUK KHUSUS CETAK
-========================================================= --}}
+<body>
 
 <div class="print-receipt">
 
-    {{-- Header Toko --}}
     <div class="receipt-header">
 
         <h2>NAYLA BANGUNAN</h2>
@@ -283,9 +154,7 @@
 
     </div>
 
-    <div class="receipt-divider">
-        
-    </div>
+    <div class="receipt-divider"></div>
 
     <div class="receipt-title">
 
@@ -293,59 +162,46 @@
 
     </div>
 
-    <div class="receipt-divider">
-        
-    </div>
+    <div class="receipt-divider"></div>
 
-
-    {{-- Informasi Transaksi --}}
     <div class="receipt-info">
 
         <div>
 
-            <span>No. Retur</span>
+            <span>No Retur</span>
 
-            <span>
-
-                {{ $returnSale->kode_retur }}
-
-            </span>
+            <span>{{ $returnSale->kode_retur }}</span>
 
         </div>
 
         <div>
 
-            <span>No. Jual</span>
+            <span>No Transaksi</span>
 
-            <span>
-
-                {{ $returnSale->sale->kode_penjualan }}
-
-            </span>
+            <span>{{ $returnSale->sale->kode_penjualan }}</span>
 
         </div>
 
         <div>
+
             <span>Tanggal</span>
-            <span>
-                {{ \Carbon\Carbon::parse($returnSale->tanggal)->format('d/m/Y') }}
-            </span>
+
+            <span>{{ \Carbon\Carbon::parse($returnSale->tanggal)->format('d/m/Y') }}</span>
+
         </div>
 
         <div>
+
             <span>Kasir</span>
+
             <span>{{ $returnSale->user->name }}</span>
+
         </div>
 
     </div>
 
+    <div class="receipt-divider"></div>
 
-    <div class="receipt-divider">
-        
-    </div>
-
-
-    {{-- Daftar Barang --}}
     <div class="receipt-items">
 
         @foreach($returnSale->details as $detail)
@@ -364,7 +220,7 @@
 
                         {{ $detail->qty }}
 
-                        x
+                        ×
 
                         {{ number_format($detail->harga,0,',','.') }}
 
@@ -384,50 +240,33 @@
 
     </div>
 
+    <div class="receipt-divider"></div>
 
-    <div class="receipt-divider">
-        
-    </div>
-
-
-    {{-- Ringkasan Pembayaran --}}
     <div class="receipt-summary">
 
         <div>
 
-            <span>Jumlah Item Diretur</span>
+            <span>Jumlah Item</span>
 
-            <span>
-                {{ $returnSale->details->count() }}
-            </span>
+            <span>{{ $returnSale->details->count() }}</span>
 
         </div>
 
         <div>
 
-            <span>Total Qty Retur</span>
+            <span>Total Qty</span>
 
-            <span>
-                {{ $returnSale->details->sum('qty') }}
-            </span>
+            <span>{{ $returnSale->details->sum('qty') }}</span>
 
         </div>
 
     </div>
 
-
-    <div class="receipt-divider">
-        
-    </div>
-
+    <div class="receipt-divider"></div>
 
     <div class="receipt-total">
 
-        <span>
-
-            TOTAL RETUR
-
-        </span>
+        <span>TOTAL RETUR</span>
 
         <span>
 
@@ -437,52 +276,54 @@
 
     </div>
 
-
-    <div class="receipt-divider">
-        
-    </div>
-
+    <div class="receipt-divider"></div>
 
     <div class="receipt-summary">
 
         <div>
 
-            <span>Nominal Retur</span>
-
-            <span>
-                Rp {{ number_format($returnSale->total_retur,0,',','.') }}
-            </span>
-
-        </div>
-
-        <div>
-
             <span>Keterangan</span>
 
-            <span>
-                {{ $returnSale->keterangan }}
-            </span>
+            <span>{{ $returnSale->keterangan }}</span>
 
         </div>
 
     </div>
 
+    <div class="receipt-divider"></div>
 
-    <div class="receipt-divider">
-        
-    </div>
-
-
-    {{-- Footer --}}
     <div class="receipt-footer">
 
-        <p>Retur berhasil diproses</p>
+        <p>Retur berhasil diproses.</p>
 
-        <p>Simpan Invoice ini Sebagai Bukti Retur</p>
+        <p>Simpan invoice ini sebagai bukti retur.</p>
 
-        <P>☺︎ Terima Kasih ☺︎</P>
+        <br>
+
+        <strong>☺ Terima Kasih ☺</strong>
+
         <p>Telah Berbelanja di Nayla Bangunan</p>
 
     </div>
 
 </div>
+
+<script>
+
+window.onload = function(){
+
+    window.print();
+
+};
+
+window.onafterprint = function(){
+
+    window.close();
+
+};
+
+</script>
+
+</body>
+
+</html>
