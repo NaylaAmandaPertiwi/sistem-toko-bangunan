@@ -18,8 +18,8 @@ use App\Http\Controllers\Admin\StockMovementController;
 use App\Http\Controllers\Admin\StockAlertController;
 
 use App\Http\Controllers\Admin\TransactionController;
-use App\Http\Controllers\SaleController;
-use App\Http\Controllers\ReturnController;
+// use App\Http\Controllers\SaleController;
+// use App\Http\Controllers\ReturnController;
 
 use App\Http\Controllers\Admin\DiscountController;
 
