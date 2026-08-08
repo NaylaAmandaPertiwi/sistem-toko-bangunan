@@ -141,7 +141,7 @@
         <div class="status-wrapper">
 
             <form
-                action="{{ route('stok-opname.update-status',$opname->id) }}"
+                action="{{ route('admin.stok-opname.update-status', $opname->id) }}"
                 method="POST">
 
                 @csrf
@@ -277,7 +277,7 @@
         <div class="btn-area">
 
             <a
-                href="{{ route('stok-opname.index') }}"
+                href="{{ route('admin.stok-opname.index') }}"
                 class="btn-secondary">
 
                 Kembali
@@ -285,7 +285,7 @@
             </a>
 
             <a
-                href="{{ route('stok-opname.print', $opname->id) }}"
+                href="{{ route('admin.stok-opname.print', $opname->id) }}"
                 class="btn btn-primary">
 
                 Cetak

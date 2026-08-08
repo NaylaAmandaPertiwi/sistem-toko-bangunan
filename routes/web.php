@@ -3,23 +3,25 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CategoryController;
 
-use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\Admin\DashboardController;
 
-use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\CategoryController;
 
-use App\Http\Controllers\StockInController;
-use App\Http\Controllers\StockOpnameController;
-use App\Http\Controllers\StockMovementController;
-use App\Http\Controllers\StockAlertController;
+use App\Http\Controllers\Admin\SupplierController;
 
-use App\Http\Controllers\SaleController;
-use App\Http\Controllers\ReturnController;
+use App\Http\Controllers\Admin\InventoryController;
+use App\Http\Controllers\Admin\StockInController;
+use App\Http\Controllers\Admin\StockOpnameController;
+use App\Http\Controllers\Admin\StockMovementController;
+use App\Http\Controllers\Admin\StockAlertController;
 
-use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\Admin\TransactionController;
+use App\Http\Controllers\Admin\SaleController;
+use App\Http\Controllers\Admin\ReturnController;
+
+use App\Http\Controllers\Admin\DiscountController;
 
 
 
@@ -309,7 +311,7 @@ Route::middleware('auth')->group(function () {
 
             Route::get(
                 '/transaksi/retur/{returnSale}/print',
-                [TransactionController::class, 'printReturn']
+                [\App\Http\Controllers\Admin\TransactionController::class, 'printReturn']
             )->name('transaksi.retur.print');
 
 
