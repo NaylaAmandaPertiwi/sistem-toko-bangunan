@@ -18,12 +18,13 @@ use App\Http\Controllers\Admin\StockMovementController;
 use App\Http\Controllers\Admin\StockAlertController;
 
 use App\Http\Controllers\Admin\TransactionController;
-// use App\Http\Controllers\SaleController;
-// use App\Http\Controllers\ReturnController;
 
 use App\Http\Controllers\Admin\DiscountController;
-
-
+  
+use App\Http\Controllers\Admin\SalesReportController;
+use App\Http\Controllers\Admin\StockReportController;
+use App\Http\Controllers\Admin\BestSellingReportController;
+use App\Http\Controllers\Admin\FinancialReportController;
 
 use App\Http\Controllers\Kasir\DashboardController as KasirDashboardController;
 use App\Http\Controllers\Kasir\SaleController as KasirSaleController;
@@ -358,6 +359,61 @@ Route::middleware('auth')->group(function () {
             | LAPORAN
             |--------------------------------------------------------------------------
             */
+
+                /*
+                |--------------------------------------------------------------------------
+                | Laporan Penjualan
+                |--------------------------------------------------------------------------
+                */
+
+            Route::get(
+                '/laporan/penjualan',
+                [\App\Http\Controllers\Admin\SalesReportController::class, 'penjualan']
+            )->name('laporan.penjualan');
+
+            Route::get(
+                '/laporan/penjualan/pdf',
+                [\App\Http\Controllers\Admin\SalesReportController::class, 'penjualanPdf']
+            )->name('laporan.penjualan.pdf');
+
+            Route::get(
+                '/laporan/penjualan/excel',
+                [\App\Http\Controllers\Admin\SalesReportController::class, 'penjualanExcel']
+            )->name('laporan.penjualan.excel');
+
+                /*
+                |--------------------------------------------------------------------------
+                | Laporan Stok
+                |--------------------------------------------------------------------------
+                */
+
+            Route::get(
+                '/laporan/stok',
+                [\App\Http\Controllers\Admin\StockReportController::class, 'stok']
+            )->name('laporan.stok');
+
+                /*
+                |--------------------------------------------------------------------------
+                | Laporan Barang Terlaris
+                |--------------------------------------------------------------------------
+                */
+
+            Route::get(
+                '/laporan/barang-terlaris',
+                [\App\Http\Controllers\Admin\BestSellingReportController::class, 'index']
+            )->name('laporan.barang-terlaris');
+
+                /*
+                |--------------------------------------------------------------------------
+                | Laporan Keuangan
+                |--------------------------------------------------------------------------
+                */
+
+            Route::get(
+                '/laporan/keuangan',
+                [\App\Http\Controllers\Admin\FinancialReportController::class, 'keuangan']
+            )->name('laporan.keuangan');
+
             
 
         });

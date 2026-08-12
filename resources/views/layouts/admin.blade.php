@@ -1039,46 +1039,47 @@ rel="stylesheet">
 
     <div class="dropdown-menu">
 
-    <button class="dropdown-btn"
-            onclick="toggleLaporanDropdown()">
+        <button class="dropdown-btn"
+                onclick="toggleLaporanDropdown()">
 
-        <div class="menu-left">
+            <div class="menu-left">
 
-            <i class="fa-solid fa-chart-column"></i>
-            Laporan
+                <i class="fa-solid fa-chart-column"></i>
+                Laporan
+
+            </div>
+
+            <i class="fa-solid fa-chevron-down laporan-arrow"></i>
+
+        </button>
+
+        <div class="dropdown-content"
+            id="laporanDropdown">
+
+            <a href="{{ route('admin.laporan.penjualan') }}"
+            class="{{ request()->is('admin/laporan/penjualan*') ? 'submenu-active' : '' }}">
+                Penjualan
+            </a>
+
+            <a href="{{ route('admin.laporan.stok') }}"
+            class="{{ request()->is('admin/laporan/stok*') ? 'submenu-active' : '' }}">
+                Stok
+            </a>
+
+            <a href="{{ route('admin.laporan.barang-terlaris') }}"
+            class="{{ request()->is('admin/laporan/barang-terlaris*') ? 'submenu-active' : '' }}">
+                Barang Terlaris
+            </a>
+
+            <a href="{{ route('admin.laporan.keuangan') }}"
+            class="{{ request()->is('admin/laporan/keuangan*') ? 'submenu-active' : '' }}">
+                Keuangan
+            </a>
 
         </div>
 
-        <i class="fa-solid fa-chevron-down laporan-arrow"></i>
-
-    </button>
-
-    <div class="dropdown-content"
-    id="laporanDropdown">
-
-    {{--<a href="{{ route('admin.sales-report.index') }}"
-        class="{{ request()->is('admin/sales-report*') ? 'submenu-active' : '' }}">
-            Penjualan
-        </a>--}}
-
-    {{--<a href="{{ route('admin.stock-report.index') }}"
-        class="{{ request()->is('admin/stock-report*') ? 'submenu-active' : '' }}">
-            Stok
-        </a>--}}
-
-    {{--<a href="{{ route('admin.top-selling-products.index') }}"
-        class="{{ request()->is('admin/top-selling-products*') ? 'submenu-active' : '' }}">
-            Barang Terlaris
-        </a>--}}
-
-    {{--<a href="{{ route('admin.financial-report.index') }}"
-        class="{{ request()->is('admin/financial-report*') ? 'submenu-active' : '' }}">
-            Keuangan
-        </a>--}}
-
     </div>
-
-    </div>
+    
 </div>
 
     <!-- PROFILE -->
