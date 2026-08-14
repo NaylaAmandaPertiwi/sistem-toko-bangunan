@@ -392,6 +392,21 @@ Route::middleware('auth')->group(function () {
                 [\App\Http\Controllers\Admin\StockReportController::class, 'stok']
             )->name('laporan.stok');
 
+            Route::get(
+                '/laporan/stok/pdf', 
+                [\App\Http\Controllers\Admin\StockReportController::class, 'stokPdf']
+                )->name('laporan.stok.pdf');
+
+            Route::get(
+                '/laporan/stok/excel',
+                [\App\Http\Controllers\Admin\StockReportController::class, 'stokExcel']
+            )->name('laporan.stok.excel');
+
+            Route::get(
+                '/laporan/stok/filter',
+                [\App\Http\Controllers\Admin\StockReportController::class, 'filter']
+            )->name('laporan.stok.filter');
+
                 /*
                 |--------------------------------------------------------------------------
                 | Laporan Barang Terlaris
