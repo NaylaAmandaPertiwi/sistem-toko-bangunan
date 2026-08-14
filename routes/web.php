@@ -418,6 +418,16 @@ Route::middleware('auth')->group(function () {
                 [\App\Http\Controllers\Admin\BestSellingReportController::class, 'index']
             )->name('laporan.barang-terlaris');
 
+            Route::get(
+                '/laporan/barang-terlaris/pdf',
+                [\App\Http\Controllers\Admin\BestSellingReportController::class, 'pdf']
+            )->name('laporan.barang-terlaris.pdf');
+    
+            Route::get(
+                '/laporan/barang-terlaris/excel',
+                [\App\Http\Controllers\Admin\BestSellingReportController::class, 'excel']
+            )->name('laporan.barang-terlaris.excel');
+
                 /*
                 |--------------------------------------------------------------------------
                 | Laporan Keuangan
