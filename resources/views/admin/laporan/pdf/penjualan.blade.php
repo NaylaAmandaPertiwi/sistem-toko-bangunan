@@ -5,117 +5,410 @@
 
     <meta charset="UTF-8">
 
-    <title>Laporan Penjualan</title>
+    <title>Laporan Penjualan - Nayla Bangunan</title>
 
     <style>
 
+        @page {
+            margin: 35px 35px 45px 35px;
+        }
+
         body {
             font-family: DejaVu Sans, sans-serif;
+            font-size: 10px;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .company-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1684e0;
+            margin-bottom: 5px;
+        }
+
+        .report-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #222;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .report-subtitle {
+            font-size: 9px;
+            color: #777;
+        }
+
+        .header-line {
+            border-bottom: 2px solid #1684e0;
+            margin-top: 12px;
+        }
+
+
+        /* =====================================================
+           INFORMASI LAPORAN
+        ===================================================== */
+
+        .information-title {
             font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 7px;
             color: #222;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
+        .information-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 20px;
+        .information-table td {
+            padding: 3px 0;
+            vertical-align: top;
         }
 
-        .header p {
-            margin: 5px 0 0;
-            font-size: 11px;
+        .information-label {
+            width: 105px;
+            font-weight: bold;
             color: #555;
         }
 
+        .information-separator {
+            width: 10px;
+        }
+
+
+        /* =====================================================
+           SUMMARY
+        ===================================================== */
+
         .summary {
             width: 100%;
-            margin-bottom: 20px;
+            border-collapse: separate;
+            border-spacing: 8px 0;
+            margin-left: -8px;
+            margin-bottom: 18px;
         }
 
         .summary td {
             width: 50%;
-            padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #dfe4ec;
+            padding: 11px;
+            background: #f8f9fc;
         }
 
         .summary-label {
-            font-size: 10px;
+            font-size: 9px;
             color: #777;
+            margin-bottom: 5px;
+            text-transform: uppercase;
         }
 
         .summary-value {
-            margin-top: 5px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
+            color: #222;
         }
+
+
+        /* =====================================================
+           JUDUL DETAIL
+        ===================================================== */
+
+        .section-title {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0 12px;
+        }
+
+        .section-title td {
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+            color: #333;
+            padding: 7px 0;
+            border-top: 1px solid #d9e1ea;
+            border-bottom: 1px solid #d9e1ea;
+        }
+
+
+        /* =====================================================
+           TABEL
+        ===================================================== */
 
         table.report-table {
             width: 100%;
             border-collapse: collapse;
+            table-layout: fixed;
         }
 
         .report-table th {
-            background: #f1f3f7;
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-            font-size: 10px;
+            background: #1684e0;
+            color: white;
+            border: 1px solid #1684e0;
+            padding: 7px 5px;
+            text-align: center;
+            font-size: 8.5px;
+            font-weight: bold;
         }
 
         .report-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            font-size: 10px;
+            border: 1px solid #d9dee7;
+            padding: 6px 5px;
+            font-size: 8.5px;
+            vertical-align: middle;
         }
 
-        .text-right {
-            text-align: right;
+        .report-table tbody tr:nth-child(even) {
+            background: #f8f9fc;
         }
 
-        .text-center {
+
+        /* =====================================================
+           LEBAR KOLOM
+        ===================================================== */
+
+        .col-no {
+            width: 5%;
             text-align: center;
         }
 
-        .footer {
-            margin-top: 20px;
+        .col-kode {
+            width: 20%;
+        }
+
+        .col-tanggal {
+            width: 12%;
+            text-align: center;
+        }
+
+        .col-kasir {
+            width: 11%;
+            text-align: center;
+        }
+
+        .col-subtotal {
+            width: 17%;
             text-align: right;
-            font-size: 9px;
+        }
+
+        .col-diskon {
+            width: 15%;
+            text-align: right;
+        }
+
+        .col-total {
+            width: 20%;
+            text-align: right;
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           TOTAL AKHIR
+        ===================================================== */
+
+        .grand-total {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .grand-total-table {
+            width: 45%;
+            margin-left: auto;
+            border-collapse: collapse;
+        }
+
+        .grand-total-table td {
+            border: 1px solid #d9dee7;
+            padding: 7px 9px;
+        }
+
+        .grand-total-label {
+            background: #f4f6fb;
+            font-weight: bold;
+        }
+
+        .grand-total-value {
+            text-align: right;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .footer {
+            position: fixed;
+            bottom: -25px;
+            left: 0;
+            right: 0;
+
+            border-top: 1px solid #d9dee7;
+
+            padding-top: 7px;
+
+            font-size: 8px;
             color: #777;
+        }
+
+        .footer-left {
+            float: left;
+        }
+
+        .footer-right {
+            float: right;
         }
 
     </style>
 
 </head>
 
+
 <body>
 
-    {{-- HEADER --}}
+
+    {{-- =====================================================
+         HEADER
+    ====================================================== --}}
 
     <div class="header">
 
-        <h1>Laporan Penjualan</h1>
+        <div class="company-name">
+            NAYLA BANGUNAN
+        </div>
 
-        <p>
-            Nayla Bangunan
-        </p>
+        <div class="report-title">
+            Laporan Penjualan
+        </div>
 
-        @if($filter !== 'all')
+        <div class="report-subtitle">
+            Laporan Transaksi Penjualan
+        </div>
 
-            <p>
-                Periode:
-                {{ ucfirst($filter) }}
-            </p>
-
-        @endif
+        <div class="header-line"></div>
 
     </div>
 
 
-    {{-- RINGKASAN --}}
+    {{-- =====================================================
+         INFORMASI LAPORAN
+    ====================================================== --}}
+
+    <table class="section-title">
+        <tr>
+            <td>
+                Informasi Laporan
+            </td>
+        </tr>
+    </table>
+
+    <table class="information-table">
+
+        <tr>
+
+            <td class="information-label">
+                Periode
+            </td>
+
+            <td class="information-separator">
+                :
+            </td>
+
+            <td>
+                Periode: {{ $periodLabel }}
+            </td>
+
+        </tr>
+
+
+        <tr>
+
+            <td class="information-label">
+                Kasir
+            </td>
+
+            <td class="information-separator">
+                :
+            </td>
+
+            <td>
+
+                @if(request('kasir'))
+
+                    {{ optional(
+                        \App\Models\User::find(request('kasir'))
+                    )->name ?? '-' }}
+
+                @else
+
+                    Semua Kasir
+
+                @endif
+
+            </td>
+
+        </tr>
+
+
+        @if(request('kode'))
+
+            <tr>
+
+                <td class="information-label">
+                    Kode Penjualan
+                </td>
+
+                <td class="information-separator">
+                    :
+                </td>
+
+                <td>
+                    {{ request('kode') }}
+                </td>
+
+            </tr>
+
+        @endif
+
+
+        <tr>
+
+            <td class="information-label">
+                Tanggal Cetak
+            </td>
+
+            <td class="information-separator">
+                :
+            </td>
+
+            <td>
+                {{ now()->format('d/m/Y H:i') }}
+            </td>
+
+        </tr>
+
+    </table>
+
+
+    {{-- =====================================================
+         RINGKASAN
+    ====================================================== --}}
 
     <table class="summary">
 
@@ -151,7 +444,18 @@
     </table>
 
 
-    {{-- TABEL PENJUALAN --}}
+    {{-- =====================================================
+         DETAIL TRANSAKSI
+    ====================================================== --}}
+
+    <table class="section-title">
+        <tr>
+            <td>
+                Detail Transaksi Penjualan
+            </td>
+        </tr>
+    </table>
+
 
     <table class="report-table">
 
@@ -159,31 +463,31 @@
 
             <tr>
 
-                <th class="text-center">
+                <th class="col-no">
                     No
                 </th>
 
-                <th>
+                <th class="col-kode">
                     Kode Penjualan
                 </th>
 
-                <th>
+                <th class="col-tanggal">
                     Tanggal
                 </th>
 
-                <th>
+                <th class="col-kasir">
                     Kasir
                 </th>
 
-                <th>
+                <th class="col-subtotal">
                     Subtotal
                 </th>
 
-                <th>
+                <th class="col-diskon">
                     Diskon
                 </th>
 
-                <th>
+                <th class="col-total">
                     Total Bayar
                 </th>
 
@@ -198,34 +502,32 @@
 
                 <tr>
 
-                    <td class="text-center">
+                    <td class="col-no">
                         {{ $index + 1 }}
                     </td>
 
-                    <td>
+                    <td class="col-kode">
                         {{ $sale->kode_penjualan }}
                     </td>
 
-                    <td>
+                    <td class="col-tanggal">
                         {{ \Carbon\Carbon::parse($sale->tanggal)->format('d/m/Y') }}
                     </td>
 
-                    <td>
+                    <td class="col-kasir">
                         {{ $sale->user->name ?? '-' }}
                     </td>
 
-                    <td class="text-right">
+                    <td class="col-subtotal">
                         Rp {{ number_format($sale->subtotal, 0, ',', '.') }}
                     </td>
 
-                    <td class="text-right">
+                    <td class="col-diskon">
                         Rp {{ number_format($sale->diskon, 0, ',', '.') }}
                     </td>
 
-                    <td class="text-right">
-                        <strong>
-                            Rp {{ number_format($sale->total_bayar, 0, ',', '.') }}
-                        </strong>
+                    <td class="col-total">
+                        Rp {{ number_format($sale->total_bayar, 0, ',', '.') }}
                     </td>
 
                 </tr>
@@ -237,6 +539,7 @@
                     <td
                         colspan="7"
                         class="text-center"
+                        style="text-align:center; padding:15px;"
                     >
                         Tidak ada data penjualan.
                     </td>
@@ -250,14 +553,47 @@
     </table>
 
 
-    {{-- FOOTER --}}
+    {{-- =====================================================
+         TOTAL AKHIR
+    ====================================================== --}}
+
+    <div class="grand-total">
+
+        <table class="grand-total-table">
+
+            <tr>
+
+                <td class="grand-total-label">
+                    Total Penjualan
+                </td>
+
+                <td class="grand-total-value">
+                    Rp {{ number_format($totalPenjualan, 0, ',', '.') }}
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    {{-- =====================================================
+         FOOTER
+    ====================================================== --}}
 
     <div class="footer">
 
-        Dicetak pada:
-        {{ now()->format('d/m/Y H:i') }}
+        <div class="footer-left">
+            Nayla Bangunan — Laporan Penjualan
+        </div>
+
+        <div class="footer-right">
+            Dicetak: {{ now()->format('d/m/Y H:i') }}
+        </div>
 
     </div>
+
 
 </body>
 

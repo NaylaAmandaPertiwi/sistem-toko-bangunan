@@ -13,7 +13,6 @@
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
 }
 
-
 .top-header {
     background: #1684e0;
     color: white;
@@ -21,7 +20,6 @@
     font-size: 28px;
     font-weight: 600;
 }
-
 
 /* =========================
    FILTER
@@ -71,12 +69,26 @@
 
 
 .btn-primary,
-.btn-secondary {
-    padding: 10px 18px;
+.btn-secondary,
+.btn-pdf,
+.btn-excel {
+    height: 40px;
+    padding: 0 18px;
     border-radius: 8px;
     text-decoration: none;
     border: none;
     cursor: pointer;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+    font-size: 14px;
+    line-height: 1;
+
+    white-space: nowrap;
+    width: 100px;
 }
 
 
@@ -85,12 +97,30 @@
     color: white;
 }
 
-
 .btn-secondary {
     background: #e9edf5;
     color: #444;
 }
 
+.btn-pdf {
+    background: #dc3545;
+    color: white;
+    gap: 7px;
+}
+
+.btn-pdf:hover {
+    background: #c82333;
+}
+
+.btn-excel {
+    background: #198754;
+    color: white;
+    gap: 7px;
+}
+
+.btn-excel:hover {
+    background: #157347;
+}
 
 /* =========================
    SUMMARY
@@ -328,6 +358,33 @@
                     class="btn-secondary"
                 >
                     Reset
+                </a>
+
+                <a
+                    href="{{ route('admin.laporan.penjualan.pdf', array_filter([
+                        'filter'  => request('filter', 'all'),
+                        'tanggal' => request('filter') === 'custom' ? request('tanggal') : null,
+                        'kasir'   => request('kasir'),
+                        'kode'    => request('kode'),
+                    ])) }}"
+                    class="btn-pdf"
+                    target="_blank"
+                >
+                    <i class="fa-solid fa-file-pdf"></i>
+                    Cetak PDF
+                </a>
+
+                <a
+                    href="{{ route('admin.laporan.penjualan.excel', array_filter([
+                        'filter'  => request('filter', 'all'),
+                        'tanggal' => request('filter') === 'custom' ? request('tanggal') : null,
+                        'kasir'   => request('kasir'),
+                        'kode'    => request('kode'),
+                    ])) }}"
+                    class="btn-excel"
+                >
+                    <i class="fa-solid fa-file-excel"></i>
+                    Export Excel
                 </a>
 
             </div>
