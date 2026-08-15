@@ -436,9 +436,18 @@ Route::middleware('auth')->group(function () {
 
             Route::get(
                 '/laporan/keuangan',
-                [\App\Http\Controllers\Admin\FinancialReportController::class, 'keuangan']
+                [\App\Http\Controllers\Admin\FinancialReportController::class, 'index']
             )->name('laporan.keuangan');
 
+            Route::get(
+                '/laporan/keuangan/pdf',
+                [\App\Http\Controllers\Admin\FinancialReportController::class, 'pdf']
+            )->name('laporan.keuangan.pdf');
+
+            Route::get(
+                '/laporan/keuangan/excel',
+                [\App\Http\Controllers\Admin\FinancialReportController::class, 'excel']
+            )->name('laporan.keuangan.excel');
             
 
         });
