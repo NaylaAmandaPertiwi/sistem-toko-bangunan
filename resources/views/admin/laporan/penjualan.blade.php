@@ -248,13 +248,18 @@
             action="{{ route('admin.laporan.penjualan') }}"
             method="GET"
             class="filter-form"
+            id="filterForm"
         >
 
+            {{-- PERIODE --}}
             <div class="filter-group">
 
                 <label>Periode</label>
 
-                <select name="filter">
+                <select
+                    name="filter"
+                    id="filter"
+                >
 
                     <option value="all"
                         {{ $filter == 'all' ? 'selected' : '' }}>
@@ -291,6 +296,7 @@
             </div>
 
 
+            {{-- TANGGAL --}}
             <div class="filter-group">
 
                 <label>Tanggal</label>
@@ -298,17 +304,22 @@
                 <input
                     type="date"
                     name="tanggal"
+                    id="tanggal"
                     value="{{ request('tanggal') }}"
                 >
 
             </div>
 
 
+            {{-- KASIR --}}
             <div class="filter-group">
 
                 <label>Kasir</label>
 
-                <select name="kasir">
+                <select
+                    name="kasir"
+                    id="kasir"
+                >
 
                     <option value="">
                         Semua Kasir
@@ -330,6 +341,7 @@
             </div>
 
 
+            {{-- KODE PENJUALAN --}}
             <div class="filter-group">
 
                 <label>Kode Penjualan</label>
@@ -337,51 +349,33 @@
                 <input
                     type="text"
                     name="kode"
+                    id="kode"
                     value="{{ request('kode') }}"
                     placeholder="Cari kode penjualan..."
+                    autocomplete="off"
                 >
 
             </div>
 
 
+            {{-- EXPORT --}}
             <div class="filter-action">
 
-                <button
-                    type="submit"
-                    class="btn-primary"
-                >
-                    Terapkan
-                </button>
-
                 <a
-                    href="{{ route('admin.laporan.penjualan') }}"
-                    class="btn-secondary"
-                >
-                    Reset
-                </a>
-
-                <a
-                    href="{{ route('admin.laporan.penjualan.pdf', array_filter([
-                        'filter'  => request('filter', 'all'),
-                        'tanggal' => request('filter') === 'custom' ? request('tanggal') : null,
-                        'kasir'   => request('kasir'),
-                        'kode'    => request('kode'),
-                    ])) }}"
+                    href="{{ route('admin.laporan.penjualan.pdf') }}"
                     class="btn-pdf"
+                    id="btnPdf"
                     target="_blank"
                 >
                     <i class="fa-solid fa-file-pdf"></i>
                     Cetak PDF
                 </a>
 
+
                 <a
-                    href="{{ route('admin.laporan.penjualan.excel', array_filter([
-                        'filter'  => request('filter', 'all'),
-                        'tanggal' => request('filter') === 'custom' ? request('tanggal') : null,
-                        'kasir'   => request('kasir'),
-                        'kode'    => request('kode'),
-                    ])) }}"
+                    href="{{ route('admin.laporan.penjualan.excel') }}"
                     class="btn-excel"
+                    id="btnExcel"
                 >
                     <i class="fa-solid fa-file-excel"></i>
                     Export Excel
@@ -508,5 +502,466 @@
     </div>
 
 </div>
+
+@endsection
+
+@section('scripts')
+
+@section('scripts')
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const filterForm =
+        document.getElementById('filterForm');
+
+    const filter =
+        document.getElementById('filter');
+
+    const tanggal =
+        document.getElementById('tanggal');
+
+    const kasir =
+        document.getElementById('kasir');
+
+    const kode =
+        document.getElementById('kode');
+
+    const btnPdf =
+        document.getElementById('btnPdf');
+
+    const btnExcel =
+        document.getElementById('btnExcel');
+
+    const summaryGrid =
+        document.querySelector('.summary-grid');
+
+    const tableWrapper =
+        document.querySelector('.table-wrapper');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | MEMBUAT URL FILTER
+    |--------------------------------------------------------------------------
+    */
+
+    function getFilterUrl() {
+
+        const params =
+            new URLSearchParams();
+
+
+        /*
+        |----------------------------------------------------------------------
+        | PERIODE
+        |----------------------------------------------------------------------
+        */
+
+        if (filter.value !== '') {
+
+            params.set(
+                'filter',
+                filter.value
+            );
+
+        }
+
+
+        /*
+        |----------------------------------------------------------------------
+        | TANGGAL
+        |----------------------------------------------------------------------
+        */
+
+        if (tanggal.value !== '') {
+
+            params.set(
+                'tanggal',
+                tanggal.value
+            );
+
+        }
+
+
+        /*
+        |----------------------------------------------------------------------
+        | KASIR
+        |----------------------------------------------------------------------
+        */
+
+        if (kasir.value !== '') {
+
+            params.set(
+                'kasir',
+                kasir.value
+            );
+
+        }
+
+
+        /*
+        |----------------------------------------------------------------------
+        | KODE PENJUALAN
+        |----------------------------------------------------------------------
+        */
+
+        if (kode.value.trim() !== '') {
+
+            params.set(
+                'kode',
+                kode.value.trim()
+            );
+
+        }
+
+
+        const url =
+            '{{ route('admin.laporan.penjualan') }}';
+
+
+        return params.toString()
+            ? url + '?' + params.toString()
+            : url;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE LINK PDF & EXCEL
+    |--------------------------------------------------------------------------
+    */
+
+    function updateExportLinks() {
+
+        const params =
+            new URLSearchParams();
+
+
+        if (filter.value !== '') {
+
+            params.set(
+                'filter',
+                filter.value
+            );
+
+        }
+
+
+        if (tanggal.value !== '') {
+
+            params.set(
+                'tanggal',
+                tanggal.value
+            );
+
+        }
+
+
+        if (kasir.value !== '') {
+
+            params.set(
+                'kasir',
+                kasir.value
+            );
+
+        }
+
+
+        if (kode.value.trim() !== '') {
+
+            params.set(
+                'kode',
+                kode.value.trim()
+            );
+
+        }
+
+
+        const query =
+            params.toString()
+                ? '?' + params.toString()
+                : '';
+
+
+        btnPdf.href =
+            '{{ route('admin.laporan.penjualan.pdf') }}'
+            + query;
+
+
+        btnExcel.href =
+            '{{ route('admin.laporan.penjualan.excel') }}'
+            + query;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | LIVE SEARCH
+    |--------------------------------------------------------------------------
+    | Mengambil hasil tanpa reload halaman
+    |--------------------------------------------------------------------------
+    */
+
+    function loadSearchResult() {
+
+        const url =
+            getFilterUrl();
+
+
+        fetch(url, {
+
+            headers: {
+                'X-Requested-With':
+                    'XMLHttpRequest'
+            }
+
+        })
+
+        .then(function (response) {
+
+            if (!response.ok) {
+
+                throw new Error(
+                    'Gagal mengambil data'
+                );
+
+            }
+
+            return response.text();
+
+        })
+
+        .then(function (html) {
+
+            const parser =
+                new DOMParser();
+
+
+            const documentBaru =
+                parser.parseFromString(
+                    html,
+                    'text/html'
+                );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SUMMARY
+            |--------------------------------------------------------------------------
+            */
+
+            const summaryBaru =
+                documentBaru.querySelector(
+                    '.summary-grid'
+                );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | TABEL
+            |--------------------------------------------------------------------------
+            */
+
+            const tableBaru =
+                documentBaru.querySelector(
+                    '.table-wrapper'
+                );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE SUMMARY
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                summaryBaru &&
+                summaryGrid
+            ) {
+
+                summaryGrid.innerHTML =
+                    summaryBaru.innerHTML;
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE TABEL
+            |--------------------------------------------------------------------------
+            */
+
+            if (
+                tableBaru &&
+                tableWrapper
+            ) {
+
+                tableWrapper.innerHTML =
+                    tableBaru.innerHTML;
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE URL BROWSER
+            |--------------------------------------------------------------------------
+            */
+
+            window.history.replaceState(
+                {},
+                '',
+                url
+            );
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | UPDATE LINK EXPORT
+            |--------------------------------------------------------------------------
+            */
+
+            updateExportLinks();
+
+        })
+
+        .catch(function (error) {
+
+            console.error(
+                'Live search error:',
+                error
+            );
+
+        });
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FILTER PERIODE
+    |--------------------------------------------------------------------------
+    */
+
+    filter.addEventListener(
+        'change',
+        function () {
+
+            /*
+            | Jika memilih tanggal tertentu,
+            | tunggu sampai tanggal dipilih.
+            */
+
+            if (
+                filter.value === 'custom'
+                &&
+                tanggal.value === ''
+            ) {
+
+                updateExportLinks();
+
+                return;
+
+            }
+
+
+            window.location.href =
+                getFilterUrl();
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FILTER TANGGAL
+    |--------------------------------------------------------------------------
+    */
+
+    tanggal.addEventListener(
+        'change',
+        function () {
+
+            if (
+                tanggal.value !== ''
+            ) {
+
+                filter.value =
+                    'custom';
+
+            }
+
+
+            window.location.href =
+                getFilterUrl();
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FILTER KASIR
+    |--------------------------------------------------------------------------
+    */
+
+    kasir.addEventListener(
+        'change',
+        function () {
+
+            window.location.href =
+                getFilterUrl();
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | LIVE SEARCH KODE PENJUALAN
+    |--------------------------------------------------------------------------
+    */
+
+    let searchTimer;
+
+
+    kode.addEventListener(
+        'input',
+        function () {
+
+            clearTimeout(
+                searchTimer
+            );
+
+
+            searchTimer =
+                setTimeout(
+                    function () {
+
+                        loadSearchResult();
+
+                    },
+                    300
+                );
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE LINK SAAT HALAMAN DIBUKA
+    |--------------------------------------------------------------------------
+    */
+
+    updateExportLinks();
+
+});
+
+</script>
 
 @endsection
