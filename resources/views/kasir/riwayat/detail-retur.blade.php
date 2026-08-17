@@ -390,15 +390,16 @@
 
             </a>
 
-            <button
-                class="btn-print"
-                onclick="window.print()">
+            <a
+                href="{{ route('print.return', $returnSale) }}"
+                target="_blank"
+                class="btn-print">
 
                 <i class="fa-solid fa-print"></i>
 
                 Cetak
 
-            </button>
+            </a>
 
         </div>
 
@@ -632,8 +633,5 @@
     </div>
 
 </div>
-
-
-@include('shared.print-return')
 
 @endsection 

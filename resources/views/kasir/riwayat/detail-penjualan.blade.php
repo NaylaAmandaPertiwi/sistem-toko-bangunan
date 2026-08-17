@@ -624,6 +624,4 @@
 
 </div>
 
-@include('shared.print-sale')
-
 @endsection 
