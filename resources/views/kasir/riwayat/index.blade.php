@@ -812,6 +812,9 @@ document.getElementById('panelPenjualan');
 const panelRetur =
 document.getElementById('panelRetur');
 
+const tab =
+    new URLSearchParams(window.location.search).get('tab');
+
 btnPenjualan.onclick = function(){
 
     btnPenjualan.classList.add('active');
@@ -833,6 +836,12 @@ btnRetur.onclick = function(){
     panelRetur.classList.add('active');
 
     panelPenjualan.classList.remove('active');
+
+}
+
+if(tab === 'retur'){
+
+    btnRetur.click();
 
 }
 

@@ -381,7 +381,7 @@
         <div class="header-action">
 
             <a
-                href="{{ route('kasir.riwayat.index') }}"
+                href="{{ route('kasir.riwayat.index', ['tab' => 'retur']) }}"
                 class="btn-back">
 
                 <i class="fa-solid fa-arrow-left"></i>
