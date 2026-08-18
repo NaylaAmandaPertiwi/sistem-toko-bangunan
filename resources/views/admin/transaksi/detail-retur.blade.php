@@ -109,6 +109,132 @@
 
 }
 
+/* ==========================================================
+   RETURN SUMMARY
+========================================================== */
+
+.return-summary{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:15px;
+
+    margin-top:25px;
+
+}
+
+.return-summary-card{
+
+    background:#f8fafc;
+
+    border:1px solid #edf0f5;
+
+    border-radius:12px;
+
+    padding:16px;
+
+}
+
+.return-summary-card span{
+
+    display:block;
+
+    color:#777;
+
+    font-size:13px;
+
+    margin-bottom:7px;
+
+}
+
+.return-summary-card strong{
+
+    color:#222;
+
+    font-size:16px;
+
+}
+
+.payment-status{
+
+    margin-top:25px;
+
+    padding:18px 20px;
+
+    border-radius:12px;
+
+    background:#ecfdf5;
+
+    border:1px solid #a7f3d0;
+
+    color:#065f46;
+
+}
+
+.payment-status-title{
+
+    font-size:12px;
+
+    font-weight:700;
+
+    margin-bottom:5px;
+
+}
+
+.payment-status-value{
+
+    font-size:17px;
+
+    font-weight:700;
+
+}
+
+.payment-status-description{
+
+    margin-top:5px;
+
+    font-size:13px;
+
+}
+
+.exchange-section{
+
+    margin-top:35px;
+
+}
+
+.exchange-section h3{
+
+    margin-bottom:15px;
+
+    font-size:18px;
+
+    color:#222;
+
+}
+
+@media(max-width:900px){
+
+    .return-summary{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+}
+
+@media(max-width:600px){
+
+    .return-summary{
+
+        grid-template-columns:1fr;
+
+    }
+
+}
+
 .invoice-label{
 
     font-weight:600;
@@ -323,6 +449,161 @@
 
                     </div>
 
+                    {{-- ==========================================================
+                        RINGKASAN RETUR
+                    ========================================================== --}}
+
+                    <div class="return-summary">
+
+                        {{-- Jenis Retur --}}
+                        <div class="return-summary-card">
+
+                            <span>Jenis Retur</span>
+
+                            <strong>
+
+                                @if($returnSale->return_type === 'uang')
+
+                                    Retur Uang
+
+                                @else
+
+                                    Tukar Barang
+
+                                @endif
+
+                            </strong>
+
+                        </div>
+
+
+                        {{-- Total Nilai Retur --}}
+                        <div class="return-summary-card">
+
+                            <span>Total Nilai Retur</span>
+
+                            <strong>
+
+                                Rp {{ number_format($returnSale->total_retur,0,',','.') }}
+
+                            </strong>
+
+                        </div>
+
+
+                        {{-- Nilai Pengganti --}}
+                        <div class="return-summary-card">
+
+                            <span>Total Nilai Pengganti</span>
+
+                            <strong>
+
+                                @if($returnSale->return_type === 'tukar')
+
+                                    Rp {{ number_format($returnSale->total_pengganti,0,',','.') }}
+
+                                @else
+
+                                    -
+
+                                @endif
+
+                            </strong>
+
+                        </div>
+
+
+                        {{-- Selisih --}}
+                        <div class="return-summary-card">
+
+                            <span>Selisih Pembayaran</span>
+
+                            <strong>
+
+                                @if($returnSale->selisih_bayar > 0)
+
+                                    Rp {{ number_format($returnSale->selisih_bayar,0,',','.') }}
+
+                                @else
+
+                                    -
+
+                                @endif
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                    {{-- ==========================================================
+                        STATUS PEMBAYARAN
+                    ========================================================== --}}
+
+                    <div class="payment-status">
+
+                        <div class="payment-status-title">
+
+                            STATUS PEMBAYARAN
+
+                        </div>
+
+
+                        @if($returnSale->return_type === 'uang')
+
+                            <div class="payment-status-value">
+
+                                Uang Dikembalikan
+
+                            </div>
+
+                            <div class="payment-status-description">
+
+                                Uang sebesar
+                                <strong>
+                                    Rp {{ number_format($returnSale->total_retur,0,',','.') }}
+                                </strong>
+                                dikembalikan kepada pelanggan.
+
+                            </div>
+
+
+                        @elseif($returnSale->selisih_bayar > 0)
+
+                            <div class="payment-status-value">
+
+                                Selisih Sudah Dibayar
+
+                            </div>
+
+                            <div class="payment-status-description">
+
+                                Pelanggan membayar selisih sebesar
+                                <strong>
+                                    Rp {{ number_format($returnSale->selisih_bayar,0,',','.') }}
+                                </strong>.
+
+                            </div>
+
+
+                        @else
+
+                            <div class="payment-status-value">
+
+                                Tidak Ada Pembayaran
+
+                            </div>
+
+                            <div class="payment-status-description">
+
+                                Nilai barang pengganti sama dengan nilai barang yang diretur.
+
+                            </div>
+
+                        @endif
+
+                    </div>
+
                 </div>
 
             {{-- Daftar barang --}}
@@ -391,7 +672,7 @@
                     <tr>
 
                         <td
-                            colspan="4"
+                            colspan="5"
                             class="no-data">
 
                             Tidak ada data barang.
@@ -406,7 +687,100 @@
 
             </table>
 
-            {{-- Ringkasan Retur --}}
+            {{-- ==========================================================
+                BARANG PENGGANTI
+            ========================================================== --}}
+
+            @if($returnSale->return_type === 'tukar')
+
+                <div class="exchange-section">
+
+                    <h3>
+
+                        Daftar Barang Pengganti
+
+                    </h3>
+
+
+                    <table class="detail-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Nama Barang</th>
+
+                                <th>Qty</th>
+
+                                <th>Harga</th>
+
+                                <th>Subtotal</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @forelse($returnSale->exchangeDetails as $exchange)
+
+                                <tr>
+
+                                    <td>
+
+                                        {{ $exchange->product->nama_produk }}
+
+                                    </td>
+
+                                    <td>
+
+                                        {{ $exchange->qty }}
+
+                                    </td>
+
+                                    <td>
+
+                                        Rp
+                                        {{ number_format($exchange->harga,0,',','.') }}
+
+                                    </td>
+
+                                    <td>
+
+                                        Rp
+                                        {{ number_format($exchange->subtotal,0,',','.') }}
+
+                                    </td>
+
+                                </tr>
+
+                            @empty
+
+                                <tr>
+
+                                    <td
+                                        colspan="4"
+                                        class="no-data">
+
+                                        Tidak ada barang pengganti.
+
+                                    </td>
+
+                                </tr>
+
+                            @endforelse
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            @endif
+
+            {{-- ==========================================================
+                RINGKASAN AKHIR
+            ========================================================== --}}
 
             <div class="summary-box">
 
@@ -422,9 +796,10 @@
 
                 </div>
 
-                <div class="summary-item total">
 
-                    <span>Total Retur</span>
+                <div class="summary-item">
+
+                    <span>Total Nilai Retur</span>
 
                     <span>
 
@@ -433,6 +808,70 @@
                     </span>
 
                 </div>
+
+
+                @if($returnSale->return_type === 'tukar')
+
+                    <div class="summary-item">
+
+                        <span>Nilai Barang Pengganti</span>
+
+                        <span>
+
+                            Rp {{ number_format($returnSale->total_pengganti,0,',','.') }}
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-item total">
+
+                        <span>
+
+                            @if($returnSale->selisih_bayar > 0)
+
+                                Selisih Dibayar
+
+                            @else
+
+                                Selisih Pembayaran
+
+                            @endif
+
+                        </span>
+
+                        <span>
+
+                            @if($returnSale->selisih_bayar > 0)
+
+                                Rp {{ number_format($returnSale->selisih_bayar,0,',','.') }}
+
+                            @else
+
+                                Rp 0
+
+                            @endif
+
+                        </span>
+
+                    </div>
+
+                @else
+
+                    <div class="summary-item total">
+
+                        <span>Uang Dikembalikan</span>
+
+                        <span>
+
+                            Rp {{ number_format($returnSale->total_retur,0,',','.') }}
+
+                        </span>
+
+                    </div>
+
+                @endif
 
             </div>
 

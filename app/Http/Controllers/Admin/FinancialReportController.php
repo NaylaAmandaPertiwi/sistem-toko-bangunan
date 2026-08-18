@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Sale;
+use App\Models\CashTransaction;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\FinancialReportExport;
 use Maatwebsite\Excel\Facades\Excel;
-
 class FinancialReportController extends Controller
 {
     public function index(Request $request)
@@ -82,6 +82,91 @@ class FinancialReportController extends Controller
 
             ->get();
 
+        /*
+        |--------------------------------------------------------------------------
+        | QUERY TRANSAKSI KAS
+        |--------------------------------------------------------------------------
+        */
+
+        $cashQuery = CashTransaction::with('returnSale');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER TANGGAL KAS MULAI
+        |--------------------------------------------------------------------------
+        */
+
+        if ($tanggalMulai) {
+
+            $cashQuery->whereDate(
+                'tanggal',
+                '>=',
+                $tanggalMulai
+            );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER TANGGAL KAS AKHIR
+        |--------------------------------------------------------------------------
+        */
+
+        if ($tanggalAkhir) {
+
+            $cashQuery->whereDate(
+                'tanggal',
+                '<=',
+                $tanggalAkhir
+            );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA TRANSAKSI KAS
+        |--------------------------------------------------------------------------
+        */
+
+        $cashTransactions = $cashQuery
+            ->orderByDesc('tanggal')
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL KAS MASUK
+        |--------------------------------------------------------------------------
+        */
+
+        $totalKasMasuk = $cashTransactions
+            ->where('jenis', 'masuk')
+            ->sum('nominal');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL KAS KELUAR
+        |--------------------------------------------------------------------------
+        */
+
+        $totalKasKeluar = $cashTransactions
+            ->where('jenis', 'keluar')
+            ->sum('nominal');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ARUS KAS BERSIH
+        |--------------------------------------------------------------------------
+        */
+
+        $arusKasBersih =
+            $totalKasMasuk - $totalKasKeluar;
+
 
         /*
         |--------------------------------------------------------------------------
@@ -154,7 +239,11 @@ class FinancialReportController extends Controller
                 'totalPenjualan',
                 'totalDiskon',
                 'totalHpp',
-                'labaKotor'
+                'labaKotor',
+                'cashTransactions',
+                'totalKasMasuk',
+                'totalKasKeluar',
+                'arusKasBersih'
             )
         );
     }

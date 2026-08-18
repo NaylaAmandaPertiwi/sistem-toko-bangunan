@@ -255,6 +255,98 @@
 
 }
 
+.summary-card.exchange-difference{
+
+    background:#ecfdf5;
+
+    border:1px solid #bbf7d0;
+
+}
+
+.summary-card.exchange-difference strong{
+
+    color:#15803d;
+
+}
+
+.payment-status{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin-top:22px;
+
+    padding:18px 20px;
+
+    background:#ecfdf5;
+
+    border:1px solid #bbf7d0;
+
+    border-radius:14px;
+
+}
+
+.payment-status-icon{
+
+    width:42px;
+
+    height:42px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    background:#22c55e;
+
+    color:white;
+
+    border-radius:50%;
+
+    flex-shrink:0;
+
+}
+
+.payment-status span{
+
+    display:block;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    color:#15803d;
+
+    margin-bottom:3px;
+
+}
+
+.payment-status strong{
+
+    display:block;
+
+    font-size:16px;
+
+    color:#166534;
+
+}
+
+.payment-status small{
+
+    display:block;
+
+    margin-top:3px;
+
+    color:#4b5563;
+
+    font-size:13px;
+
+}
+
 .section-card{
 
     margin-top:35px;
@@ -491,6 +583,18 @@
 
             <div class="summary-card">
 
+                <span>Jenis Retur</span>
+
+                <strong>
+
+                    {{ $returnSale->return_type === 'tukar' ? 'Tukar Barang' : 'Retur Uang' }}
+
+                </strong>
+
+            </div>
+
+            <div class="summary-card">
+
                 <span>Jumlah Item Diretur</span>
 
                 <strong>
@@ -515,7 +619,24 @@
 
             <div class="summary-card">
 
-                <span>Bayar</span>
+                <span>Keterangan</span>
+
+                <strong>
+
+                    {{ $returnSale->keterangan ?: '-' }}
+
+                </strong>
+
+            </div>
+
+        </div>
+
+        {{-- Ringkasan Nilai Retur --}}
+        <div class="summary-grid">
+
+            <div class="summary-card">
+
+                <span>Total Nilai Retur</span>
 
                 <strong>
 
@@ -525,19 +646,86 @@
 
             </div>
 
-            <div class="summary-card">
+            @if($returnSale->return_type === 'tukar')
 
-                <span>Keterangan</span>
+                <div class="summary-card">
 
-                <strong>
+                    <span>Total Nilai Pengganti</span>
 
-                    {{ $returnSale->keterangan }}
+                    <strong>
 
-                </strong>
+                        Rp {{ number_format($returnSale->total_pengganti,0,',','.') }}
+
+                    </strong>
+
+                </div>
+
+                <div class="summary-card">
+
+                    <span>Selisih Dibayar</span>
+
+                    <strong>
+
+                        Rp {{ number_format($returnSale->selisih_bayar,0,',','.') }}
+
+                    </strong>
+
+                </div>
+
+            @else
+
+                <div class="summary-card">
+
+                    <span>Uang Dikembalikan</span>
+
+                    <strong>
+
+                        Rp {{ number_format($returnSale->total_retur,0,',','.') }}
+
+                    </strong>
+
+                </div>
+
+            @endif
+
+        </div>
+
+        @if(
+            $returnSale->return_type === 'tukar'
+            && $returnSale->selisih_bayar > 0
+        )
+
+            <div class="payment-status">
+
+                <div class="payment-status-icon">
+
+                    <i class="fa-solid fa-money-bill-wave"></i>
+
+                </div>
+
+                <div>
+
+                    <span>STATUS PEMBAYARAN</span>
+
+                    <strong>
+                        Selisih Sudah Dibayar
+                    </strong>
+
+                    <small>
+                        Rp {{ number_format(
+                            $returnSale->selisih_bayar,
+                            0,
+                            ',',
+                            '.'
+                        ) }}
+                        diterima dari pelanggan.
+                    </small>
+
+                </div>
 
             </div>
 
-        </div>
+        @endif
 
         {{-- Daftar Barang --}}
         <div class="section-card">
@@ -629,6 +817,81 @@
             </div>
 
         </div>
+
+        {{-- Daftar Barang Pengganti --}}
+        @if($returnSale->return_type === 'tukar' && $returnSale->exchangeDetails->count() > 0)
+
+            <div class="section-card">
+
+                <div class="section-header">
+
+                    <h3>
+                        Daftar Barang Pengganti
+                    </h3>
+
+                </div>
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>No</th>
+
+                                <th>Produk</th>
+
+                                <th>Qty</th>
+
+                                <th>Harga</th>
+
+                                <th>Subtotal</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            @foreach($returnSale->exchangeDetails as $exchange)
+
+                                <tr>
+
+                                    <td>
+                                        {{ $loop->iteration }}
+                                    </td>
+
+                                    <td>
+                                        {{ $exchange->product->nama_produk }}
+                                    </td>
+
+                                    <td>
+                                        {{ $exchange->qty }}
+                                    </td>
+
+                                    <td>
+                                        Rp {{ number_format($exchange->harga,0,',','.') }}
+                                    </td>
+
+                                    <td>
+                                        Rp {{ number_format($exchange->subtotal,0,',','.') }}
+                                    </td>
+
+                                </tr>
+
+                            @endforeach
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        @endif
 
     </div>
 

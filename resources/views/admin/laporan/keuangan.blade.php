@@ -196,6 +196,152 @@
     color: #222;
 }
 
+/* =========================
+   RINGKASAN KAS
+========================= */
+
+.cash-summary-grid {
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 20px;
+
+    margin: 0 25px 25px;
+}
+
+
+.cash-summary-card {
+    background: white;
+
+    border: 1px solid #edf0f5;
+
+    border-radius: 12px;
+
+    padding: 20px;
+}
+
+
+.cash-summary-label {
+    color: #777;
+
+    font-size: 14px;
+
+    margin-bottom: 8px;
+}
+
+
+.cash-summary-value {
+    font-size: 22px;
+
+    font-weight: 700;
+
+    color: #222;
+}
+
+
+.cash-in {
+    color: #16884a;
+}
+
+
+.cash-out {
+    color: #dc3545;
+}
+
+
+.cash-net {
+    color: #1684e0;
+}
+
+
+/* =========================
+   TABEL TRANSAKSI KAS
+========================= */
+
+.cash-section {
+    margin: 0 25px 25px;
+
+    padding: 20px;
+
+    background: white;
+
+    border: 1px solid #edf0f5;
+
+    border-radius: 12px;
+}
+
+
+.cash-section-title {
+    font-size: 18px;
+
+    font-weight: 700;
+
+    color: #222;
+
+    margin-bottom: 15px;
+}
+
+
+.cash-table {
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+
+.cash-table thead {
+    background: #f4f6fb;
+}
+
+
+.cash-table th {
+    padding: 14px;
+
+    text-align: left;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    color: #333;
+}
+
+
+.cash-table td {
+    padding: 14px;
+
+    border-top: 1px solid #edf0f5;
+
+    color: #444;
+}
+
+
+.cash-badge {
+    display: inline-block;
+
+    padding: 6px 12px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+
+.cash-badge.masuk {
+    background: #d1fae5;
+
+    color: #065f46;
+}
+
+
+.cash-badge.keluar {
+    background: #fee2e2;
+
+    color: #991b1b;
+}
 
 /* =========================
    TABEL
@@ -307,6 +453,10 @@
     }
 
     .summary-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cash-summary-grid {
         grid-template-columns: 1fr;
     }
 
@@ -508,6 +658,262 @@
 
     </div>
 
+    {{-- =========================
+        RINGKASAN KAS
+    ========================= --}}
+
+    <div class="cash-summary-grid">
+
+        {{-- KAS MASUK --}}
+
+        <div class="cash-summary-card">
+
+            <div class="cash-summary-label">
+
+                Total Kas Masuk
+
+            </div>
+
+            <div class="cash-summary-value cash-in">
+
+                Rp {{ number_format(
+                    $totalKasMasuk,
+                    0,
+                    ',',
+                    '.'
+                ) }}
+
+            </div>
+
+        </div>
+
+
+        {{-- KAS KELUAR --}}
+
+        <div class="cash-summary-card">
+
+            <div class="cash-summary-label">
+
+                Total Kas Keluar
+
+            </div>
+
+            <div class="cash-summary-value cash-out">
+
+                Rp {{ number_format(
+                    $totalKasKeluar,
+                    0,
+                    ',',
+                    '.'
+                ) }}
+
+            </div>
+
+        </div>
+
+
+        {{-- ARUS KAS BERSIH --}}
+
+        <div class="cash-summary-card">
+
+            <div class="cash-summary-label">
+
+                Arus Kas Bersih
+
+            </div>
+
+            <div class="cash-summary-value cash-net">
+
+                Rp {{ number_format(
+                    $arusKasBersih,
+                    0,
+                    ',',
+                    '.'
+                ) }}
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {{-- =========================
+        TRANSAKSI KAS
+    ========================= --}}
+
+    <div class="cash-section">
+
+        <div class="cash-section-title">
+
+            Transaksi Kas
+
+        </div>
+
+
+        <div class="table-wrapper" style="margin:0; padding:0;">
+
+            <table class="cash-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th class="text-center">
+                            No
+                        </th>
+
+                        <th>
+                            Tanggal
+                        </th>
+
+                        <th>
+                            Sumber
+                        </th>
+
+                        <th>
+                            Referensi
+                        </th>
+
+                        <th>
+                            Jenis
+                        </th>
+
+                        <th>
+                            Keterangan
+                        </th>
+
+                        <th class="text-right">
+                            Nominal
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    @forelse($cashTransactions as $index => $cash)
+
+                        <tr>
+
+                            {{-- NO --}}
+
+                            <td class="text-center">
+
+                                {{ $index + 1 }}
+
+                            </td>
+
+
+                            {{-- TANGGAL --}}
+
+                            <td>
+
+                                {{ \Carbon\Carbon::parse(
+                                    $cash->tanggal
+                                )->format('d/m/Y') }}
+
+                            </td>
+
+
+                            {{-- SUMBER --}}
+
+                            <td>
+
+                                {{ ucwords(
+                                    str_replace(
+                                        '_',
+                                        ' ',
+                                        $cash->sumber
+                                    )
+                                ) }}
+
+                            </td>
+
+
+                            {{-- REFERENSI --}}
+
+                            <td>
+
+                                {{ $cash->referensi ?? '-' }}
+
+                            </td>
+
+
+                            {{-- JENIS --}}
+
+                            <td>
+
+                                @if($cash->jenis === 'masuk')
+
+                                    <span class="cash-badge masuk">
+
+                                        Kas Masuk
+
+                                    </span>
+
+                                @else
+
+                                    <span class="cash-badge keluar">
+
+                                        Kas Keluar
+
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+
+                            {{-- KETERANGAN --}}
+
+                            <td>
+
+                                {{ $cash->keterangan ?? '-' }}
+
+                            </td>
+
+
+                            {{-- NOMINAL --}}
+
+                            <td class="text-right">
+
+                                Rp {{ number_format(
+                                    $cash->nominal,
+                                    0,
+                                    ',',
+                                    '.'
+                                ) }}
+
+                            </td>
+
+                        </tr>
+
+                    @empty
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="no-data"
+                            >
+
+                                Belum ada transaksi kas.
+
+                            </td>
+
+                        </tr>
+
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
     {{-- =========================
          TABEL TRANSAKSI

@@ -282,7 +282,8 @@ class TransactionController extends Controller
         $returnSale->load([
             'user',
             'sale',
-            'details.product'
+            'details.product',
+            'exchangeDetails.product'
         ]);
 
         return view(

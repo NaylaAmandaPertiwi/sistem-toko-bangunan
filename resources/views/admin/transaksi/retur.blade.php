@@ -237,6 +237,8 @@
 
     border-collapse:collapse;
 
+    min-width:1200px;
+
 }
 
 .transaction-table th,
@@ -726,7 +728,13 @@
 
                         <th>Kasir</th>
 
+                        <th>Jenis Retur</th>
+
                         <th>Total Retur</th>
+
+                        <th>Nilai Pengganti</th>
+
+                        <th>Status Pembayaran</th>
 
                         <th>Aksi</th>
 
@@ -740,47 +748,124 @@
 
                         <tr>
 
+                            {{-- Tanggal --}}
                             <td>
 
                                 {{ \Carbon\Carbon::parse($return->tanggal)->translatedFormat('d F Y') }}
 
                             </td>
 
+                            {{-- Kode Retur --}}
                             <td>
 
                                 {{ $return->kode_retur }}
 
                             </td>
 
+                            {{-- Kode Penjualan --}}
                             <td>
 
                                 {{ $return->sale->kode_penjualan }}
 
                             </td>
 
+                            {{-- Kasir --}}
                             <td>
 
                                 {{ $return->user->name }}
 
                             </td>
 
+                            {{-- Jenis Retur --}}
+                            <td>
+
+                                @if($return->return_type === 'uang')
+
+                                    <span class="status-badge success">
+
+                                        Retur Uang
+
+                                    </span>
+
+                                @else
+
+                                    <span class="status-badge success">
+
+                                        Tukar Barang
+
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+                            {{-- Total Retur --}}
                             <td>
 
                                 Rp {{ number_format($return->total_retur,0,',','.') }}
 
                             </td>
 
+                            {{-- Nilai Pengganti --}}
+                            <td>
+
+                                @if($return->return_type === 'tukar')
+
+                                    Rp {{ number_format($return->total_pengganti,0,',','.') }}
+
+                                @else
+
+                                    -
+
+                                @endif
+
+                            </td>
+
+                            {{-- Status Pembayaran --}}
+                            <td>
+
+                                @if($return->return_type === 'uang')
+
+                                    <span class="status-badge success">
+
+                                        Uang Dikembalikan
+
+                                    </span>
+
+                                @elseif($return->selisih_bayar > 0)
+
+                                    <span class="status-badge success">
+
+                                        Selisih Dibayar
+
+                                        Rp {{ number_format($return->selisih_bayar,0,',','.') }}
+
+                                    </span>
+
+                                @else
+
+                                    <span class="status-badge success">
+
+                                        Tidak Ada Pembayaran
+
+                                    </span>
+
+                                @endif
+
+                            </td>
+
+                            {{-- Aksi --}}
                             <td>
 
                                 <a
-                                href="{{ route('admin.transaksi.retur.show', $return) }}"
-                                class="btn-detail">
+                                    href="{{ route('admin.transaksi.retur.show', $return) }}"
+                                    class="btn-detail">
 
-                                <i class="fa-solid fa-eye"></i>
+                                    <i class="fa-solid fa-eye"></i>
 
-                                Detail
+                                    Detail
 
-                            </a>
+                                </a>
 
                             </td>
 
@@ -790,7 +875,7 @@
 
                         <tr>
 
-                            <td colspan="6" class="no-data">
+                            <td colspan="9" class="no-data">
 
                                 Belum ada transaksi retur.
 
@@ -1059,6 +1144,97 @@ function formatTanggal(tanggal){
 
 function renderReturnRow(returnSale)
 {
+    let jenisRetur = "";
+
+    let nilaiPengganti = "-";
+
+    let statusPembayaran = "";
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | JENIS RETUR
+    |--------------------------------------------------------------------------
+    */
+
+    if(returnSale.return_type === "uang"){
+
+        jenisRetur = `
+            <span class="status-badge success">
+                Retur Uang
+            </span>
+        `;
+
+    }else{
+
+        jenisRetur = `
+            <span class="status-badge success">
+                Tukar Barang
+            </span>
+        `;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | NILAI PENGGANTI
+    |--------------------------------------------------------------------------
+    */
+
+    if(returnSale.return_type === "tukar"){
+
+        nilaiPengganti =
+            "Rp " +
+            Number(returnSale.total_pengganti)
+            .toLocaleString("id-ID");
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | STATUS PEMBAYARAN
+    |--------------------------------------------------------------------------
+    */
+
+    if(returnSale.return_type === "uang"){
+
+        statusPembayaran = `
+            <span class="status-badge success">
+                Uang Dikembalikan
+            </span>
+        `;
+
+    }
+    else if(Number(returnSale.selisih_bayar) > 0){
+
+        statusPembayaran = `
+            <span class="status-badge success">
+                Selisih Dibayar
+                Rp ${Number(returnSale.selisih_bayar)
+                    .toLocaleString("id-ID")}
+            </span>
+        `;
+
+    }
+    else{
+
+        statusPembayaran = `
+            <span class="status-badge success">
+                Tidak Ada Pembayaran
+            </span>
+        `;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | ROW
+    |--------------------------------------------------------------------------
+    */
+
     return `
         <tr>
 
@@ -1076,19 +1252,42 @@ function renderReturnRow(returnSale)
 
             <td>
 
-                ${returnSale.sale ? returnSale.sale.kode_penjualan : "-"}
+                ${returnSale.sale
+                    ? returnSale.sale.kode_penjualan
+                    : "-"}
 
             </td>
 
             <td>
 
-                ${returnSale.user.name}
+                ${returnSale.user
+                    ? returnSale.user.name
+                    : "-"}
 
             </td>
 
             <td>
 
-                Rp ${Number(returnSale.total_retur).toLocaleString("id-ID")}
+                ${jenisRetur}
+
+            </td>
+
+            <td>
+
+                Rp ${Number(returnSale.total_retur)
+                    .toLocaleString("id-ID")}
+
+            </td>
+
+            <td>
+
+                ${nilaiPengganti}
+
+            </td>
+
+            <td>
+
+                ${statusPembayaran}
 
             </td>
 
@@ -1304,7 +1503,7 @@ history.replaceState({}, "", url);
 
                 rows = `
                     <tr>
-                        <td colspan="6" class="no-data">
+                        <td colspan="9" class="no-data">
                             Belum ada transaksi retur.
                         </td>
                     </tr>

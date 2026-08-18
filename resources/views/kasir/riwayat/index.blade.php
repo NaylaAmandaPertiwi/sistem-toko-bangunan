@@ -280,38 +280,89 @@ table tbody td{
 }
 
 .col-kode{
-
-    width:30%;
-
+    width:24%;
 }
 
 .col-tanggal{
-
-    width:20%;
-
+    width:14%;
 }
 
 .col-kasir{
-
-    width:15%;
-
+    width:12%;
 }
 
 .col-total{
+    width:16%;
+}
 
-    width:20%;
-
+.col-status{
+    width:22%;
 }
 
 .col-aksi{
-
     width:12%;
-
 }
 
 .action-column{
-
     text-align:center;
+    white-space:nowrap;
+}
+
+.status-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:6px;
+
+    padding:7px 10px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    white-space:nowrap;
+
+}
+
+.status-badge i{
+
+    font-size:11px;
+
+}
+
+.status-paid{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+    border:1px solid #bbf7d0;
+
+}
+
+.status-refund{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+    border:1px solid #bbf7d0;
+
+}
+
+.status-none{
+
+    background:#f1f5f9;
+
+    color:#64748b;
+
+    border:1px solid #e2e8f0;
 
 }
 
@@ -444,6 +495,56 @@ table tbody td{
     margin-top:4px;
 
     line-height:1.5;
+
+}
+
+.status-badge{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:6px;
+
+    padding:7px 12px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    white-space:nowrap;
+
+}
+
+.status-refund{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+    border:1px solid #bbf7d0;
+
+}
+
+.status-paid{
+
+    background:#dcfce7;
+
+    color:#15803d;
+
+    border:1px solid #bbf7d0;
+
+}
+
+.status-none{
+
+    background:#eff6ff;
+
+    color:#2563eb;
+
+    border:1px solid #dbeafe;
 
 }
 
@@ -669,6 +770,10 @@ table tbody td{
                     Total Retur
                 </th>
 
+                <th class="col-status">
+                    Status Pembayaran
+                </th>
+
                 <th class="col-aksi action-column">
                     Aksi
                 </th>
@@ -709,6 +814,44 @@ table tbody td{
 
                     </td>
 
+                    {{-- STATUS PEMBAYARAN --}}
+                    <td>
+
+                        @if($return->return_type === 'uang')
+
+                            <span class="status-badge status-refund">
+                                <i class="fa-solid fa-money-bill-transfer"></i>
+                                Uang Dikembalikan
+                            </span>
+
+                        @elseif(
+                            $return->return_type === 'tukar'
+                            && $return->selisih_bayar > 0
+                        )
+
+                            <span class="status-badge status-paid">
+                                <i class="fa-solid fa-circle-check"></i>
+                                Selisih Dibayar
+                                Rp {{ number_format(
+                                    $return->selisih_bayar,
+                                    0,
+                                    ',',
+                                    '.'
+                                ) }}
+                            </span>
+
+                        @else
+
+                            <span class="status-badge status-none">
+                                <i class="fa-solid fa-minus-circle"></i>
+                                Tidak Ada Selisih
+                            </span>
+
+                        @endif
+
+                    </td>
+
+                    {{-- AKSI --}}
                     <td class="action-column">
 
                         <a

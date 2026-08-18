@@ -21,9 +21,18 @@ return new class extends Migration
                 ->constrained('sales')
                 ->onDelete('cascade');
 
+            $table->string('return_type')
+                ->default('uang');
+
             $table->date('tanggal');
 
-            $table->decimal('total_retur',15,2)
+            $table->decimal('total_retur', 15, 2)
+                ->default(0);
+
+            $table->decimal('total_pengganti', 15, 2)
+                ->default(0);
+
+            $table->decimal('selisih_bayar', 15, 2)
                 ->default(0);
 
             $table->text('keterangan')

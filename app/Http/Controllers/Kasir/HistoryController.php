@@ -17,9 +17,10 @@ class HistoryController extends Controller
             ->paginate(10, ['*'], 'sales_page');
 
         $returnSales = ReturnSale::with([
-                'sale',
-                'user'
-            ])
+            'sale',
+            'user',
+            'cashTransaction'
+        ])
             ->latest()
             ->paginate(10, ['*'], 'returns_page');
 
@@ -61,7 +62,11 @@ class HistoryController extends Controller
 
             'details.product',
 
-            'details.saleDetail'
+            'details.saleDetail',
+
+            'exchangeDetails.product',
+
+            'cashTransaction'
 
         ]);
 

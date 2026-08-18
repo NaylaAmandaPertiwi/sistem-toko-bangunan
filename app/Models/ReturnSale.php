@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Sale;
 use App\Models\ReturnDetail;
+use App\Models\ReturnExchangeDetail;
+use App\Models\CashTransaction;
 
 class ReturnSale extends Model
 {
@@ -21,12 +23,25 @@ class ReturnSale extends Model
 
         'sale_id',
 
+        'return_type',
+
         'tanggal',
 
         'total_retur',
 
+        'total_pengganti',
+
+        'selisih_bayar',
+
         'keterangan'
 
+    ];
+
+    protected $casts = [
+        'tanggal' => 'date',
+        'total_retur' => 'decimal:2',
+        'total_pengganti' => 'decimal:2',
+        'selisih_bayar' => 'decimal:2',
     ];
 
     /*
@@ -63,6 +78,28 @@ class ReturnSale extends Model
     {
         return $this->hasMany(
             ReturnDetail::class
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi ke Detail Barang Pengganti
+    |--------------------------------------------------------------------------
+    */
+
+    public function exchangeDetails()
+    {
+        return $this->hasMany(
+            ReturnExchangeDetail::class
+        );
+    }
+
+    public function cashTransaction()
+    {
+        return $this->hasOne(
+            CashTransaction::class,
+            'referensi',
+            'kode_retur'
         );
     }
 }
