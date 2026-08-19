@@ -2,686 +2,721 @@
 
 @section('title', 'Laporan Keuangan')
 
-@section('content')
-
 <style>
 
-/* =========================
-   CONTAINER
-========================= */
+/* =========================================================
+   LAPORAN KEUANGAN
+   ========================================================= */
 
-.page-header {
-    background: white;
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+.finance-page {
+    color: #26364d;
 }
 
 
-/* =========================
+/* =========================================================
    HEADER
-========================= */
+   ========================================================= */
 
-.top-header {
-    background: #1684e0;
-    color: white;
-
-    padding: 18px 25px;
-
-    font-size: 28px;
-    font-weight: 600;
-}
-
-
-/* =========================
-   FILTER
-========================= */
-
-.filter-form {
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 15px;
-
-    margin: 25px;
-
-    padding: 20px;
-
-    background: #f8f9fc;
-
-    border-radius: 12px;
-}
-
-
-.filter-group {
+.finance-header {
     display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 22px;
+}
 
-    flex-direction: column;
+.finance-title h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #17243a;
+}
 
+.finance-title p {
+    margin: 6px 0 0;
+    color: #7b8798;
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   FILTER
+   ========================================================= */
+
+.finance-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.date-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    border: 1px solid #e3e8f0;
+    border-radius: 10px;
+    padding: 11px 15px;
+    color: #354258;
+    font-size: 13px;
+}
+
+.date-filter input {
+    border: none;
+    outline: none;
+    color: #354258;
+    font-size: 13px;
+    background: transparent;
+}
+
+.btn-finance {
+    border: none;
+    border-radius: 10px;
+    padding: 11px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
     gap: 7px;
 }
 
-
-.filter-group label {
-    font-size: 13px;
-
-    font-weight: 600;
-
-    color: #555;
-}
-
-
-.filter-group input {
-    width: 100%;
-
-    height: 40px;
-
-    padding: 0 12px;
-
-    border: 1px solid #ddd;
-
-    border-radius: 8px;
-
-    background: white;
-
-    box-sizing: border-box;
-
-    font-size: 14px;
-}
-
-/* =========================
-   TOMBOL EXPORT
-========================= */
-
-.export-buttons {
-    display: flex;
-
-    gap: 10px;
-
-    align-items: center;
-}
-
-
-.btn-export {
-    height: 40px;
-
-    width: 140px;
-
-    padding: 0 18px;
-
-    display: inline-flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    box-sizing: border-box;
-
-    border-radius: 8px;
-
-    text-decoration: none;
-
-    border: none;
-
-    cursor: pointer;
-
-    font-size: 14px;
-
-    font-weight: 500;
-
-    color: white;
-}
-
-
-.btn-pdf {
+.btn-print {
     background: #dc3545;
+    color: #fff;
 }
-
 
 .btn-excel {
-    background: #16884a;
+    background: #198754;
+    color: #fff;
 }
 
 
-.btn-pdf:hover {
-    background: #bb2d3b;
-}
+/* =========================================================
+   TOP SUMMARY
+   ========================================================= */
 
-
-.btn-excel:hover {
-    background: #14763f;
-}
-
-/* =========================
-   RINGKASAN
-========================= */
-
-.summary-grid {
+.finance-top-grid {
     display: grid;
-
     grid-template-columns: repeat(4, 1fr);
-
-    gap: 20px;
-
-    margin: 25px;
+    gap: 16px;
+    margin-bottom: 18px;
 }
 
-
-.summary-card {
-    background: white;
-
-    border: 1px solid #edf0f5;
-
-    border-radius: 12px;
-
-    padding: 20px;
+.finance-top-card {
+    background: #fff;
+    border: 1px solid #e7ebf2;
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 8px rgba(30, 50, 80, .03);
 }
 
-
-.summary-label {
-    color: #777;
-
-    font-size: 14px;
-
-    margin-bottom: 8px;
-}
-
-
-.summary-value {
-    font-size: 22px;
-
+.finance-icon {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
     font-weight: 700;
-
-    color: #222;
 }
 
-/* =========================
-   RINGKASAN KAS
-========================= */
+.icon-blue {
+    background: #e8f1ff;
+    color: #2463d4;
+}
 
-.cash-summary-grid {
+.icon-red {
+    background: #ffe9e9;
+    color: #dc3545;
+}
+
+.icon-green {
+    background: #e5f8ed;
+    color: #198754;
+}
+
+.icon-orange {
+    background: #fff1d9;
+    color: #e28a00;
+}
+
+.finance-top-label {
+    font-size: 12px;
+    color: #748096;
+    margin-bottom: 5px;
+}
+
+.finance-top-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1d2939;
+}
+
+
+/* =========================================================
+   MAIN GRID
+   ========================================================= */
+
+.finance-main-grid {
     display: grid;
-
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 20px;
-
-    margin: 0 25px 25px;
+    grid-template-columns: 1.45fr .85fr .85fr;
+    gap: 16px;
+    margin-bottom: 18px;
 }
 
 
-.cash-summary-card {
-    background: white;
+/* =========================================================
+   PANEL
+   ========================================================= */
 
-    border: 1px solid #edf0f5;
-
-    border-radius: 12px;
-
+.finance-panel {
+    background: #fff;
+    border: 1px solid #e7ebf2;
+    border-radius: 14px;
     padding: 20px;
+    box-shadow: 0 2px 8px rgba(30, 50, 80, .03);
+}
+
+.finance-panel-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.finance-panel-title h2 {
+    margin: 0;
+    font-size: 16px;
+    color: #1f2d43;
+}
+
+.finance-panel-title a {
+    font-size: 12px;
+    color: #2463d4;
+    text-decoration: none;
+    font-weight: 600;
 }
 
 
-.cash-summary-label {
-    color: #777;
+/* =========================================================
+   RINGKASAN KEUANGAN
+   ========================================================= */
 
+.finance-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid #edf0f5;
+}
+
+.finance-row:last-child {
+    border-bottom: none;
+}
+
+.finance-row-label {
+    color: #536174;
+    font-size: 13px;
+}
+
+.finance-row-value {
     font-size: 14px;
+    font-weight: 600;
+    color: #26364d;
+}
 
-    margin-bottom: 8px;
+.finance-row-value.red {
+    color: #dc3545;
+}
+
+.finance-row-value.green {
+    color: #198754;
+}
+
+.finance-row-value.blue {
+    color: #2463d4;
 }
 
 
-.cash-summary-value {
-    font-size: 22px;
+/* Laba */
 
+.profit-box {
+    margin-top: 14px;
+    background: #f1fbf5;
+    border: 1px solid #c9ecd7;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+}
+
+.profit-label {
+    font-size: 12px;
+    color: #4d7660;
+}
+
+.profit-value {
+    margin-top: 5px;
+    font-size: 23px;
     font-weight: 700;
-
-    color: #222;
+    color: #198754;
 }
 
+
+/* =========================================================
+   RINGKASAN RETUR
+   ========================================================= */
+
+.return-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid #edf0f5;
+}
+
+.return-row:last-child {
+    border-bottom: none;
+}
+
+.return-left {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 12px;
+    color: #536174;
+}
+
+.return-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+}
+
+.return-money {
+    background: #ffe9e9;
+    color: #dc3545;
+}
+
+.return-exchange {
+    background: #e8f1ff;
+    color: #2463d4;
+}
+
+.return-replacement {
+    background: #f0e9ff;
+    color: #7950c9;
+}
+
+.return-difference {
+    background: #e5f8ed;
+    color: #198754;
+}
+
+.return-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #26364d;
+}
+
+
+/* =========================================================
+   ARUS KAS
+   ========================================================= */
+
+.cash-box {
+    border: 1px solid #e4e9f0;
+    border-radius: 11px;
+    padding: 13px;
+}
+
+.cash-row {
+    padding: 9px 0;
+}
+
+.cash-row + .cash-row {
+    border-top: 1px solid #edf0f5;
+}
+
+.cash-label {
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.cash-value {
+    font-size: 15px;
+    font-weight: 700;
+}
 
 .cash-in {
-    color: #16884a;
+    color: #198754;
 }
-
 
 .cash-out {
     color: #dc3545;
 }
 
-
 .cash-net {
-    color: #1684e0;
-}
-
-
-/* =========================
-   TABEL TRANSAKSI KAS
-========================= */
-
-.cash-section {
-    margin: 0 25px 25px;
-
-    padding: 20px;
-
-    background: white;
-
-    border: 1px solid #edf0f5;
-
-    border-radius: 12px;
-}
-
-
-.cash-section-title {
-    font-size: 18px;
-
-    font-weight: 700;
-
-    color: #222;
-
-    margin-bottom: 15px;
-}
-
-
-.cash-table {
-    width: 100%;
-
-    border-collapse: collapse;
-}
-
-
-.cash-table thead {
-    background: #f4f6fb;
-}
-
-
-.cash-table th {
+    margin-top: 12px;
+    background: #edf4ff;
+    border: 1px solid #bcd4ff;
+    border-radius: 11px;
     padding: 14px;
-
-    text-align: left;
-
-    font-size: 14px;
-
-    font-weight: 600;
-
-    color: #333;
 }
 
-
-.cash-table td {
-    padding: 14px;
-
-    border-top: 1px solid #edf0f5;
-
-    color: #444;
-}
-
-
-.cash-badge {
-    display: inline-block;
-
-    padding: 6px 12px;
-
-    border-radius: 999px;
-
+.cash-net-label {
     font-size: 12px;
+    color: #2463d4;
+}
 
-    font-weight: 600;
+.cash-net-value {
+    margin-top: 5px;
+    font-size: 19px;
+    font-weight: 700;
+    color: #2463d4;
 }
 
 
-.cash-badge.masuk {
-    background: #d1fae5;
+/* =========================================================
+   BOTTOM GRID
+   ========================================================= */
 
-    color: #065f46;
+.finance-bottom-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 18px;
 }
 
 
-.cash-badge.keluar {
-    background: #fee2e2;
+/* =========================================================
+   TABLE
+   ========================================================= */
 
-    color: #991b1b;
-}
-
-/* =========================
-   TABEL
-========================= */
-
-.table-wrapper {
-    margin: 20px 25px 25px;
-
-    padding-bottom: 20px;
-
-    overflow-x: auto;
-}
-
-
-.report-table {
+.finance-table {
     width: 100%;
-
     border-collapse: collapse;
 }
 
-
-.report-table thead {
-    background: #f4f6fb;
-}
-
-
-.report-table th {
-    padding: 14px;
-
+.finance-table th {
+    background: #f4f6fa;
+    padding: 10px 9px;
     text-align: left;
-
-    font-size: 14px;
-
-    font-weight: 600;
-
-    color: #333;
+    font-size: 11px;
+    color: #344054;
+    white-space: nowrap;
 }
 
-
-.report-table td {
-    padding: 14px;
-
-    border-top: 1px solid #edf0f5;
-
-    color: #444;
+.finance-table td {
+    padding: 10px 9px;
+    border-bottom: 1px solid #edf0f5;
+    font-size: 11px;
+    color: #536174;
 }
 
-
-.report-table tbody tr:hover {
-    background: #fafbfe;
+.finance-table tr:last-child td {
+    border-bottom: none;
 }
-
-
-/* =========================
-   ALIGNMENT
-========================= */
-
-.text-center {
-    text-align: center !important;
-}
-
 
 .text-right {
     text-align: right !important;
 }
 
+.text-center {
+    text-align: center !important;
+}
 
-/* =========================
-   LABA
-========================= */
-
-.profit {
+.amount-green {
+    color: #198754 !important;
     font-weight: 600;
+}
 
-    color: #218838;
+.amount-red {
+    color: #dc3545 !important;
+    font-weight: 600;
 }
 
 
-/* =========================
-   DATA KOSONG
-========================= */
+/* =========================================================
+   BADGE
+   ========================================================= */
 
-.no-data {
-    text-align: center;
+.finance-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+}
 
-    padding: 30px !important;
+.badge-return {
+    background: #fff0f0;
+    color: #dc3545;
+}
 
-    color: #777;
+.badge-exchange {
+    background: #eef4ff;
+    color: #2463d4;
 }
 
 
-/* =========================
+/* =========================================================
+   INFORMATION
+   ========================================================= */
+
+.finance-info {
+    background: #eef5ff;
+    border: 1px solid #d3e3ff;
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.finance-info-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #2463d4;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    min-width: 24px;
+}
+
+.finance-info-text {
+    font-size: 11px;
+    line-height: 1.6;
+    color: #526174;
+}
+
+
+/* =========================================================
    RESPONSIVE
-========================= */
+   ========================================================= */
 
-@media (max-width: 1000px) {
+@media (max-width: 1100px) {
 
-    .summary-grid {
-        grid-template-columns: 1fr 1fr;
+    .finance-top-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .finance-main-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .finance-bottom-grid {
+        grid-template-columns: 1fr;
     }
 
 }
-
 
 @media (max-width: 700px) {
 
-    .filter-form {
-        grid-template-columns: 1fr;
+    .finance-header {
+        flex-direction: column;
+        gap: 15px;
     }
 
-    .summary-grid {
-        grid-template-columns: 1fr;
+    .finance-filter {
+        width: 100%;
+        flex-wrap: wrap;
     }
 
-    .cash-summary-grid {
+    .finance-top-grid {
         grid-template-columns: 1fr;
     }
 
 }
-
 </style>
 
+@section('content')
 
-<div class="page-header">
+<div class="finance-page">
 
-
-    {{-- =========================
+    {{-- =====================================================
          HEADER
-    ========================= --}}
+         ===================================================== --}}
 
-    <div class="top-header">
+    <div class="finance-header">
 
-        Laporan Keuangan
+        <div class="finance-title">
 
-    </div>
+            <h1>
+                Laporan Keuangan
+            </h1>
 
-
-    {{-- =========================
-         FILTER
-    ========================= --}}
-
-    <form
-        method="GET"
-        action="{{ route('admin.laporan.keuangan') }}"
-        class="filter-form"
-        id="filterForm"
-    >
-
-        {{-- TANGGAL MULAI --}}
-
-        <div class="filter-group">
-
-            <label for="tanggal_mulai">
-                Tanggal Mulai
-            </label>
-
-            <input
-                type="date"
-                id="tanggal_mulai"
-                name="tanggal_mulai"
-                value="{{ $tanggalMulai }}"
-            >
+            <p>
+                Ringkasan kinerja keuangan berdasarkan transaksi penjualan dan retur.
+            </p>
 
         </div>
 
 
-        {{-- TANGGAL AKHIR --}}
+        <div class="finance-filter">
 
-        <div class="filter-group">
-
-            <label for="tanggal_akhir">
-                Tanggal Akhir
-            </label>
-
-            <input
-                type="date"
-                id="tanggal_akhir"
-                name="tanggal_akhir"
-                value="{{ $tanggalAkhir }}"
+            <form
+                method="GET"
+                action="{{ route('admin.laporan.keuangan') }}"
+                style="display:flex; gap:10px; align-items:center;"
             >
 
-        </div>
+                <div class="date-filter">
 
-        <div class="export-buttons">
+                    📅
+
+                    <input
+                        type="date"
+                        name="tanggal_mulai"
+                        value="{{ request('tanggal_mulai') }}"
+                    >
+
+                    <span>–</span>
+
+                    <input
+                        type="date"
+                        name="tanggal_akhir"
+                        value="{{ request('tanggal_akhir') }}"
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn-finance"
+                    style="background:#355cc9;color:white;"
+                >
+                    🔍 Tampilkan
+                </button>
+
+            </form>
+
 
             <a
-                href="{{ route('admin.laporan.keuangan.pdf', [
-                    'tanggal_mulai' => $tanggalMulai,
-                    'tanggal_akhir' => $tanggalAkhir
-                ]) }}"
-                class="btn-export btn-pdf"
+                href="#"
+                class="btn-finance btn-print"
             >
                 🧾 Cetak PDF
             </a>
 
+
             <a
-                href="{{ route('admin.laporan.keuangan.excel', [
-                    'tanggal_mulai' => $tanggalMulai,
-                    'tanggal_akhir' => $tanggalAkhir
-                ]) }}"
-                class="btn-export btn-excel"
+                href="#"
+                class="btn-finance btn-excel"
             >
                 📊 Export Excel
             </a>
 
         </div>
 
+    </div>
 
-    </form>
 
+    {{-- =====================================================
+         4 CARD UTAMA
+         ===================================================== --}}
 
-    {{-- =========================
-         RINGKASAN
-    ========================= --}}
-
-    <div class="summary-grid">
+    <div class="finance-top-grid">
 
 
         {{-- TOTAL PENJUALAN --}}
 
-        <div class="summary-card">
+        <div class="finance-top-card">
 
-            <div class="summary-label">
-
-                Total Penjualan
-
+            <div class="finance-icon icon-blue">
+                🛒
             </div>
 
-            <div class="summary-value">
+            <div>
 
-                Rp {{ number_format(
-                    $totalPenjualan,
-                    0,
-                    ',',
-                    '.'
-                ) }}
+                <div class="finance-top-label">
+                    Total Penjualan
+                </div>
 
-            </div>
+                <div class="finance-top-value">
 
-        </div>
+                    Rp {{ number_format(
+                        $totalPenjualanBersih,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
 
-
-        {{-- TOTAL DISKON --}}
-
-        <div class="summary-card">
-
-            <div class="summary-label">
-
-                Total Diskon
-
-            </div>
-
-            <div class="summary-value">
-
-                Rp {{ number_format(
-                    $totalDiskon,
-                    0,
-                    ',',
-                    '.'
-                ) }}
+                </div>
 
             </div>
 
         </div>
 
 
-        {{-- TOTAL HPP --}}
+        {{-- TOTAL RETUR --}}
 
-        <div class="summary-card">
+        <div class="finance-top-card">
 
-            <div class="summary-label">
-
-                Total HPP
-
+            <div class="finance-icon icon-red">
+                ↩
             </div>
 
-            <div class="summary-value">
+            <div>
 
-                Rp {{ number_format(
-                    $totalHpp,
-                    0,
-                    ',',
-                    '.'
-                ) }}
+                <div class="finance-top-label">
+                    Total Retur
+                </div>
 
-            </div>
+                <div class="finance-top-value">
 
-        </div>
+                    Rp {{ number_format(
+                        $totalRetur,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
 
-
-        {{-- LABA KOTOR --}}
-
-        <div class="summary-card">
-
-            <div class="summary-label">
-
-                Laba Kotor
-
-            </div>
-
-            <div class="summary-value profit">
-
-                Rp {{ number_format(
-                    $labaKotor,
-                    0,
-                    ',',
-                    '.'
-                ) }}
+                </div>
 
             </div>
 
         </div>
 
-
-    </div>
-
-    {{-- =========================
-        RINGKASAN KAS
-    ========================= --}}
-
-    <div class="cash-summary-grid">
 
         {{-- KAS MASUK --}}
 
-        <div class="cash-summary-card">
+        <div class="finance-top-card">
 
-            <div class="cash-summary-label">
-
-                Total Kas Masuk
-
+            <div class="finance-icon icon-green">
+                💵
             </div>
 
-            <div class="cash-summary-value cash-in">
+            <div>
 
-                Rp {{ number_format(
-                    $totalKasMasuk,
-                    0,
-                    ',',
-                    '.'
-                ) }}
+                <div class="finance-top-label">
+                    Kas Masuk
+                </div>
+
+                <div class="finance-top-value">
+
+                    Rp {{ number_format(
+                        $totalKasMasuk,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+
+                </div>
 
             </div>
 
@@ -690,46 +725,28 @@
 
         {{-- KAS KELUAR --}}
 
-        <div class="cash-summary-card">
+        <div class="finance-top-card">
 
-            <div class="cash-summary-label">
-
-                Total Kas Keluar
-
+            <div class="finance-icon icon-orange">
+                💸
             </div>
 
-            <div class="cash-summary-value cash-out">
+            <div>
 
-                Rp {{ number_format(
-                    $totalKasKeluar,
-                    0,
-                    ',',
-                    '.'
-                ) }}
+                <div class="finance-top-label">
+                    Kas Keluar
+                </div>
 
-            </div>
+                <div class="finance-top-value">
 
-        </div>
+                    Rp {{ number_format(
+                        $totalKasKeluar,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
 
-
-        {{-- ARUS KAS BERSIH --}}
-
-        <div class="cash-summary-card">
-
-            <div class="cash-summary-label">
-
-                Arus Kas Bersih
-
-            </div>
-
-            <div class="cash-summary-value cash-net">
-
-                Rp {{ number_format(
-                    $arusKasBersih,
-                    0,
-                    ',',
-                    '.'
-                ) }}
+                </div>
 
             </div>
 
@@ -737,380 +754,660 @@
 
     </div>
 
-    {{-- =========================
-        TRANSAKSI KAS
-    ========================= --}}
 
-    <div class="cash-section">
+    {{-- =====================================================
+         3 PANEL UTAMA
+         ===================================================== --}}
 
-        <div class="cash-section-title">
+    <div class="finance-main-grid">
 
-            Transaksi Kas
+
+        {{-- =================================================
+             RINGKASAN KEUANGAN
+             ================================================= --}}
+
+        <div class="finance-panel">
+
+            <div class="finance-panel-title">
+
+                <h2>
+                    Ringkasan Keuangan
+                </h2>
+
+            </div>
+
+
+            <div class="finance-row">
+
+                <span class="finance-row-label">
+                    Penjualan Bruto
+                </span>
+
+                <span class="finance-row-value">
+
+                    Rp {{ number_format(
+                        $totalPenjualanBruto,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+
+                </span>
+
+            </div>
+
+
+            <div class="finance-row">
+
+                <span class="finance-row-label">
+                    Total Diskon
+                </span>
+
+                <span class="finance-row-value red">
+
+                    - Rp {{ number_format(
+                        $totalDiskon,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+
+                </span>
+
+            </div>
+
+
+            <div class="finance-row">
+
+                <span class="finance-row-label">
+                    Penjualan Bersih
+                </span>
+
+                <span class="finance-row-value blue">
+
+                    Rp {{ number_format(
+                        $totalPenjualanBersih,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+
+                </span>
+
+            </div>
+
+
+            <div class="finance-row">
+
+                <span class="finance-row-label">
+                    HPP
+                </span>
+
+                <span class="finance-row-value">
+
+                    - Rp {{ number_format(
+                        $totalHpp,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+
+                </span>
+
+            </div>
+
+
+            <div class="profit-box">
+
+                <div class="profit-label">
+                    Laba Kotor
+                </div>
+
+                <div class="profit-value">
+
+                    Rp {{ number_format(
+                        $labaKotor,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+
+                </div>
+
+            </div>
 
         </div>
 
 
-        <div class="table-wrapper" style="margin:0; padding:0;">
+        {{-- =================================================
+             RINGKASAN RETUR
+             ================================================= --}}
 
-            <table class="cash-table">
+        <div class="finance-panel">
 
-                <thead>
+            <div class="finance-panel-title">
 
-                    <tr>
+                <h2>
+                    Ringkasan Retur
+                </h2>
 
-                        <th class="text-center">
-                            No
-                        </th>
-
-                        <th>
-                            Tanggal
-                        </th>
-
-                        <th>
-                            Sumber
-                        </th>
-
-                        <th>
-                            Referensi
-                        </th>
-
-                        <th>
-                            Jenis
-                        </th>
-
-                        <th>
-                            Keterangan
-                        </th>
-
-                        <th class="text-right">
-                            Nominal
-                        </th>
-
-                    </tr>
-
-                </thead>
+            </div>
 
 
-                <tbody>
+            <div class="return-row">
 
-                    @forelse($cashTransactions as $index => $cash)
+                <div class="return-left">
+
+                    <span class="return-dot return-money">
+                        ↩
+                    </span>
+
+                    Retur Uang
+
+                </div>
+
+                <span class="return-value">
+
+                    Rp {{ number_format(
+                        $totalReturUang,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+
+                </span>
+
+            </div>
+
+
+            <div class="return-row">
+
+                <div class="return-left">
+
+                    <span class="return-dot return-exchange">
+                        ↔
+                    </span>
+
+                    Tukar Barang
+
+                </div>
+
+                <span class="return-value">
+
+                    Rp {{ number_format(
+                        $totalTukarBarang,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+
+                </span>
+
+            </div>
+
+
+            <div class="return-row">
+
+                <div class="return-left">
+
+                    <span class="return-dot return-replacement">
+                        🎁
+                    </span>
+
+                    Nilai Barang Pengganti
+
+                </div>
+
+                <span class="return-value">
+
+                    Rp {{ number_format(
+                        $totalNilaiPengganti,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+
+                </span>
+
+            </div>
+
+
+            <div class="return-row">
+
+                <div class="return-left">
+
+                    <span class="return-dot return-difference">
+                        $
+                    </span>
+
+                    Selisih Pembayaran
+
+                </div>
+
+                <span class="return-value">
+
+                    Rp {{ number_format(
+                        $totalSelisihPembayaran,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {{-- =================================================
+             ARUS KAS
+             ================================================= --}}
+
+        <div class="finance-panel">
+
+            <div class="finance-panel-title">
+
+                <h2>
+                    Arus Kas
+                </h2>
+
+            </div>
+
+
+            <div class="cash-box">
+
+                <div class="cash-row">
+
+                    <div class="cash-label cash-in">
+                        Kas Masuk
+                    </div>
+
+                    <div class="cash-value cash-in">
+
+                        Rp {{ number_format(
+                            $totalKasMasuk,
+                            0,
+                            ',',
+                            '.'
+                        ) }}
+
+                    </div>
+
+                    <small>
+                        Dari selisih tukar barang
+                    </small>
+
+                </div>
+
+
+                <div class="cash-row">
+
+                    <div class="cash-label cash-out">
+                        Kas Keluar
+                    </div>
+
+                    <div class="cash-value cash-out">
+
+                        Rp {{ number_format(
+                            $totalKasKeluar,
+                            0,
+                            ',',
+                            '.'
+                        ) }}
+
+                    </div>
+
+                    <small>
+                        Dari retur uang
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <div class="cash-net">
+
+                <div class="cash-net-label">
+                    Arus Kas Bersih
+                </div>
+
+                <div class="cash-net-value">
+
+                    Rp {{ number_format(
+                        $arusKasBersih,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+
+                </div>
+
+                <small>
+                    Kas Masuk - Kas Keluar
+                </small>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    {{-- =====================================================
+         2 TABEL RINGKAS
+         ===================================================== --}}
+
+    <div class="finance-bottom-grid">
+
+
+        {{-- =================================================
+             TRANSAKSI KEUANGAN TERBARU
+             ================================================= --}}
+
+        <div class="finance-panel">
+
+            <div class="finance-panel-title">
+
+                <h2>
+                    Transaksi Keuangan Terbaru
+                </h2>
+
+                <a href="{{ route('admin.transaksi.retur') }}">
+                    Lihat semua →
+                </a>
+
+            </div>
+
+
+            <div style="overflow-x:auto;">
+
+                <table class="finance-table">
+
+                    <thead>
 
                         <tr>
 
-                            {{-- NO --}}
+                            <th>No</th>
 
-                            <td class="text-center">
+                            <th>Tanggal</th>
 
-                                {{ $index + 1 }}
+                            <th>Jenis</th>
 
-                            </td>
+                            <th>Referensi</th>
 
+                            <th>Keterangan</th>
 
-                            {{-- TANGGAL --}}
-
-                            <td>
-
-                                {{ \Carbon\Carbon::parse(
-                                    $cash->tanggal
-                                )->format('d/m/Y') }}
-
-                            </td>
-
-
-                            {{-- SUMBER --}}
-
-                            <td>
-
-                                {{ ucwords(
-                                    str_replace(
-                                        '_',
-                                        ' ',
-                                        $cash->sumber
-                                    )
-                                ) }}
-
-                            </td>
-
-
-                            {{-- REFERENSI --}}
-
-                            <td>
-
-                                {{ $cash->referensi ?? '-' }}
-
-                            </td>
-
-
-                            {{-- JENIS --}}
-
-                            <td>
-
-                                @if($cash->jenis === 'masuk')
-
-                                    <span class="cash-badge masuk">
-
-                                        Kas Masuk
-
-                                    </span>
-
-                                @else
-
-                                    <span class="cash-badge keluar">
-
-                                        Kas Keluar
-
-                                    </span>
-
-                                @endif
-
-                            </td>
-
-
-                            {{-- KETERANGAN --}}
-
-                            <td>
-
-                                {{ $cash->keterangan ?? '-' }}
-
-                            </td>
-
-
-                            {{-- NOMINAL --}}
-
-                            <td class="text-right">
-
-                                Rp {{ number_format(
-                                    $cash->nominal,
-                                    0,
-                                    ',',
-                                    '.'
-                                ) }}
-
-                            </td>
+                            <th class="text-right">
+                                Nominal
+                            </th>
 
                         </tr>
 
-                    @empty
+                    </thead>
+
+                    <tbody>
+
+                        @forelse($cashTransactions->take(5) as $index => $transaction)
+
+                            <tr>
+
+                                <td>
+                                    {{ $index + 1 }}
+                                </td>
+
+                                <td>
+                                    {{ $transaction->tanggal->format('d/m/Y') }}
+                                </td>
+
+                                <td>
+
+                                    @if($transaction->jenis === 'masuk')
+
+                                        <span class="finance-badge badge-exchange">
+                                            Tukar Barang
+                                        </span>
+
+                                    @else
+
+                                        <span class="finance-badge badge-return">
+                                            Retur Uang
+                                        </span>
+
+                                    @endif
+
+                                </td>
+
+                                <td>
+                                    {{ $transaction->referensi ?? '-' }}
+                                </td>
+
+                                <td>
+                                    {{ $transaction->keterangan ?? '-' }}
+                                </td>
+
+                                <td class="text-right
+                                    {{ $transaction->jenis === 'masuk'
+                                        ? 'amount-green'
+                                        : 'amount-red' }}"
+                                >
+
+                                    {{ $transaction->jenis === 'masuk'
+                                        ? 'Rp '
+                                        : '- Rp ' }}
+
+                                    {{ number_format(
+                                        $transaction->nominal,
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) }}
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="text-center"
+                                >
+                                    Belum ada transaksi kas.
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        {{-- =================================================
+             RINGKASAN PENJUALAN
+             ================================================= --}}
+
+        <div class="finance-panel">
+
+            <div class="finance-panel-title">
+
+                <h2>
+                    Ringkasan Penjualan
+                </h2>
+
+                <a href="{{ route('admin.transaksi.penjualan') }}">
+                    Lihat semua →
+                </a>
+
+            </div>
+
+
+            <div style="overflow-x:auto;">
+
+                <table class="finance-table">
+
+                    <thead>
 
                         <tr>
 
-                            <td
-                                colspan="7"
-                                class="no-data"
-                            >
+                            <th>No</th>
 
-                                Belum ada transaksi kas.
+                            <th>Tanggal</th>
 
-                            </td>
+                            <th>No Penjualan</th>
+
+                            <th>Kasir</th>
+
+                            <th>Penjualan</th>
+
+                            <th>Diskon</th>
+
+                            <th>HPP</th>
+
+                            <th>Laba</th>
 
                         </tr>
 
-                    @endforelse
+                    </thead>
 
-                </tbody>
+                    <tbody>
 
-            </table>
+                        @forelse($sales->take(5) as $index => $sale)
+
+                            @php
+
+                                $hpp = $sale->saleDetails->sum(function ($detail) {
+
+                                    return $detail->qty *
+                                           ($detail->product->harga_beli ?? 0);
+
+                                });
+
+                                $laba = $sale->total_bayar - $hpp;
+
+                            @endphp
+
+                            <tr>
+
+                                <td>
+                                    {{ $index + 1 }}
+                                </td>
+
+                                <td>
+                                    {{ \Carbon\Carbon::parse(
+                                        $sale->tanggal
+                                    )->format('d/m/Y') }}
+                                </td>
+
+                                <td>
+                                    {{ $sale->kode_penjualan }}
+                                </td>
+
+                                <td>
+                                    {{ $sale->user->name ?? '-' }}
+                                </td>
+
+                                <td>
+                                    Rp {{ number_format(
+                                        $sale->total_bayar,
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) }}
+                                </td>
+
+                                <td>
+                                    Rp {{ number_format(
+                                        $sale->diskon ?? 0,
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) }}
+                                </td>
+
+                                <td>
+                                    Rp {{ number_format(
+                                        $hpp,
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) }}
+                                </td>
+
+                                <td class="amount-green">
+
+                                    Rp {{ number_format(
+                                        $laba,
+                                        0,
+                                        ',',
+                                        '.'
+                                    ) }}
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="8"
+                                    class="text-center"
+                                >
+                                    Belum ada data penjualan.
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
     </div>
 
-    {{-- =========================
-         TABEL TRANSAKSI
-    ========================= --}}
 
-    <div class="table-wrapper">
+    {{-- =====================================================
+         INFORMASI
+         ===================================================== --}}
 
-        <table class="report-table">
+    <div class="finance-info">
 
-            <thead>
+        <div class="finance-info-icon">
+            i
+        </div>
 
-                <tr>
+        <div class="finance-info-text">
 
-                    <th class="text-center">
-                        No
-                    </th>
+            <strong>
+                Informasi Laporan
+            </strong>
 
-                    <th>
-                        Tanggal
-                    </th>
+            <br>
 
-                    <th>
-                        Kode Penjualan
-                    </th>
+            Laporan keuangan ini dihitung berdasarkan transaksi
+            penjualan, retur, dan pencatatan kas pada periode
+            yang dipilih. Kas masuk berasal dari selisih pembayaran
+            tukar barang, sedangkan kas keluar berasal dari retur uang.
 
-                    <th>
-                        Kasir
-                    </th>
-
-                    <th class="text-right">
-                        Penjualan
-                    </th>
-
-                    <th class="text-right">
-                        Diskon
-                    </th>
-
-                    <th class="text-right">
-                        HPP
-                    </th>
-
-                    <th class="text-right">
-                        Laba Kotor
-                    </th>
-
-                </tr>
-
-            </thead>
-
-
-            <tbody>
-
-                @forelse($sales as $index => $sale)
-
-                    @php
-
-                        $hpp = 0;
-
-                        foreach ($sale->saleDetails as $detail) {
-
-                            $hargaBeli =
-                                $detail->product->harga_beli ?? 0;
-
-                            $hpp +=
-                                $detail->qty * $hargaBeli;
-
-                        }
-
-                        $laba =
-                            $sale->total_bayar - $hpp;
-
-                    @endphp
-
-
-                    <tr>
-
-
-                        {{-- NO --}}
-
-                        <td class="text-center">
-
-                            {{ $index + 1 }}
-
-                        </td>
-
-
-                        {{-- TANGGAL --}}
-
-                        <td>
-
-                            {{ \Carbon\Carbon::parse(
-                                $sale->tanggal
-                            )->format('d/m/Y') }}
-
-                        </td>
-
-
-                        {{-- KODE --}}
-
-                        <td>
-
-                            {{ $sale->kode_penjualan }}
-
-                        </td>
-
-
-                        {{-- KASIR --}}
-
-                        <td>
-
-                            {{ $sale->user->name ?? '-' }}
-
-                        </td>
-
-
-                        {{-- PENJUALAN --}}
-
-                        <td class="text-right">
-
-                            Rp {{ number_format(
-                                $sale->total_bayar,
-                                0,
-                                ',',
-                                '.'
-                            ) }}
-
-                        </td>
-
-
-                        {{-- DISKON --}}
-
-                        <td class="text-right">
-
-                            Rp {{ number_format(
-                                $sale->diskon,
-                                0,
-                                ',',
-                                '.'
-                            ) }}
-
-                        </td>
-
-
-                        {{-- HPP --}}
-
-                        <td class="text-right">
-
-                            Rp {{ number_format(
-                                $hpp,
-                                0,
-                                ',',
-                                '.'
-                            ) }}
-
-                        </td>
-
-
-                        {{-- LABA --}}
-
-                        <td class="text-right profit">
-
-                            Rp {{ number_format(
-                                $laba,
-                                0,
-                                ',',
-                                '.'
-                            ) }}
-
-                        </td>
-
-
-                    </tr>
-
-
-                @empty
-
-                    <tr>
-
-                        <td
-                            colspan="8"
-                            class="no-data"
-                        >
-
-                            Belum ada data penjualan.
-
-                        </td>
-
-                    </tr>
-
-                @endforelse
-
-            </tbody>
-
-        </table>
+        </div>
 
     </div>
-
 
 </div>
 
@@ -1261,7 +1558,7 @@ document.addEventListener(
 
         updatePdfUrl();
 
-    }
+    };
 
 );
 

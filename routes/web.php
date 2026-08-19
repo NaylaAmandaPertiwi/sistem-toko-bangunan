@@ -284,6 +284,11 @@ Route::middleware('auth')->group(function () {
                 [\App\Http\Controllers\Admin\TransactionController::class, 'show']
             )->name('transaksi.penjualan.show');
 
+            Route::delete(
+                '/transaksi/penjualan/{sale}',
+                [\App\Http\Controllers\Admin\TransactionController::class, 'destroy']
+            )->name('transaksi.penjualan.destroy');
+
             Route::get(
                 '/transaksi/penjualan/{sale}/print',
                 [\App\Http\Controllers\Admin\TransactionController::class, 'print']
@@ -309,6 +314,11 @@ Route::middleware('auth')->group(function () {
                 '/transaksi/retur/{returnSale}',
                 [\App\Http\Controllers\Admin\TransactionController::class, 'showReturn']
             )->name('transaksi.retur.show');
+
+            Route::delete(
+                '/transaksi/retur/{returnSale}', 
+                [\App\Http\Controllers\Admin\TransactionController::class,'destroyReturn']
+            )->name('transaksi.retur.destroy');
 
             Route::get(
                 '/transaksi/retur/{returnSale}/print',

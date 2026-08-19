@@ -352,6 +352,42 @@
 
 }
 
+/* TOMBOL HAPUS */
+
+.btn-delete{
+
+    background:#ef4444;
+
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:8px 14px;
+
+    font-size:13px;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+    margin-left:6px;
+
+}
+
+.btn-delete:hover{
+
+    background:#dc2626;
+
+}
+
+.btn-delete i{
+
+    margin-right:6px;
+
+}
+
 /* ==========================================================
    DATE MODAL
 ========================================================== */
@@ -728,7 +764,7 @@
 
                         <th>Status</th>
 
-                        <th width="120">Aksi</th>
+                        <th width="220">Aksi</th>
 
                     </tr>
 
@@ -785,6 +821,28 @@
                                 Detail
 
                             </a>
+
+                            <form
+                                action="{{ route('admin.transaksi.penjualan.destroy', $sale) }}"
+                                method="POST"
+                                style="display:inline;"
+                                onsubmit="return confirm('Apakah Anda yakin ingin menghapus transaksi penjualan {{ $sale->kode_penjualan }}?');">
+
+                                @csrf
+
+                                @method('DELETE')
+
+                                <button
+                                    type="submit"
+                                    class="btn-delete">
+
+                                    <i class="fa-solid fa-trash"></i>
+
+                                    Hapus
+
+                                </button>
+
+                            </form>
 
                         </td>
 
@@ -921,6 +979,21 @@
 @section('scripts')
 
 <script>
+
+const dateButton =
+    document.getElementById("dateFilterButton");
+
+const dropdown =
+    document.getElementById("dateFilterDropdown");
+
+const customDate =
+    document.getElementById("customDate");
+
+const dateModal =
+    document.getElementById("dateModal");
+
+const closeDateModal =
+    document.getElementById("closeDateModal");
 
 const dateButton =
     document.getElementById("dateFilterButton");
@@ -1112,6 +1185,34 @@ function renderSaleRow(sale)
                     Detail
 
                 </a>
+
+                <form
+                    action="/admin/transaksi/penjualan/${sale.id}"
+                    method="POST"
+                    style="display:inline;"
+                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus transaksi penjualan ${sale.kode_penjualan}?');">
+
+                    <input
+                        type="hidden"
+                        name="_token"
+                        value="{{ csrf_token() }}">
+
+                    <input
+                        type="hidden"
+                        name="_method"
+                        value="DELETE">
+
+                    <button
+                        type="submit"
+                        class="btn-delete">
+
+                        <i class="fa-solid fa-trash"></i>
+
+                        Hapus
+
+                    </button>
+
+                </form>
 
             </td>
 

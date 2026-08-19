@@ -354,6 +354,22 @@
 
 }
 
+.btn-delete {
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: .2s;
+    margin-left: 6px;
+}
+
+.btn-delete:hover {
+    background: #dc2626;
+}
+
 /* ==========================================================
    DATE MODAL
 ========================================================== */
@@ -857,6 +873,7 @@
                             {{-- Aksi --}}
                             <td>
 
+                                {{-- DETAIL --}}
                                 <a
                                     href="{{ route('admin.transaksi.retur.show', $return) }}"
                                     class="btn-detail">
@@ -866,6 +883,30 @@
                                     Detail
 
                                 </a>
+
+
+                                {{-- HAPUS --}}
+                                <form
+                                    action="{{ route('admin.transaksi.retur.destroy', $return) }}"
+                                    method="POST"
+                                    style="display:inline;"
+                                    onsubmit="return confirm('Apakah Anda yakin ingin menghapus retur {{ $return->kode_retur }}?');">
+
+                                    @csrf
+
+                                    @method('DELETE')
+
+                                    <button
+                                        type="submit"
+                                        class="btn-delete">
+
+                                        <i class="fa-solid fa-trash"></i>
+
+                                        Hapus
+
+                                    </button>
+
+                                </form>
 
                             </td>
 

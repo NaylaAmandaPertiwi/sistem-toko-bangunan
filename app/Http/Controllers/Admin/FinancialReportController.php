@@ -4,13 +4,23 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
 use App\Models\Sale;
+use App\Models\ReturnSale;
 use App\Models\CashTransaction;
+
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\FinancialReportExport;
 use Maatwebsite\Excel\Facades\Excel;
+
 class FinancialReportController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | LAPORAN KEUANGAN
+    |--------------------------------------------------------------------------
+    */
+
     public function index(Request $request)
     {
         /*
@@ -30,7 +40,7 @@ class FinancialReportController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $query = Sale::with([
+        $salesQuery = Sale::with([
             'user',
             'saleDetails.product'
         ]);
@@ -38,13 +48,13 @@ class FinancialReportController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | FILTER TANGGAL MULAI
+        | FILTER TANGGAL PENJUALAN
         |--------------------------------------------------------------------------
         */
 
         if ($tanggalMulai) {
 
-            $query->whereDate(
+            $salesQuery->whereDate(
                 'tanggal',
                 '>=',
                 $tanggalMulai
@@ -52,16 +62,9 @@ class FinancialReportController extends Controller
 
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TANGGAL AKHIR
-        |--------------------------------------------------------------------------
-        */
-
         if ($tanggalAkhir) {
 
-            $query->whereDate(
+            $salesQuery->whereDate(
                 'tanggal',
                 '<=',
                 $tanggalAkhir
@@ -76,11 +79,61 @@ class FinancialReportController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $sales = $query
-
+        $sales = $salesQuery
             ->orderByDesc('tanggal')
-
             ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | QUERY RETUR
+        |--------------------------------------------------------------------------
+        */
+
+        $returnsQuery = ReturnSale::with([
+            'user',
+            'sale',
+            'details.product'
+        ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER TANGGAL RETUR
+        |--------------------------------------------------------------------------
+        */
+
+        if ($tanggalMulai) {
+
+            $returnsQuery->whereDate(
+                'tanggal',
+                '>=',
+                $tanggalMulai
+            );
+
+        }
+
+        if ($tanggalAkhir) {
+
+            $returnsQuery->whereDate(
+                'tanggal',
+                '<=',
+                $tanggalAkhir
+            );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA RETUR
+        |--------------------------------------------------------------------------
+        */
+
+        $returns = $returnsQuery
+            ->orderByDesc('tanggal')
+            ->get();
+
 
         /*
         |--------------------------------------------------------------------------
@@ -88,12 +141,14 @@ class FinancialReportController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $cashQuery = CashTransaction::with('returnSale');
+        $cashQuery = CashTransaction::with(
+            'returnSale'
+        );
 
 
         /*
         |--------------------------------------------------------------------------
-        | FILTER TANGGAL KAS MULAI
+        | FILTER TANGGAL KAS
         |--------------------------------------------------------------------------
         */
 
@@ -106,13 +161,6 @@ class FinancialReportController extends Controller
             );
 
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TANGGAL KAS AKHIR
-        |--------------------------------------------------------------------------
-        */
 
         if ($tanggalAkhir) {
 
@@ -138,8 +186,171 @@ class FinancialReportController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | TOTAL KAS MASUK
+        | ==============================================================
+        | RINGKASAN PENJUALAN
+        | ==============================================================
         |--------------------------------------------------------------------------
+        */
+
+        /*
+        | PENJUALAN BRUTO
+        |
+        | Diambil dari subtotal sebelum diskon.
+        */
+
+        $totalPenjualanBruto = $sales->sum(
+            'subtotal'
+        );
+
+
+        /*
+        | TOTAL DISKON
+        */
+
+        $totalDiskon = $sales->sum(
+            'diskon'
+        );
+
+
+        /*
+        | PENJUALAN BERSIH
+        |
+        | subtotal - diskon
+        */
+
+        $totalPenjualanBersih =
+            $totalPenjualanBruto
+            -
+            $totalDiskon;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL HPP
+        |--------------------------------------------------------------------------
+        */
+
+        $totalHpp = 0;
+
+
+        foreach ($sales as $sale) {
+
+            foreach ($sale->saleDetails as $detail) {
+
+                $hargaBeli =
+                    $detail->product->harga_beli ?? 0;
+
+                $totalHpp +=
+                    $detail->qty
+                    *
+                    $hargaBeli;
+
+            }
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LABA KOTOR PENJUALAN
+        |--------------------------------------------------------------------------
+        */
+
+        $labaKotor =
+            $totalPenjualanBersih
+            -
+            $totalHpp;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ==============================================================
+        | RINGKASAN RETUR
+        | ==============================================================
+        |--------------------------------------------------------------------------
+        */
+
+        /*
+        | TOTAL SELURUH RETUR
+        */
+
+        $totalRetur = $returns->sum(
+            'total_retur'
+        );
+
+
+        /*
+        | TOTAL RETUR UANG
+        */
+
+        $totalReturUang = $returns
+            ->where('return_type', 'uang')
+            ->sum('total_retur');
+
+
+        /*
+        | TOTAL TUKAR BARANG
+        |
+        | Nilai barang yang dikembalikan.
+        */
+
+        $totalTukarBarang = $returns
+            ->where('return_type', 'tukar')
+            ->sum('total_retur');
+
+
+        /*
+        | TOTAL NILAI BARANG PENGGANTI
+        */
+
+        $totalNilaiPengganti = $returns
+            ->where('return_type', 'tukar')
+            ->sum('total_pengganti');
+
+
+        /*
+        | TOTAL SELISIH PEMBAYARAN
+        */
+
+        $totalSelisihPembayaran = $returns
+            ->where('return_type', 'tukar')
+            ->sum('selisih_bayar');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PENJUALAN SETELAH RETUR
+        |--------------------------------------------------------------------------
+        */
+
+        $penjualanSetelahRetur =
+            $totalPenjualanBersih
+            -
+            $totalRetur;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LABA SETELAH RETUR
+        |--------------------------------------------------------------------------
+        */
+
+        $labaSetelahRetur =
+            $penjualanSetelahRetur
+            -
+            $totalHpp;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ==============================================================
+        | ARUS KAS
+        | ==============================================================
+        |--------------------------------------------------------------------------
+        */
+
+        /*
+        | TOTAL KAS MASUK
         */
 
         $totalKasMasuk = $cashTransactions
@@ -148,9 +359,7 @@ class FinancialReportController extends Controller
 
 
         /*
-        |--------------------------------------------------------------------------
         | TOTAL KAS KELUAR
-        |--------------------------------------------------------------------------
         */
 
         $totalKasKeluar = $cashTransactions
@@ -159,255 +368,97 @@ class FinancialReportController extends Controller
 
 
         /*
-        |--------------------------------------------------------------------------
         | ARUS KAS BERSIH
-        |--------------------------------------------------------------------------
         */
 
         $arusKasBersih =
-            $totalKasMasuk - $totalKasKeluar;
+            $totalKasMasuk
+            -
+            $totalKasKeluar;
 
 
         /*
         |--------------------------------------------------------------------------
-        | TOTAL PENJUALAN
-        |--------------------------------------------------------------------------
-        */
-
-        $totalPenjualan = $sales->sum(
-            'total_bayar'
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL DISKON
-        |--------------------------------------------------------------------------
-        */
-
-        $totalDiskon = $sales->sum(
-            'diskon'
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL HPP
-        |--------------------------------------------------------------------------
-        */
-
-        $totalHpp = 0;
-
-
-        foreach ($sales as $sale) {
-
-            foreach ($sale->saleDetails as $detail) {
-
-                $hargaBeli =
-                    $detail->product->harga_beli ?? 0;
-
-                $totalHpp +=
-                    $detail->qty * $hargaBeli;
-
-            }
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | LABA KOTOR
-        |--------------------------------------------------------------------------
-        */
-
-        $labaKotor =
-            $totalPenjualan - $totalHpp;
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | VIEW
+        | ==============================================================
+        | DATA VIEW
+        | ==============================================================
         |--------------------------------------------------------------------------
         */
 
         return view(
             'admin.laporan.keuangan',
             compact(
-                'sales',
+
+                /*
+                | FILTER
+                */
+
                 'tanggalMulai',
                 'tanggalAkhir',
-                'totalPenjualan',
+
+
+                /*
+                | PENJUALAN
+                */
+
+                'sales',
+
+                'totalPenjualanBruto',
+
                 'totalDiskon',
+
+                'totalPenjualanBersih',
+
                 'totalHpp',
+
                 'labaKotor',
+
+                'penjualanSetelahRetur',
+
+                'labaSetelahRetur',
+
+
+                /*
+                | RETUR
+                */
+
+                'returns',
+
+                'totalRetur',
+
+                'totalReturUang',
+
+                'totalTukarBarang',
+
+                'totalNilaiPengganti',
+
+                'totalSelisihPembayaran',
+
+
+                /*
+                | KAS
+                */
+
                 'cashTransactions',
+
                 'totalKasMasuk',
+
                 'totalKasKeluar',
+
                 'arusKasBersih'
+
             )
         );
     }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | CETAK PDF
+    |--------------------------------------------------------------------------
+    */
 
     public function pdf(Request $request)
-    {
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TANGGAL
-        |--------------------------------------------------------------------------
-        */
-
-        $tanggalMulai = $request->tanggal_mulai;
-
-        $tanggalAkhir = $request->tanggal_akhir;
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | QUERY PENJUALAN
-        |--------------------------------------------------------------------------
-        */
-
-        $query = Sale::with([
-            'user',
-            'saleDetails.product'
-        ]);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TANGGAL MULAI
-        |--------------------------------------------------------------------------
-        */
-
-        if ($tanggalMulai) {
-
-            $query->whereDate(
-                'tanggal',
-                '>=',
-                $tanggalMulai
-            );
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TANGGAL AKHIR
-        |--------------------------------------------------------------------------
-        */
-
-        if ($tanggalAkhir) {
-
-            $query->whereDate(
-                'tanggal',
-                '<=',
-                $tanggalAkhir
-            );
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | DATA PENJUALAN
-        |--------------------------------------------------------------------------
-        */
-
-        $sales = $query
-
-            ->orderByDesc('tanggal')
-
-            ->get();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL PENJUALAN
-        |--------------------------------------------------------------------------
-        */
-
-        $totalPenjualan = $sales->sum(
-            'total_bayar'
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL DISKON
-        |--------------------------------------------------------------------------
-        */
-
-        $totalDiskon = $sales->sum(
-            'diskon'
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | TOTAL HPP
-        |--------------------------------------------------------------------------
-        */
-
-        $totalHpp = 0;
-
-
-        foreach ($sales as $sale) {
-
-            foreach ($sale->saleDetails as $detail) {
-
-                $hargaBeli =
-                    $detail->product->harga_beli ?? 0;
-
-                $totalHpp +=
-                    $detail->qty * $hargaBeli;
-
-            }
-
-        }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | LABA KOTOR
-        |--------------------------------------------------------------------------
-        */
-
-        $labaKotor =
-            $totalPenjualan - $totalHpp;
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | GENERATE PDF
-        |--------------------------------------------------------------------------
-        */
-
-        $pdf = Pdf::loadView(
-            'admin.laporan.pdf.keuangan',
-            compact(
-                'sales',
-                'tanggalMulai',
-                'tanggalAkhir',
-                'totalPenjualan',
-                'totalDiskon',
-                'totalHpp',
-                'labaKotor'
-            )
-        );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | DOWNLOAD PDF
-        |--------------------------------------------------------------------------
-        */
-
-        return $pdf->download(
-            'laporan-keuangan.pdf'
-        );
-    }
-
-    public function excel(Request $request)
     {
         /*
         |--------------------------------------------------------------------------
@@ -434,12 +485,6 @@ class FinancialReportController extends Controller
         ]);
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TANGGAL MULAI
-        |--------------------------------------------------------------------------
-        */
-
         if ($tanggalMulai) {
 
             $query->whereDate(
@@ -449,13 +494,6 @@ class FinancialReportController extends Controller
             );
 
         }
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TANGGAL AKHIR
-        |--------------------------------------------------------------------------
-        */
 
         if ($tanggalAkhir) {
 
@@ -467,12 +505,6 @@ class FinancialReportController extends Controller
 
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | DATA PENJUALAN
-        |--------------------------------------------------------------------------
-        */
 
         $sales = $query
             ->orderByDesc('tanggal')
@@ -516,7 +548,9 @@ class FinancialReportController extends Controller
                     $detail->product->harga_beli ?? 0;
 
                 $totalHpp +=
-                    $detail->qty * $hargaBeli;
+                    $detail->qty
+                    *
+                    $hargaBeli;
 
             }
 
@@ -530,7 +564,152 @@ class FinancialReportController extends Controller
         */
 
         $labaKotor =
-            $totalPenjualan - $totalHpp;
+            $totalPenjualan
+            -
+            $totalHpp;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GENERATE PDF
+        |--------------------------------------------------------------------------
+        */
+
+        $pdf = Pdf::loadView(
+            'admin.laporan.pdf.keuangan',
+            compact(
+                'sales',
+                'tanggalMulai',
+                'tanggalAkhir',
+                'totalPenjualan',
+                'totalDiskon',
+                'totalHpp',
+                'labaKotor'
+            )
+        );
+
+
+        return $pdf->download(
+            'laporan-keuangan.pdf'
+        );
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | EXPORT EXCEL
+    |--------------------------------------------------------------------------
+    */
+
+    public function excel(Request $request)
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER TANGGAL
+        |--------------------------------------------------------------------------
+        */
+
+        $tanggalMulai =
+            $request->tanggal_mulai;
+
+        $tanggalAkhir =
+            $request->tanggal_akhir;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | QUERY PENJUALAN
+        |--------------------------------------------------------------------------
+        */
+
+        $query = Sale::with([
+            'user',
+            'saleDetails.product'
+        ]);
+
+
+        if ($tanggalMulai) {
+
+            $query->whereDate(
+                'tanggal',
+                '>=',
+                $tanggalMulai
+            );
+
+        }
+
+        if ($tanggalAkhir) {
+
+            $query->whereDate(
+                'tanggal',
+                '<=',
+                $tanggalAkhir
+            );
+
+        }
+
+
+        $sales = $query
+            ->orderByDesc('tanggal')
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL PENJUALAN
+        |--------------------------------------------------------------------------
+        */
+
+        $totalPenjualan =
+            $sales->sum('total_bayar');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL DISKON
+        |--------------------------------------------------------------------------
+        */
+
+        $totalDiskon =
+            $sales->sum('diskon');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | TOTAL HPP
+        |--------------------------------------------------------------------------
+        */
+
+        $totalHpp = 0;
+
+
+        foreach ($sales as $sale) {
+
+            foreach ($sale->saleDetails as $detail) {
+
+                $hargaBeli =
+                    $detail->product->harga_beli ?? 0;
+
+                $totalHpp +=
+                    $detail->qty
+                    *
+                    $hargaBeli;
+
+            }
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LABA KOTOR
+        |--------------------------------------------------------------------------
+        */
+
+        $labaKotor =
+            $totalPenjualan
+            -
+            $totalHpp;
 
 
         /*
@@ -555,6 +734,4 @@ class FinancialReportController extends Controller
 
         );
     }
-
-
 }
