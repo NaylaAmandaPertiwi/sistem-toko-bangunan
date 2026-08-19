@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 use App\Models\Product;
 use App\Models\StockOpname;
 use App\Models\StockOpnameDetail;
@@ -98,57 +100,71 @@ class StockOpnameController extends Controller
         ]);
 
         foreach($request->products as $item)
-        {
-            $selisih =
-                $item['stok_fisik']
-                -
-                $item['stok_sistem'];
+    {
+        $selisih =
+            $item['stok_fisik']
+            -
+            $item['stok_sistem'];
 
-            StockOpnameDetail::create([
+        StockOpnameDetail::create([
 
-                'stock_opname_id'
-                    => $opname->id,
+            'stock_opname_id'
+                => $opname->id,
 
-                'product_id'
-                    => $item['product_id'],
+            'product_id'
+                => $item['product_id'],
 
-                'stok_sistem'
-                    => $item['stok_sistem'],
+            'stok_sistem'
+                => $item['stok_sistem'],
 
-                'stok_fisik'
-                    => $item['stok_fisik'],
+            'stok_fisik'
+                => $item['stok_fisik'],
 
-                'selisih'
-                    => $selisih
-            ]);
+            'selisih'
+                => $selisih
+        ]);
 
-            Product::where(
-                'id',
-                $item['product_id']
-            )->update([
 
-                'stok'
-                    => $item['stok_fisik']
-            ]);
+        Product::where(
+            'id',
+            $item['product_id']
+        )->update([
 
-            StockMovement::create([
+            'stok'
+                => $item['stok_fisik']
 
-                'product_id' => $item['product_id'],
+        ]);
 
-                'tanggal' => now(),
 
-                'jenis' => 'Opname',
+        StockMovement::create([
 
-                'qty' => $selisih,
+            'stock_opname_id'
+                => $opname->id,
 
-                'stok_awal' => $item['stok_sistem'],
+            'product_id'
+                => $item['product_id'],
 
-                'stok_akhir' => $item['stok_fisik'],
+            'tanggal'
+                => $request->tanggal_opname,
 
-                'keterangan' => 'Stok Opname'
+            'jenis'
+                => 'Opname',
 
-            ]);
-        }
+            'qty'
+                => $selisih,
+
+            'stok_awal'
+                => $item['stok_sistem'],
+
+            'stok_akhir'
+                => $item['stok_fisik'],
+
+            'keterangan'
+                => 'Stok Opname ' .
+                $nomorOpname
+
+        ]);
+    }
 
         return redirect()
             ->route('admin.stok-opname.index');
@@ -169,26 +185,208 @@ class StockOpnameController extends Controller
 
     public function bulkDelete(Request $request)
     {
-        $ids = explode(
-            ',',
-            $request->ids
+        /*
+        |--------------------------------------------------------------------------
+        | 1. Ambil ID Stock Opname yang dipilih
+        |--------------------------------------------------------------------------
+        */
+
+        $ids = array_filter(
+            explode(',', $request->ids)
         );
 
-        // hapus detail opname dulu
-        StockOpnameDetail::whereIn(
-            'stock_opname_id',
-            $ids
-        )->delete();
 
-        // lalu hapus header opname
-        StockOpname::whereIn(
-            'id',
-            $ids
-        )->delete();
+        /*
+        |--------------------------------------------------------------------------
+        | 2. Pastikan ada data yang dipilih
+        |--------------------------------------------------------------------------
+        */
 
-        return response()->json([
-            'success' => true
-        ]);
+        if (empty($ids)) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak ada data stok opname yang dipilih.'
+            ]);
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 3. Mulai database transaction
+        |--------------------------------------------------------------------------
+        */
+
+        DB::beginTransaction();
+
+
+        try {
+
+            /*
+            |--------------------------------------------------------------------------
+            | 4. Ambil semua detail Stock Opname
+            |--------------------------------------------------------------------------
+            |
+            | Kita harus mengambil detail TERLEBIH DAHULU
+            | sebelum data detail dihapus.
+            |
+            */
+
+            $details = StockOpnameDetail::whereIn(
+                'stock_opname_id',
+                $ids
+            )->get();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 5. Kembalikan stok setiap produk
+            |--------------------------------------------------------------------------
+            */
+
+            foreach ($details as $detail) {
+
+                $product = Product::find(
+                    $detail->product_id
+                );
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Pastikan produk masih tersedia
+                |--------------------------------------------------------------------------
+                */
+
+                if (!$product) {
+
+                    throw new \Exception(
+                        'Produk pada stok opname tidak ditemukan.'
+                    );
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Hitung stok setelah Stock Opname dibatalkan
+                |--------------------------------------------------------------------------
+                |
+                | Contoh:
+                |
+                | Stok sekarang = 31
+                | Selisih opname = +1
+                |
+                | 31 - 1 = 30
+                |
+                |
+                | Contoh selisih negatif:
+                |
+                | Stok sekarang = 251
+                | Selisih opname = -3
+                |
+                | 251 - (-3) = 254
+                |
+                */
+
+                $stokSebelumOpname =
+                    $product->stok
+                    -
+                    $detail->selisih;
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Simpan kembali stok produk
+                |--------------------------------------------------------------------------
+                */
+
+                $product->update([
+                    'stok' => $stokSebelumOpname
+                ]);
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 6. Hapus Stock Movement milik Stock Opname
+            |--------------------------------------------------------------------------
+            |
+            | Karena sekarang Stock Movement sudah mempunyai
+            | stock_opname_id, kita tidak lagi mencari berdasarkan
+            | keterangan.
+            |
+            */
+
+            StockMovement::whereIn(
+                'stock_opname_id',
+                $ids
+            )->delete();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 7. Hapus detail Stock Opname
+            |--------------------------------------------------------------------------
+            */
+
+            StockOpnameDetail::whereIn(
+                'stock_opname_id',
+                $ids
+            )->delete();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 8. Hapus header Stock Opname
+            |--------------------------------------------------------------------------
+            */
+
+            StockOpname::whereIn(
+                'id',
+                $ids
+            )->delete();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 9. Simpan seluruh perubahan
+            |--------------------------------------------------------------------------
+            */
+
+            DB::commit();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 10. Berikan response berhasil
+            |--------------------------------------------------------------------------
+            */
+
+            return response()->json([
+                'success' => true,
+                'message' =>
+                    'Data stok opname berhasil dihapus, stok produk dikembalikan, dan pergerakan stok dibersihkan.'
+            ]);
+
+
+        } catch (\Exception $e) {
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 11. Batalkan seluruh perubahan jika terjadi error
+            |--------------------------------------------------------------------------
+            */
+
+            DB::rollBack();
+
+
+            return response()->json([
+                'success' => false,
+                'message' =>
+                    'Data stok opname gagal dihapus: ' .
+                    $e->getMessage()
+            ], 500);
+        }
     }
 
     public function updateStatus(

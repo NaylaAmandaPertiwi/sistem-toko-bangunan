@@ -6,12 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Product;
 use App\Models\StockIn;
+use App\Models\StockOpname;
 
 class StockMovement extends Model
 {
     protected $fillable = [
 
         'stock_in_id',
+
+        'stock_opname_id',
 
         'product_id',
 
@@ -40,6 +43,20 @@ class StockMovement extends Model
         return $this->belongsTo(
             StockIn::class,
             'stock_in_id'
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi ke Stock Opname
+    |--------------------------------------------------------------------------
+    */
+
+    public function stockOpname()
+    {
+        return $this->belongsTo(
+            StockOpname::class,
+            'stock_opname_id'
         );
     }
 

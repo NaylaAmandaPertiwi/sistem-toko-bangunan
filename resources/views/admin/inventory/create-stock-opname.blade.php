@@ -551,7 +551,7 @@
 
 @endsection
 
-@push('scripts')
+@section('scripts')
 
 <script>
 
@@ -882,4 +882,4 @@ function(){
 
 </script>
 
-@endpush
+@endsection
