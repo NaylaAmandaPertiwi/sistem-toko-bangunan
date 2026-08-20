@@ -995,20 +995,10 @@ const dateModal =
 const closeDateModal =
     document.getElementById("closeDateModal");
 
-const dateButton =
-    document.getElementById("dateFilterButton");
 
-const dropdown =
-    document.getElementById("dateFilterDropdown");
-
-const customDate =
-    document.getElementById("customDate");
-
-const dateModal =
-    document.getElementById("dateModal");
-
-const closeDateModal =
-    document.getElementById("closeDateModal");
+/* ==========================================================
+   DROPDOWN TANGGAL
+========================================================== */
 
 dateButton.addEventListener("click", function(e){
 
@@ -1018,11 +1008,23 @@ dateButton.addEventListener("click", function(e){
 
 });
 
-document.addEventListener("click", function(){
 
-    dropdown.classList.remove("show");
+/* Tutup dropdown jika klik di luar toolbar */
+
+document.addEventListener("click", function(e){
+
+    if (!e.target.closest(".toolbar")) {
+
+        dropdown.classList.remove("show");
+
+    }
 
 });
+
+
+/* ==========================================================
+   PILIH TANGGAL CUSTOM
+========================================================== */
 
 customDate.addEventListener("click", function(){
 
@@ -1032,11 +1034,17 @@ customDate.addEventListener("click", function(){
 
 });
 
+
+/* ==========================================================
+   TUTUP MODAL
+========================================================== */
+
 closeDateModal.addEventListener("click", function(){
 
     dateModal.classList.remove("show");
 
 });
+
 
 dateModal.addEventListener("click", function(e){
 
@@ -1048,25 +1056,42 @@ dateModal.addEventListener("click", function(e){
 
 });
 
+
+/* ==========================================================
+   PILIH FILTER TANGGAL
+========================================================== */
+
 const dateOptions =
     document.querySelectorAll(".date-option");
+
 
 dateOptions.forEach(function(option){
 
     option.addEventListener("click", function(){
 
-        const filter = this.dataset.filter;
+        const filter =
+            this.dataset.filter;
 
         if(!filter) return;
 
-        document.querySelector('input[name="filter"]').value = filter;
 
-        document.querySelector('input[name="tanggal"]').value = "";
+        document.querySelector(
+            'input[name="filter"]'
+        ).value = filter;
 
-        document.getElementById("selectedFilterText").innerText =
-            this.innerText;
+
+        document.querySelector(
+            'input[name="tanggal"]'
+        ).value = "";
+
+
+        document.getElementById(
+            "selectedFilterText"
+        ).innerText = this.innerText;
+
 
         dropdown.classList.remove("show");
+
 
         fetchData();
 
@@ -1074,13 +1099,22 @@ dateOptions.forEach(function(option){
 
 });
 
+
+/* ==========================================================
+   SIMPAN TANGGAL CUSTOM
+========================================================== */
+
 const saveDateFilter =
     document.getElementById("saveDateFilter");
+
 
 saveDateFilter.addEventListener("click", function(){
 
     const tanggal =
-        document.getElementById("selectedDateInput").value;
+        document.getElementById(
+            "selectedDateInput"
+        ).value;
+
 
     if(!tanggal){
 
@@ -1090,13 +1124,24 @@ saveDateFilter.addEventListener("click", function(){
 
     }
 
-    document.querySelector('input[name="filter"]').value = "custom";
 
-    document.querySelector('input[name="tanggal"]').value = tanggal;
+    document.querySelector(
+        'input[name="filter"]'
+    ).value = "custom";
 
-    document.getElementById("selectedFilterText").innerText = tanggal;
+
+    document.querySelector(
+        'input[name="tanggal"]'
+    ).value = tanggal;
+
+
+    document.getElementById(
+        "selectedFilterText"
+    ).innerText = tanggal;
+
 
     dateModal.classList.remove("show");
+
 
     fetchData();
 
