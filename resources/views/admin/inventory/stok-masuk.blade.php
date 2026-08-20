@@ -605,18 +605,6 @@ table td{
 
         </div>
 
-        <div class="filter-bottom">
-
-            <select class="filter-box">
-
-                <option>10 Baris</option>
-                <option>25 Baris</option>
-                <option>50 Baris</option>
-
-            </select>
-
-        </div>
-
     </div>
 
     <form id="bulkDeleteForm"
