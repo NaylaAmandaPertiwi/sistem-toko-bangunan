@@ -11,9 +11,23 @@ class SupplierController extends Controller
     // ==========================
     // DAFTAR SUPPLIER
     // ==========================
-    public function index()
+    public function index(Request $request)
     {
-        $suppliers = Supplier::latest()->get();
+        $query = Supplier::query();
+
+        if ($request->filled('search')) {
+
+            $query->where(
+                'nama_supplier',
+                'like',
+                '%' . $request->search . '%'
+            );
+
+        }
+
+        $suppliers = $query
+            ->latest()
+            ->get();
 
         return view(
             'admin.supplier.index',

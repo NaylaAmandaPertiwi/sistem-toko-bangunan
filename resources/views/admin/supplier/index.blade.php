@@ -1,102 +1,145 @@
 @extends('layouts.admin')
 
-@section('title','Supplier')
+@section('title', 'Supplier')
 
 @section('content')
 
 <style>
 
-.page-card{
-    background:white;
-    border-radius:15px;
-    overflow:hidden;
-    box-shadow:0 2px 10px rgba(0,0,0,.08);
-}
+/* ==========================================================
+   HEADER
+========================================================== */
 
 .page-header{
+    background:white;
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* ==========================================================
+   TOP HEADER
+========================================================== */
+
+.top-header{
+    background:#1684e0;
+    color:white;
+    padding:18px 25px;
+    font-size:28px;
+    font-weight:600;
+}
+
+/* ==========================================================
+   FILTER / TOOLBAR
+========================================================== */
+
+.filter-section{
     padding:25px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    border-bottom:1px solid #eee;
+    gap:15px;
+    flex-wrap:wrap;
 }
 
-.page-header h2{
-    font-size:28px;
+.supplier-info{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
 }
 
-.btn-add{
-    background:#57c13b;
-    color:white;
-    padding:12px 20px;
-    border-radius:10px;
-    text-decoration:none;
+.supplier-info h2{
+    margin:0;
+    font-size:20px;
+    font-weight:700;
+    color:#222;
 }
 
-.btn-excel{
-    background:#fff;
-    border:1px solid #ddd;
-    color:#1684e0;
-    padding:12px 20px;
-    border-radius:10px;
-    text-decoration:none;
-}
-
-.btn-excel:hover{
-    background:#f5f7fb;
-}
-
-/* STATUS */
-.badge-active{
-    background:#d1fae5;
-    color:#065f46;
-    padding:6px 12px;
-    border-radius:20px;
-    font-size:12px;
-    font-weight:600;
-}
-
-.badge-inactive{
-    background:#fee2e2;
-    color:#991b1b;
-    padding:6px 12px;
-    border-radius:20px;
-    font-size:12px;
-    font-weight:600;
-}
-
-/* AKSI */
-.action-btn{
-    text-decoration:none;
-    font-size:16px;
-    margin-right:10px;
-}
-
-.edit-btn{
-    color:#1684e0;
-}
-
-.edit-btn:hover{
-    color:#0d6efd;
-}
-
-.delete-btn{
-    background:none;
-    border:none;
-    cursor:pointer;
-    color:#dc3545;
-    font-size:16px;
-    padding:0;
-}
-
-.delete-btn:hover{
-    color:#bb2d3b;
-}
-
-.empty-state{
-    text-align:center;
-    padding:80px 20px;
+.supplier-info span{
     color:#999;
+    font-size:15px;
+}
+
+/* ==========================================================
+   SEARCH + TAMBAH
+========================================================== */
+
+.supplier-toolbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.search-box{
+    width:280px;
+    height:46px;
+    padding:0 15px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    font-size:14px;
+    outline:none;
+    box-sizing:border-box;
+}
+
+.search-box:focus{
+    border-color:#1684e0;
+}
+
+/* ==========================================================
+   BUTTON TAMBAH
+========================================================== */
+
+.add-btn{
+    background:#1684e0;
+    color:white;
+    text-decoration:none;
+    border:none;
+    padding:12px 22px;
+    height:46px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:15px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.add-btn:hover{
+    background:#0f73c7;
+    color:white;
+}
+
+/* ==========================================================
+   BUTTON
+========================================================== */
+
+.add-btn{
+    background:#4CAF50;
+    color:white;
+    text-decoration:none;
+    border:none;
+    padding:12px 18px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:15px;
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.add-btn:hover{
+    background:#43a047;
+    color:white;
+}
+
+/* ==========================================================
+   TABLE
+========================================================== */
+
+.table-section{
+    padding:25px;
 }
 
 table{
@@ -105,8 +148,10 @@ table{
 }
 
 table th{
-    background:#f5f7fb;
+    background:#f3f5fa;
     padding:15px;
+    text-align:left;
+    font-weight:700;
 }
 
 table td{
@@ -114,114 +159,206 @@ table td{
     border-bottom:1px solid #eee;
 }
 
+.no-data{
+    text-align:center;
+    padding:40px;
+    color:#999;
+}
+
+/* ==========================================================
+   STATUS
+========================================================== */
+
+.status-active{
+    background:#d1fae5;
+    color:#065f46;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.status-inactive{
+    background:#fee2e2;
+    color:#991b1b;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+/* ==========================================================
+   ACTION
+========================================================== */
+
+.action-btn{
+    border:none;
+    background:none;
+    cursor:pointer;
+    margin-right:10px;
+    font-size:16px;
+    text-decoration:none;
+}
+
+.edit-btn{
+    color:#1684e0;
+}
+
+.delete-btn{
+    color:#dc3545;
+}
+
 </style>
 
-    <div class="page-card">
 
-        <div class="page-header">
+<div class="page-header">
 
-            <div>
+    {{-- =====================================================
+         HEADER BIRU
+    ====================================================== --}}
 
-                <h2>Supplier</h2>
+    <div class="top-header">
 
-                <small>
-                    {{ $suppliers->count() }} Supplier
-                </small>
-
-            </div>
-
-            <div style="display:flex; gap:10px;">
-
-        <a href="{{ route('admin.supplier.export') }}"
-        class="btn-excel">
-
-            <i class="fa-solid fa-file-excel"></i>
-            Download Excel
-
-        </a>
-
-        <a href="{{ route('admin.supplier.create') }}"
-        class="btn-add">
-
-            <i class="fa-solid fa-plus"></i>
-            Tambah
-
-        </a>
+        Supplier
 
     </div>
 
-    </div>
 
-    @if($suppliers->count()==0)
+    {{-- =====================================================
+         FILTER / INFORMASI
+    ====================================================== --}}
 
-        <div class="empty-state">
+    <div class="filter-section">
 
-            <h2>Tidak ada data</h2>
+        {{-- INFORMASI SUPPLIER --}}
+        <div class="supplier-info">
 
-            <p>
-                Belum ada supplier yang ditambahkan
-            </p>
+            <h2>
+                Daftar Supplier
+            </h2>
+
+            <span>
+                {{ $suppliers->count() }} Supplier
+            </span>
 
         </div>
 
-    @else
 
-        <table>
+        {{-- SEARCH + TAMBAH --}}
+        <div class="supplier-toolbar">
+
+            <form
+                method="GET"
+                action="{{ route('admin.supplier.index') }}">
+
+                <input
+                    type="text"
+                    id="searchSupplier"
+                    name="search"
+                    class="search-box"
+                    placeholder="Cari Supplier"
+                    value="{{ request('search') }}"
+                    autocomplete="off">
+
+            </form>
+
+
+            <a
+                href="{{ route('admin.supplier.create') }}"
+                class="add-btn">
+
+                Tambah
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    {{-- =====================================================
+         TABLE
+    ====================================================== --}}
+
+    <div class="table-section">
+
+        <table id="supplierTable">
 
             <thead>
+
                 <tr>
-                    <th>Nama Supplier</th>
-                    <th>Kontak</th>
-                    <th>Telepon</th>
-                    <th>Kota</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
+
+                    <th>
+                        Nama Supplier
+                    </th>
+
+                    <th>
+                        Kontak
+                    </th>
+
+                    <th>
+                        Telepon
+                    </th>
+
+                    <th>
+                        Kota
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Aksi
+                    </th>
+
                 </tr>
-                </thead>
 
-                <tbody>
+            </thead>
 
-                @foreach($suppliers as $supplier)
 
-                <tr>
+            <tbody>
 
-                    <td>{{ $supplier->nama_supplier }}</td>
+                @forelse($suppliers as $supplier)
 
-                    <td>{{ $supplier->kontak_person }}</td>
+                <tr class="supplier-row">
 
-                    <td>{{ $supplier->telepon }}</td>
+                    <td class="supplier-name">
+                        {{ $supplier->nama_supplier }}
+                    </td>
 
-                    <td>{{ $supplier->kota }}</td>
+                    <td>
+                        {{ $supplier->kontak_person }}
+                    </td>
+
+                    <td>
+                        {{ $supplier->telepon }}
+                    </td>
+
+                    <td>
+                        {{ $supplier->kota }}
+                    </td>
 
                     <td>
 
-                    @if($supplier->status == 'Aktif')
-
-                        <span class="badge-active">
-                            Aktif
+                        <span class="{{ $supplier->status == 'Aktif' ? 'status-active' : 'status-inactive' }}">
+                            {{ $supplier->status }}
                         </span>
-
-                    @else
-
-                        <span class="badge-inactive">
-                            Nonaktif
-                        </span>
-
-                    @endif
 
                     </td>
 
                     <td>
 
-                        <a href="{{ route('admin.supplier.edit',$supplier->id) }}"
-                        class="action-btn edit-btn">
+                        <a
+                            href="{{ route('admin.supplier.edit', $supplier->id) }}"
+                            class="action-btn edit-btn">
 
                             <i class="fa-solid fa-pen"></i>
 
                         </a>
 
                         <form
-                            action="{{ route('admin.supplier.destroy',$supplier->id) }}"
+                            action="{{ route('admin.supplier.destroy', $supplier->id) }}"
                             method="POST"
                             style="display:inline;">
 
@@ -230,7 +367,7 @@ table td{
 
                             <button
                                 type="submit"
-                                class="delete-btn"
+                                class="action-btn delete-btn"
                                 onclick="return confirm('Hapus supplier ini?')">
 
                                 <i class="fa-solid fa-trash"></i>
@@ -243,14 +380,95 @@ table td{
 
                 </tr>
 
-                @endforeach
+                @empty
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="no-data">
+
+                            Belum ada supplier
+
+                        </td>
+
+                    </tr>
+
+                @endforelse
+
+                <tr id="noSearchResult" style="display:none;">
+
+                    <td colspan="6" class="no-data">
+
+                        Supplier tidak ditemukan.
+
+                    </td>
+
+                </tr>
 
             </tbody>
 
         </table>
 
-    @endif
+    </div>
 
 </div>
+
+@endsection
+
+@section('scripts')
+
+<script>
+
+const searchSupplier =
+    document.getElementById('searchSupplier');
+
+const supplierRows =
+    document.querySelectorAll('.supplier-row');
+
+const noSearchResult =
+    document.getElementById('noSearchResult');
+
+searchSupplier.addEventListener('input', function () {
+
+    const keyword =
+        this.value.toLowerCase().trim();
+
+    let found = 0;
+
+    supplierRows.forEach(function (row) {
+
+        const supplierName =
+            row.querySelector('.supplier-name')
+               .textContent
+               .toLowerCase();
+
+        if (supplierName.includes(keyword)) {
+
+            row.style.display = '';
+
+            found++;
+
+        } else {
+
+            row.style.display = 'none';
+
+        }
+
+    });
+
+    if (found === 0 && keyword !== '') {
+
+        noSearchResult.style.display = '';
+
+    } else {
+
+        noSearchResult.style.display = 'none';
+
+    }
+
+});
+
+</script>
 
 @endsection
