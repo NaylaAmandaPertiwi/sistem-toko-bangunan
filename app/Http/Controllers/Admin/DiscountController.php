@@ -8,8 +8,19 @@ use App\Models\Discount;
 
 class DiscountController extends Controller
 {
+    /**
+     * Menampilkan daftar diskon
+     */
     public function index(Request $request)
     {
+        $today = now()->toDateString();
+
+        Discount::where('status', 'Aktif')
+            ->whereDate('tanggal_berakhir', '<', $today)
+            ->update([
+                'status' => 'Nonaktif'
+            ]);
+
         $discounts = Discount::query();
 
         if($request->filled('search'))
@@ -41,21 +52,60 @@ class DiscountController extends Controller
         );
     }
 
+
+    /**
+     * Menampilkan form tambah diskon
+     */
     public function create()
     {
         return view('admin.discount.create');
     }
 
+
+    /**
+     * Menyimpan diskon baru
+     */
     public function store(Request $request)
     {
         $request->validate([
 
-            'nama_diskon' => 'required',
-            'minimal_belanja' => 'required|numeric',
-            'persentase_diskon' => 'required|numeric',
-            'status' => 'required'
+            'nama_diskon' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+
+            'minimal_belanja' => [
+                'required',
+                'numeric',
+                'min:0'
+            ],
+
+            'persentase_diskon' => [
+                'required',
+                'numeric',
+                'min:1',
+                'max:100'
+            ],
+
+            'tanggal_mulai' => [
+                'required',
+                'date'
+            ],
+
+            'tanggal_berakhir' => [
+                'required',
+                'date',
+                'after_or_equal:tanggal_mulai'
+            ],
+
+            'status' => [
+                'required',
+                'in:Aktif,Nonaktif'
+            ]
 
         ]);
+
 
         Discount::create([
 
@@ -68,10 +118,17 @@ class DiscountController extends Controller
             'persentase_diskon' =>
                 $request->persentase_diskon,
 
+            'tanggal_mulai' =>
+                $request->tanggal_mulai,
+
+            'tanggal_berakhir' =>
+                $request->tanggal_berakhir,
+
             'status' =>
                 $request->status
 
         ]);
+
 
         return redirect()
             ->route('admin.discount.index')
@@ -81,6 +138,10 @@ class DiscountController extends Controller
             );
     }
 
+
+    /**
+     * Menampilkan form edit diskon
+     */
     public function edit($id)
     {
         $diskon = Discount::findOrFail($id);
@@ -91,19 +152,88 @@ class DiscountController extends Controller
         );
     }
 
+
+    /**
+     * Memperbarui diskon
+     */
     public function update(
-    Request $request,
-    Discount $discount
+        Request $request,
+        Discount $discount
     )
     {
-        $discount->update([
+        $request->validate([
 
-            'nama_diskon' => $request->nama_diskon,
-            'minimal_belanja' => $request->minimal_belanja,
-            'persentase_diskon' => $request->persentase_diskon,
-            'status' => $request->status
+            'nama_diskon' => 'required|string|max:255',
+
+            'minimal_belanja' =>
+                'required|numeric|min:0',
+
+            'persentase_diskon' =>
+                'required|numeric|min:0|max:100',
+
+            'tanggal_mulai' =>
+                'required|date',
+
+            'tanggal_berakhir' =>
+                'required|date|after_or_equal:tanggal_mulai',
+
+            'status' =>
+                'required|in:Aktif,Nonaktif',
+
+        ], [
+
+            'nama_diskon.required' =>
+                'Nama diskon wajib diisi.',
+
+            'minimal_belanja.required' =>
+                'Minimal belanja wajib diisi.',
+
+            'minimal_belanja.numeric' =>
+                'Minimal belanja harus berupa angka.',
+
+            'persentase_diskon.required' =>
+                'Persentase diskon wajib diisi.',
+
+            'persentase_diskon.min' =>
+                'Persentase diskon tidak boleh kurang dari 0%.',
+
+            'persentase_diskon.max' =>
+                'Persentase diskon tidak boleh lebih dari 100%.',
+
+            'tanggal_mulai.required' =>
+                'Tanggal mulai wajib diisi.',
+
+            'tanggal_berakhir.required' =>
+                'Tanggal berakhir wajib diisi.',
+
+            'tanggal_berakhir.after_or_equal' =>
+                'Tanggal berakhir tidak boleh lebih kecil dari tanggal mulai.',
 
         ]);
+
+
+        $discount->update([
+
+            'nama_diskon' =>
+                $request->nama_diskon,
+
+            'minimal_belanja' =>
+                $request->minimal_belanja,
+
+            'persentase_diskon' =>
+                $request->persentase_diskon,
+
+            'tanggal_mulai' =>
+                $request->tanggal_mulai,
+
+            'tanggal_berakhir' =>
+                $request->tanggal_berakhir,
+
+            'status' =>
+                $request->status,
+
+        ]);
+
 
         return redirect()
             ->route('admin.discount.index')
@@ -113,12 +243,18 @@ class DiscountController extends Controller
             );
     }
 
-    public function destroy(
-    Discount $diskon
-    )
+    /**
+     * Menghapus diskon
+     */
+    public function destroy(Discount $discount)
     {
-        $diskon->delete();
+        $discount->delete();
 
-        return back();
+        return redirect()
+            ->route('admin.discount.index')
+            ->with(
+                'success',
+                'Diskon berhasil dihapus.'
+            );
     }
 }

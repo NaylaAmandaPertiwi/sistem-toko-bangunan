@@ -80,15 +80,34 @@
 .edit-btn{
     color:#6a1b9a;
     text-decoration:none;
+    margin-right:12px;
+}
+
+.delete-btn{
+    color:#dc3545;
+    border:none;
+    background:none;
+    cursor:pointer;
+    font-size:16px;
+    padding:0;
 }
 
 </style>
 
+
 <div class="page-card">
 
+
+    {{-- HEADER --}}
+
     <div class="top-header">
+
         Diskon
+
     </div>
+
+
+    {{-- FILTER --}}
 
     <div class="filter-section">
 
@@ -106,6 +125,7 @@
 
         </form>
 
+
         <a
             href="{{ route('admin.discount.create') }}"
             class="add-btn">
@@ -116,6 +136,9 @@
 
     </div>
 
+
+    {{-- TABLE --}}
+
     <div class="table-section">
 
         <table class="discount-table">
@@ -124,77 +147,234 @@
 
                 <tr>
 
-                    <th>Nama Diskon</th>
-                    <th>Minimal Belanja</th>
-                    <th>Diskon (%)</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
+                    <th>
+                        Nama Diskon
+                    </th>
+
+                    <th>
+                        Minimal Belanja
+                    </th>
+
+                    <th>
+                        Diskon (%)
+                    </th>
+
+                    <th>
+                        Periode Diskon
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Aksi
+                    </th>
 
                 </tr>
 
             </thead>
 
+
             <tbody>
+
 
             @forelse($discounts as $discount)
 
+
+                @php
+
+                    $today =
+                        \Carbon\Carbon::today();
+
+
+                    $tanggalMulai =
+                        \Carbon\Carbon::parse(
+                            $discount->tanggal_mulai
+                        );
+
+
+                    $tanggalBerakhir =
+                        \Carbon\Carbon::parse(
+                            $discount->tanggal_berakhir
+                        );
+
+
+                    $periodeAktif =
+                        $today->greaterThanOrEqualTo(
+                            $tanggalMulai
+                        )
+                        &&
+                        $today->lessThanOrEqualTo(
+                            $tanggalBerakhir
+                        );
+
+
+                    $statusAktif =
+                        $discount->status === 'Aktif'
+                        &&
+                        $periodeAktif;
+
+                @endphp
+
+
                 <tr>
 
+
+                    {{-- NAMA --}}
+
                     <td>
+
                         {{ $discount->nama_diskon }}
+
                     </td>
 
-                    <td>
-                        Rp {{ number_format($discount->minimal_belanja,0,',','.') }}
-                    </td>
+
+                    {{-- MINIMAL BELANJA --}}
 
                     <td>
+
+                        Rp
+                        {{ number_format(
+                            $discount->minimal_belanja,
+                            0,
+                            ',',
+                            '.'
+                        ) }}
+
+                    </td>
+
+
+                    {{-- PERSENTASE --}}
+
+                    <td>
+
                         {{ $discount->persentase_diskon }}%
+
                     </td>
+
+
+                    {{-- PERIODE --}}
 
                     <td>
 
-                        @if($discount->status == 'Aktif')
+                        {{ $tanggalMulai->translatedFormat('d M Y') }}
+
+                        <span
+                            style="
+                                color:#777;
+                                margin:0 5px;
+                            ">
+
+                            -
+
+                        </span>
+
+                        {{ $tanggalBerakhir->translatedFormat('d M Y') }}
+
+                    </td>
+
+
+                    {{-- STATUS --}}
+
+                    <td>
+
+                        @if($statusAktif)
 
                             <span class="status-active">
+
                                 Aktif
+
                             </span>
 
                         @else
 
                             <span class="status-inactive">
+
                                 Nonaktif
+
                             </span>
 
                         @endif
 
                     </td>
 
+
+                    {{-- AKSI --}}
+
                     <td>
 
+
+                        {{-- EDIT --}}
+
                         <a
-                            href="{{ route('admin.discount.edit',$discount->id) }}"
+                            href="{{ route(
+                                'admin.discount.edit',
+                                $discount->id
+                            ) }}"
                             class="edit-btn">
 
-                            <i class="fa-solid fa-pen"></i>
+                            <i
+                                class="fa-solid fa-pen">
+                            </i>
 
                         </a>
 
+
+                        {{-- DELETE --}}
+
+                        <form
+                            action="{{ route(
+                                'admin.discount.destroy',
+                                $discount->id
+                            ) }}"
+                            method="POST"
+                            style="display:inline;">
+
+                            @csrf
+
+                            @method('DELETE')
+
+                            <button
+                                type="submit"
+                                class="delete-btn"
+                                onclick="return confirm(
+                                    'Apakah Anda yakin ingin menghapus diskon ini?'
+                                )">
+
+                                <i
+                                    class="fa-solid fa-trash">
+                                </i>
+
+                            </button>
+
+                        </form>
+
+
                     </td>
 
+
                 </tr>
+
 
             @empty
 
+
                 <tr>
 
-                    <td colspan="5">
+                    <td
+                        colspan="6"
+                        style="text-align:center;">
+
                         Belum ada data diskon
+
                     </td>
 
                 </tr>
 
+
             @endforelse
+
 
             </tbody>
 

@@ -11,6 +11,8 @@ class Discount extends Model
         'nama_diskon',
         'minimal_belanja',
         'persentase_diskon',
+        'tanggal_mulai',
+        'tanggal_berakhir',
         'status'
 
     ];

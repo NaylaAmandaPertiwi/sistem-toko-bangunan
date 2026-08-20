@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use Carbon\Carbon;
+
 use App\Models\Product;
 use App\Models\Discount;
 use App\Models\Sale;
@@ -29,16 +31,33 @@ class SaleController extends Controller
             ->orderBy('nama_produk')
             ->get();
 
+
+        $today = Carbon::today();
+
+
         $discounts = Discount::select(
                 'id',
                 'nama_diskon',
                 'minimal_belanja',
                 'persentase_diskon',
+                'tanggal_mulai',
+                'tanggal_berakhir',
                 'status'
             )
             ->where('status', 'Aktif')
+            ->whereDate(
+                'tanggal_mulai',
+                '<=',
+                $today
+            )
+            ->whereDate(
+                'tanggal_berakhir',
+                '>=',
+                $today
+            )
             ->orderByDesc('minimal_belanja')
             ->get();
+
 
         return view(
             'kasir.penjualan.index',

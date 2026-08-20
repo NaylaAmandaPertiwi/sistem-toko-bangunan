@@ -158,10 +158,42 @@
                 <input
                     type="number"
                     name="persentase_diskon"
-                    value="{{ $diskon->persentase_diskon }}"
-                    class="form-control">
+                    value="{{ old('persentase_diskon', $diskon->persentase_diskon) }}"
+                    class="form-control"
+                    min="0"
+                    max="100"
+                    required>
 
             </div>
+
+
+            <div class="form-group">
+
+                <label>Tanggal Mulai</label>
+
+                <input
+                    type="date"
+                    name="tanggal_mulai"
+                    value="{{ old('tanggal_mulai', $diskon->tanggal_mulai) }}"
+                    class="form-control"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Tanggal Berakhir</label>
+
+                <input
+                    type="date"
+                    name="tanggal_berakhir"
+                    value="{{ old('tanggal_berakhir', $diskon->tanggal_berakhir) }}"
+                    class="form-control"
+                    required>
+
+            </div>
+
 
             <div class="form-group">
 
@@ -190,11 +222,48 @@
                 </select>
 
             </div>
-
+            
         </form>
 
     </div>
 
 </div>
+
+@endsection
+
+@section('script')
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function(){
+
+    const tanggalMulai =
+        document.querySelector('[name="tanggal_mulai"]');
+
+    const tanggalBerakhir =
+        document.querySelector('[name="tanggal_berakhir"]');
+
+
+    if(tanggalMulai && tanggalBerakhir){
+
+        tanggalMulai.addEventListener('change', function(){
+
+            tanggalBerakhir.min = this.value;
+
+        });
+
+
+        if(tanggalMulai.value){
+
+            tanggalBerakhir.min =
+                tanggalMulai.value;
+
+        }
+
+    }
+
+});
+
+</script>
 
 @endsection

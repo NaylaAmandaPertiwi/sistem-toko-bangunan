@@ -126,6 +126,7 @@
                 Informasi Diskon
             </h3>
 
+
             <div class="form-group">
 
                 <label>Nama Diskon</label>
@@ -134,9 +135,12 @@
                     type="text"
                     name="nama_diskon"
                     class="form-control"
-                    placeholder="Contoh: Promo Reguler">
+                    placeholder="Contoh: Promo Reguler"
+                    value="{{ old('nama_diskon') }}"
+                    required>
 
             </div>
+
 
             <div class="form-group">
 
@@ -146,9 +150,13 @@
                     type="number"
                     name="minimal_belanja"
                     class="form-control"
-                    placeholder="2000000">
+                    placeholder="2000000"
+                    min="0"
+                    value="{{ old('minimal_belanja') }}"
+                    required>
 
             </div>
+
 
             <div class="form-group">
 
@@ -158,11 +166,43 @@
                     type="number"
                     name="persentase_diskon"
                     class="form-control"
-                    min="0"
+                    min="1"
                     max="100"
+                    value="{{ old('persentase_diskon') }}"
                     required>
 
             </div>
+
+
+            <div class="form-group">
+
+                <label>Tanggal Mulai</label>
+
+                <input
+                    type="date"
+                    name="tanggal_mulai"
+                    id="tanggal_mulai"
+                    class="form-control"
+                    value="{{ old('tanggal_mulai') }}"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Tanggal Berakhir</label>
+
+                <input
+                    type="date"
+                    name="tanggal_berakhir"
+                    id="tanggal_berakhir"
+                    class="form-control"
+                    value="{{ old('tanggal_berakhir') }}"
+                    required>
+
+            </div>
+
 
             <div class="form-group">
 
@@ -172,11 +212,13 @@
                     name="status"
                     class="form-control">
 
-                    <option value="Aktif">
+                    <option value="Aktif"
+                        {{ old('status') == 'Aktif' ? 'selected' : '' }}>
                         Aktif
                     </option>
 
-                    <option value="Nonaktif">
+                    <option value="Nonaktif"
+                        {{ old('status') == 'Nonaktif' ? 'selected' : '' }}>
                         Nonaktif
                     </option>
 
@@ -189,5 +231,59 @@
     </div>
 
 </div>
+
+@endsection
+
+@section('scripts')
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const tanggalMulai =
+        document.getElementById('tanggal_mulai');
+
+    const tanggalBerakhir =
+        document.getElementById('tanggal_berakhir');
+
+
+    tanggalMulai.addEventListener('change', function () {
+
+        tanggalBerakhir.min = this.value;
+
+        if (
+            tanggalBerakhir.value &&
+            tanggalBerakhir.value < this.value
+        ) {
+            tanggalBerakhir.value = '';
+        }
+
+    });
+
+
+    document
+        .getElementById('discountForm')
+        .addEventListener('submit', function (event) {
+
+            if (
+                tanggalMulai.value &&
+                tanggalBerakhir.value &&
+                tanggalBerakhir.value < tanggalMulai.value
+            ) {
+
+                event.preventDefault();
+
+                showToast(
+                    'Tanggal berakhir tidak boleh sebelum tanggal mulai.',
+                    'warning'
+                );
+
+            }
+
+        });
+
+});
+
+</script>
 
 @endsection
