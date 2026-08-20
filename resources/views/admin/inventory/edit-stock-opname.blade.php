@@ -6,16 +6,12 @@
 
 <style>
 
-.opname-edit-card{
+.page-card{
     width:100%;
-    max-width:100%;
-    margin:0;
-    background:#fff;
+    background:white;
     border-radius:15px;
     overflow:hidden;
     box-shadow:0 2px 10px rgba(0,0,0,.08);
-    color:#222;
-    box-sizing:border-box;
 }
 
 .page-header{
@@ -745,7 +741,7 @@
 
 </div>
 
-
+@endsection
 
 @section('scripts')
 

@@ -84,6 +84,55 @@
     margin-bottom:20px;
 }
 
+.category-search{
+    position:relative;
+}
+
+.category-results{
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    background:white;
+    border:1px solid #ddd;
+    border-radius:8px;
+    margin-top:5px;
+    max-height:220px;
+    overflow-y:auto;
+    display:none;
+    z-index:1000;
+    box-shadow:0 4px 10px rgba(0,0,0,.08);
+}
+
+.category-option{
+    padding:12px 14px;
+    cursor:pointer;
+}
+
+.category-option:hover{
+    background:#f3f5fa;
+}
+
+.price-input{
+    position:relative;
+    width:100%;
+}
+
+.price-prefix{
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#555;
+    font-weight:500;
+    z-index:2;
+    pointer-events:none;
+}
+
+.price-field{
+    padding-left:42px !important;
+}
+
 </style>
 
 <div class="page-card">
@@ -139,22 +188,36 @@
 
                         <label>Kategori</label>
 
-                        <select
-                            name="category_id"
-                            class="form-control">
+                        <div class="category-search">
 
-                            @foreach($categories as $category)
+                            <input type="text"
+                                id="categorySearch"
+                                class="form-control"
+                                placeholder="Cari kategori..."
+                                autocomplete="off">
 
-                                <option
-                                    value="{{ $category->id }}">
+                            <input type="hidden"
+                                name="category_id"
+                                id="categoryId">
 
-                                    {{ $category->nama_kategori }}
+                            <div id="categoryResults"
+                                class="category-results">
 
-                                </option>
+                                @foreach($categories as $category)
 
-                            @endforeach
+                                    <div class="category-option"
+                                        data-id="{{ $category->id }}"
+                                        data-name="{{ strtolower($category->nama_kategori) }}">
 
-                        </select>
+                                        {{ $category->nama_kategori }}
+
+                                    </div>
+
+                                @endforeach
+
+                            </div>
+
+                        </div>
 
                     </div>
 
@@ -217,7 +280,7 @@
                         <input
                             type="number"
                             name="stok_minimum"
-                            value="{{ $produk->stok_minimum ?? 10 }}"
+                            value="10"
                             class="form-control">
 
                     </div>
@@ -238,10 +301,22 @@
 
                         <label>Harga Beli</label>
 
-                        <input
-                            type="number"
-                            name="harga_beli"
-                            class="form-control">
+                        <div class="price-input">
+
+                            <span class="price-prefix">Rp.</span>
+
+                            <input type="text"
+                                id="harga_beli_display"
+                                class="form-control price-field"
+                                placeholder="0"
+                                autocomplete="off"
+                                inputmode="numeric">
+
+                            <input type="hidden"
+                                name="harga_beli"
+                                id="harga_beli">
+
+                        </div>
 
                     </div>
 
@@ -249,10 +324,22 @@
 
                         <label>Harga Jual</label>
 
-                        <input
-                            type="number"
-                            name="harga_jual"
-                            class="form-control">
+                        <div class="price-input">
+
+                            <span class="price-prefix">Rp.</span>
+
+                            <input type="text"
+                                id="harga_jual_display"
+                                class="form-control price-field"
+                                placeholder="0"
+                                autocomplete="off"
+                                inputmode="numeric">
+
+                            <input type="hidden"
+                                name="harga_jual"
+                                id="harga_jual">
+
+                        </div>
 
                     </div>
 
@@ -285,5 +372,153 @@
     </div>
 
 </div>
+
+@endsection
+
+@section('scripts')
+
+<script>
+
+function formatRupiah(value)
+{
+    let angka = value.replace(/\D/g, '');
+
+    if (angka === '') {
+        return '';
+    }
+
+    return angka.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+
+const hargaBeliDisplay = document.getElementById('harga_beli_display');
+const hargaBeli = document.getElementById('harga_beli');
+
+const hargaJualDisplay = document.getElementById('harga_jual_display');
+const hargaJual = document.getElementById('harga_jual');
+
+
+hargaBeliDisplay.addEventListener('input', function(){
+
+    let angka = this.value.replace(/\D/g, '');
+
+    this.value = formatRupiah(angka);
+
+    hargaBeli.value = angka;
+
+});
+
+
+hargaJualDisplay.addEventListener('input', function(){
+
+    let angka = this.value.replace(/\D/g, '');
+
+    this.value = formatRupiah(angka);
+
+    hargaJual.value = angka;
+
+});
+
+document.querySelector('form').addEventListener('submit', function(){
+
+    document.querySelectorAll('.price-field').forEach(function(input){
+
+        input.value = input.value.replace(/\./g, '');
+
+    });
+
+});
+
+const categorySearch = document.getElementById('categorySearch');
+const categoryId = document.getElementById('categoryId');
+const categoryResults = document.getElementById('categoryResults');
+
+const categoryOptions = document.querySelectorAll('.category-option');
+
+
+categorySearch.addEventListener('focus', function(){
+
+    categoryResults.style.display = 'block';
+
+});
+
+
+categorySearch.addEventListener('input', function(){
+
+    const keyword = this.value.toLowerCase().trim();
+
+    let found = false;
+
+    categoryOptions.forEach(function(option){
+
+        const name = option.dataset.name;
+
+        if(name.includes(keyword)){
+
+            option.style.display = 'block';
+
+            found = true;
+
+        }else{
+
+            option.style.display = 'none';
+
+        }
+
+    });
+
+    categoryResults.style.display = 'block';
+
+});
+
+
+categoryOptions.forEach(function(option){
+
+    option.addEventListener('click', function(){
+
+        categorySearch.value = this.textContent.trim();
+
+        categoryId.value = this.dataset.id;
+
+        categoryResults.style.display = 'none';
+
+    });
+
+});
+
+
+document.addEventListener('click', function(event){
+
+    if(!event.target.closest('.category-search')){
+
+        categoryResults.style.display = 'none';
+
+    }
+
+});
+
+document.querySelector('form').addEventListener('submit', function(event){
+
+    if(!categoryId.value){
+
+        event.preventDefault();
+
+        alert('Silakan pilih kategori terlebih dahulu.');
+
+        categorySearch.focus();
+
+        return;
+
+    }
+
+    document.querySelectorAll('.price-field').forEach(function(input){
+
+        input.value = input.value.replace(/\./g, '');
+
+    });
+
+});
+
+</script>
 
 @endsection

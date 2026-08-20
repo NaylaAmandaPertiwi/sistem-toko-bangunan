@@ -27,6 +27,7 @@ class SaleController extends Controller
                 'stok',
                 'barcode'
             )
+            ->where('status', 'Aktif')
             ->where('stok', '>', 0)
             ->orderBy('nama_produk')
             ->get();
@@ -70,22 +71,27 @@ class SaleController extends Controller
 
     public function searchProduct(Request $request)
     {
-        $products = Product::where(
-                'nama_produk',
-                'like',
-                '%' . $request->keyword . '%'
-            )
-            ->orWhere(
-                'barcode',
-                'like',
-                '%' . $request->keyword . '%'
-            )
+        $products = Product::where(function ($query) use ($request) {
+
+                $query->where(
+                    'nama_produk',
+                    'like',
+                    '%' . $request->keyword . '%'
+                )
+                ->orWhere(
+                    'barcode',
+                    'like',
+                    '%' . $request->keyword . '%'
+                );
+
+            })
             ->where('status', 'Aktif')
+            ->where('stok', '>', 0)
+            ->orderBy('nama_produk')
             ->get();
 
         return response()->json($products);
     }
-
     public function store(Request $request)
     {
         $request->validate([
@@ -123,11 +129,30 @@ class SaleController extends Controller
 
             foreach ($request->items as $item) {
 
+                $product = Product::where('id', $item['id'])
+                    ->where('status', 'Aktif')
+                    ->where('stok', '>', 0)
+                    ->first();
+
+                if (!$product) {
+
+                    throw new \Exception(
+                        'Produk tidak tersedia atau sudah Nonaktif.'
+                    );
+                }
+
+                if ($product->stok < $item['qty']) {
+
+                    throw new \Exception(
+                        "Stok {$product->nama_produk} tidak mencukupi."
+                    );
+                }
+
                 SaleDetail::create([
 
                     'sale_id'    => $sale->id,
 
-                    'product_id' => $item['id'],
+                    'product_id' => $product->id,
 
                     'qty'        => $item['qty'],
 
@@ -136,16 +161,6 @@ class SaleController extends Controller
                     'subtotal'   => $item['qty'] * $item['harga']
 
                 ]);
-
-                $product = Product::findOrFail($item['id']);
-
-                if ($product->stok < $item['qty']) {
-
-                    throw new \Exception(
-                        "Stok {$product->nama_produk} tidak mencukupi."
-                    );
-
-                }
 
                 $stokAwal = $product->stok;
 
@@ -174,7 +189,6 @@ class SaleController extends Controller
                     'keterangan' => 'Penjualan ' . $sale->kode_penjualan
 
                 ]);
-
             }
 
             DB::commit();

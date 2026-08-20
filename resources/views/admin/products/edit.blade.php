@@ -84,6 +84,55 @@
     margin-bottom:20px;
 }
 
+/* ============================= */
+/* SEARCHABLE CATEGORY */
+/* ============================= */
+
+.category-select{
+    position:relative;
+}
+
+.category-dropdown{
+    display:none;
+    position:absolute;
+    top:100%;
+    left:0;
+    right:0;
+    background:white;
+    border:1px solid #ddd;
+    border-radius:8px;
+    margin-top:5px;
+    max-height:220px;
+    overflow-y:auto;
+    z-index:1000;
+    box-shadow:0 4px 12px rgba(0,0,0,.12);
+}
+
+.category-option{
+    padding:12px 15px;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.category-option:hover{
+    background:#f1f5f9;
+}
+
+.category-option.active{
+    background:#1684e0;
+    color:white;
+}
+
+
+/* ============================= */
+/* HARGA */
+/* ============================= */
+
+#hargaBeliDisplay,
+#hargaJualDisplay{
+    font-family:inherit;
+}
+
 </style>
 
 <div class="page-card">
@@ -140,22 +189,39 @@
 
                         <label>Kategori</label>
 
-                        <select
-                            name="category_id"
-                            class="form-control">
+                        <div class="category-select">
 
-                            @foreach($categories as $category)
+                            <input type="text"
+                                id="categorySearch"
+                                class="form-control"
+                                placeholder="Cari kategori..."
+                                value="{{ $produk->category->nama_kategori ?? '' }}"
+                                autocomplete="off"
+                                required>
 
-                                <option
-                                    value="{{ $category->id }}"
-                                    {{ $produk->category_id == $category->id ? 'selected' : '' }}>
-                                    {{ $category->nama_kategori }}
+                            <input type="hidden"
+                                name="category_id"
+                                id="categoryId"
+                                value="{{ $produk->category_id }}">
 
-                                </option>
+                            <div class="category-dropdown"
+                                id="categoryDropdown">
 
-                            @endforeach
+                                @foreach($categories as $category)
 
-                        </select>
+                                    <div class="category-option"
+                                        data-id="{{ $category->id }}"
+                                        data-name="{{ $category->nama_kategori }}">
+
+                                        {{ $category->nama_kategori }}
+
+                                    </div>
+
+                                @endforeach
+
+                            </div>
+
+                        </div>
 
                     </div>
 
@@ -243,11 +309,18 @@
 
                         <label>Harga Beli</label>
 
-                        <input
-                            type="number"
+                        <input type="text"
+                            id="hargaBeliDisplay"
+                            class="form-control"
+                            value="Rp. {{ number_format($produk->harga_beli, 0, ',', '.') }}"
+                            inputmode="numeric"
+                            autocomplete="off"
+                            required>
+
+                        <input type="hidden"
                             name="harga_beli"
-                            value="{{ $produk->harga_beli }}"
-                            class="form-control">
+                            id="hargaBeli"
+                            value="{{ (int) $produk->harga_beli }}">
 
                     </div>
 
@@ -255,11 +328,18 @@
 
                         <label>Harga Jual</label>
 
-                        <input
-                            type="number"
+                        <input type="text"
+                            id="hargaJualDisplay"
+                            class="form-control"
+                            value="Rp. {{ number_format($produk->harga_jual, 0, ',', '.') }}"
+                            inputmode="numeric"
+                            autocomplete="off"
+                            required>
+
+                        <input type="hidden"
                             name="harga_jual"
-                            value="{{ $produk->harga_jual }}"
-                            class="form-control">
+                            id="hargaJual"
+                            value="{{ (int) $produk->harga_jual }}">
 
                     </div>
 
@@ -294,5 +374,247 @@
     </div>
 
 </div>
+
+@endsection
+
+@section('scripts')
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    /* =====================================
+       SEARCHABLE KATEGORI
+    ===================================== */
+
+    const categorySearch =
+        document.getElementById('categorySearch');
+
+    const categoryId =
+        document.getElementById('categoryId');
+
+    const categoryDropdown =
+        document.getElementById('categoryDropdown');
+
+    const categoryOptions =
+        document.querySelectorAll('.category-option');
+
+
+    // Tampilkan dropdown ketika input diklik
+    categorySearch.addEventListener('focus', function () {
+
+        categoryDropdown.style.display = 'block';
+
+        filterCategories();
+
+    });
+
+
+    // Live search kategori
+    categorySearch.addEventListener('input', function () {
+
+        categoryId.value = '';
+
+        categoryDropdown.style.display = 'block';
+
+        filterCategories();
+
+    });
+
+
+    function filterCategories() {
+
+        const keyword =
+            categorySearch.value.toLowerCase().trim();
+
+        let found = false;
+
+        categoryOptions.forEach(function (option) {
+
+            const name =
+                option.dataset.name.toLowerCase();
+
+            if (name.includes(keyword)) {
+
+                option.style.display = 'block';
+
+                found = true;
+
+            } else {
+
+                option.style.display = 'none';
+
+            }
+
+        });
+
+        categoryDropdown.style.display =
+            found ? 'block' : 'none';
+
+    }
+
+
+    // Pilih kategori
+    categoryOptions.forEach(function (option) {
+
+        option.addEventListener('click', function () {
+
+            categorySearch.value =
+                this.dataset.name;
+
+            categoryId.value =
+                this.dataset.id;
+
+            categoryDropdown.style.display =
+                'none';
+
+        });
+
+    });
+
+
+    // Klik di luar dropdown
+    document.addEventListener('click', function (event) {
+
+        if (!event.target.closest('.category-select')) {
+
+            categoryDropdown.style.display =
+                'none';
+
+        }
+
+    });
+
+
+    /* =====================================
+       FORMAT HARGA
+    ===================================== */
+
+    function setupPriceInput(displayId, hiddenId) {
+
+        const display =
+            document.getElementById(displayId);
+
+        const hidden =
+            document.getElementById(hiddenId);
+
+
+        display.addEventListener('input', function () {
+
+            // Ambil hanya angka
+            let numbers =
+                this.value.replace(/\D/g, '');
+
+
+            // Kalau kosong
+            if (numbers === '') {
+
+                this.value = '';
+
+                hidden.value = '';
+
+                return;
+
+            }
+
+
+            // Simpan angka murni ke hidden input
+            hidden.value = numbers;
+
+
+            // Format menjadi Rp. 25.000
+            this.value =
+                'Rp. ' +
+                Number(numbers).toLocaleString('id-ID');
+
+        });
+
+
+        // Saat halaman pertama kali dibuka
+        if (hidden.value !== '') {
+
+            display.value =
+                'Rp. ' +
+                Number(hidden.value)
+                    .toLocaleString('id-ID');
+
+        }
+
+    }
+
+
+    setupPriceInput(
+        'hargaBeliDisplay',
+        'hargaBeli'
+    );
+
+
+    setupPriceInput(
+        'hargaJualDisplay',
+        'hargaJual'
+    );
+
+
+    /* =====================================
+       VALIDASI FORM
+    ===================================== */
+
+    const form =
+        document.querySelector('form');
+
+    if (form) {
+
+        form.addEventListener('submit', function (event) {
+
+            // Pastikan kategori sudah dipilih
+            if (!categoryId.value) {
+
+                event.preventDefault();
+
+                alert('Silakan pilih kategori produk.');
+
+                categorySearch.focus();
+
+                return;
+
+            }
+
+            // Pastikan harga beli berupa angka
+            if (
+                !/^\d+$/.test(
+                    document.getElementById('hargaBeli').value
+                )
+            ) {
+
+                event.preventDefault();
+
+                alert('Harga beli hanya boleh berisi angka.');
+
+                return;
+
+            }
+
+            // Pastikan harga jual berupa angka
+            if (
+                !/^\d+$/.test(
+                    document.getElementById('hargaJual').value
+                )
+            ) {
+
+                event.preventDefault();
+
+                alert('Harga jual hanya boleh berisi angka.');
+
+                return;
+
+            }
+
+        });
+
+    }
+
+});
+
+</script>
 
 @endsection
