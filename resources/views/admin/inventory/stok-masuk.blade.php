@@ -54,37 +54,229 @@
 .toolbar{
     display:flex;
     align-items:center;
-    gap:10px;
+    gap:15px;
+}
+
+.date-filter-wrapper{
+    position:relative;
+}
+
+.filter-form{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.search-box{
+    width:260px;
+    height:46px;
+    padding:0 15px;
+    border:1px solid #ddd;
+    border-radius:10px;
+    box-sizing:border-box;
+    outline:none;
+    font-size:14px;
+}
+
+.search-box:focus{
+    border-color:#1684e0;
 }
 
 .filter-bottom{
     width:100%;
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    margin-top:18px;
 }
 
-.date-range{
+.filter-right{
+    width:100%;
     display:flex;
-    align-items:center;
-    gap:15px;
+    justify-content:flex-end;
+}
 
-    padding:14px 18px;
+.date-filter-btn{
+
+    min-width:230px;
+
+    height:46px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 16px;
+
+    background:#fff;
 
     border:1px solid #ddd;
-    border-radius:10px;
 
-    background:white;
+    border-radius:10px;
 
     cursor:pointer;
 
-    border:none;
-    outline:none;
+    font-size:14px;
 
     color:#333;
 
+}
+
+.date-filter-btn:hover{
+    border-color:#1684e0;
+}
+
+.date-filter-dropdown{
+
+    position:absolute;
+
+    top:54px;
+
+    left:0;
+
+    width:230px;
+
+    background:#fff;
+
+    border:1px solid #ddd;
+
+    border-radius:10px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+    display:none;
+
+    overflow:hidden;
+
+    z-index:1000;
+
+}
+
+.date-filter-dropdown.show{
+    display:block;
+}
+
+.date-option{
+
+    width:100%;
+
+    border:none;
+
+    background:white;
+
+    text-align:left;
+
+    padding:12px 16px;
+
+    cursor:pointer;
+
     font-size:14px;
+
+    color:#333;
+
+}
+
+.date-option:hover{
+    background:#f4f6fb;
+}
+
+.date-option hr{
+    margin:0;
+}
+
+.date-modal-overlay{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.35);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
+
+}
+
+.date-modal-overlay.show{
+    display:flex;
+}
+
+.date-modal{
+
+    width:400px;
+
+    background:white;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    box-shadow:0 12px 30px rgba(0,0,0,.15);
+
+}
+
+.date-modal-header{
+
+    padding:18px 20px;
+
+    border-bottom:1px solid #eee;
+
+    font-weight:600;
+
+}
+
+.date-modal-body{
+    padding:20px;
+}
+
+.date-modal-footer{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:10px;
+
+    padding:18px 20px;
+
+    border-top:1px solid #eee;
+
+}
+
+.btn-cancel-modal{
+
+    border:none;
+
+    background:#eee;
+
+    color:#333;
+
+    padding:10px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+.btn-confirm{
+
+    border:none;
+
+    background:#1684e0;
+
+    color:white;
+
+    padding:10px 18px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
 }
 
 .date-text{
@@ -93,15 +285,6 @@
     gap:10px;
 
     font-weight:600;
-}
-
-.search-box{
-    width:260px;
-
-    padding:12px 15px;
-
-    border:1px solid #ddd;
-    border-radius:10px;
 }
 
 .btn-primary{
@@ -124,10 +307,20 @@
     border-radius:10px;
     cursor:pointer;
     color:white;
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
 }
 
 .btn-primary{
     background:#1684e0;
+    text-decoration:none;
+}
+
+.btn-primary:hover{
+    background:#1478ca;
+    text-decoration:none;
 }
 
 /* TABLE */
@@ -231,39 +424,179 @@ table td{
 
                 <h2>Daftar Stok Masuk</h2>
 
-                <span>{{ $stockIns->count() }} Stok Masuk</span>
+                <span>
+                    {{ $stockIns->count() }} Stok Masuk
+                </span>
 
             </div>
 
             <div class="toolbar">
 
-                <button
-                    type="button"
-                    id="dateRangePicker"
-                    class="date-range">
+                {{-- DROPDOWN PERIODE --}}
 
-                    <i class="fa-solid fa-chevron-left"></i>
+                <div class="date-filter-wrapper">
 
-                    <div class="date-text">
+                    <button
+                        type="button"
+                        class="date-filter-btn"
+                        id="dateFilterButton">
 
                         <i class="fa-regular fa-calendar"></i>
 
-                        <span id="selectedDate">
-                            02 Jun 26 - 02 Jun 26
+                        <span id="selectedFilterText">
+
+                            @switch(request('filter'))
+
+                                @case('today')
+
+                                    Hari Ini
+
+                                    @break
+
+                                @case('yesterday')
+
+                                    Kemarin
+
+                                    @break
+
+                                @case('week')
+
+                                    7 Hari Terakhir
+
+                                    @break
+
+                                @case('month')
+
+                                    Bulan Ini
+
+                                    @break
+
+                                @case('custom')
+
+                                    {{ request('tanggal') ?: 'Pilih Tanggal' }}
+
+                                    @break
+
+                                @default
+
+                                    Semua Tanggal
+
+                            @endswitch
+
                         </span>
 
-                        <i class="fa-solid fa-caret-down"></i>
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </button>
+
+
+                    <div
+                        class="date-filter-dropdown"
+                        id="dateFilterDropdown">
+
+                        <button
+                            type="button"
+                            class="date-option"
+                            data-filter="all">
+
+                            Semua Tanggal
+
+                        </button>
+
+                        <button
+                            type="button"
+                            class="date-option"
+                            data-filter="today">
+
+                            Hari Ini
+
+                        </button>
+
+                        <button
+                            type="button"
+                            class="date-option"
+                            data-filter="yesterday">
+
+                            Kemarin
+
+                        </button>
+
+                        <button
+                            type="button"
+                            class="date-option"
+                            data-filter="week">
+
+                            7 Hari Terakhir
+
+                        </button>
+
+                        <button
+                            type="button"
+                            class="date-option"
+                            data-filter="month">
+
+                            Bulan Ini
+
+                        </button>
+
+                        <hr style="
+                            margin:0;
+                            border:0;
+                            border-top:1px solid #eee;
+                        ">
+
+                        <button
+                            type="button"
+                            class="date-option"
+                            id="customDate">
+
+                            Pilih Tanggal...
+
+                        </button>
 
                     </div>
 
-                    <i class="fa-solid fa-chevron-right"></i>
+                </div>
 
-                </button>
 
-                <a href="{{ route('admin.stok-masuk.create') }}"
-                class="btn btn-primary">
+                {{-- SEARCH --}}
 
-                    <i class="fa-solid fa-plus"></i>
+                <form
+                    id="filterForm"
+                    method="GET"
+                    action="{{ route('admin.stok-masuk.index') }}"
+                    class="filter-form">
+
+                    <input
+                        type="hidden"
+                        name="filter"
+                        id="filterInput"
+                        value="{{ request('filter', 'all') }}">
+
+                    <input
+                        type="hidden"
+                        name="tanggal"
+                        id="tanggalInput"
+                        value="{{ request('tanggal') }}">
+
+                    <input
+                        type="text"
+                        id="searchStock"
+                        name="search"
+                        class="search-box"
+                        placeholder="Cari No. Stok Masuk"
+                        value="{{ request('search') }}"
+                        autocomplete="off">
+
+                </form>
+
+
+                {{-- TOMBOL TAMBAH --}}
+
+                <a
+                    href="{{ route('admin.stok-masuk.create') }}"
+                    class="btn btn-primary">
+
                     Tambah
 
                 </a>
@@ -282,19 +615,6 @@ table td{
 
             </select>
 
-            <form
-                method="GET"
-                action="{{ route('admin.stok-masuk.index') }}">
-
-                <input
-                    type="text"
-                    name="search"
-                    class="search-box"
-                    placeholder="Cari No. Stok Masuk"
-                    value="{{ request('search') }}"
-                    onchange="this.form.submit()">
-
-            </form>
         </div>
 
     </div>
@@ -354,7 +674,7 @@ table td{
 
             @forelse($stockIns as $stock)
 
-            <tr>
+            <tr class="stock-row">
 
                 <td>
                     <input
@@ -363,8 +683,12 @@ table td{
                         value="{{ $stock->id }}">
                 </td>
 
-                <td title="{{ $stock->nomor_transaksi }}">
+                <td
+                    class="stock-number"
+                    title="{{ $stock->nomor_transaksi }}">
+
                     {{ $stock->nomor_transaksi }}
+
                 </td>
 
                 <td>
@@ -450,86 +774,563 @@ table td{
 
 </div>
 
+{{-- MODAL PILIH TANGGAL --}}
+
+<div
+    class="date-modal-overlay"
+    id="dateModal">
+
+    <div class="date-modal">
+
+        <div class="date-modal-header">
+
+            <h3 style="margin:0;">
+
+                <i class="fa-regular fa-calendar"></i>
+
+                Pilih Tanggal
+
+            </h3>
+
+        </div>
+
+        <div class="date-modal-body">
+
+            <input
+                type="date"
+                id="selectedDateInput"
+                class="filter-box"
+                style="width:100%; box-sizing:border-box;">
+
+        </div>
+
+        <div class="date-modal-footer">
+
+            <button
+                type="button"
+                class="btn-cancel-modal"
+                id="closeDateModal">
+
+                Batal
+
+            </button>
+
+            <button
+                type="button"
+                class="btn-confirm"
+                id="saveDateFilter">
+
+                Simpan
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 @endsection
 
 @section('scripts')
 
 <script>
 
-$(function(){
+/* ==========================================================
+   DROPDOWN PERIODE
+========================================================== */
 
-    $('#dateRangePicker').daterangepicker({
+const dateButton =
+    document.getElementById("dateFilterButton");
 
-        startDate: moment(),
-        endDate: moment(),
-        autoUpdateInput: false,
+const dropdown =
+    document.getElementById("dateFilterDropdown");
 
-        ranges: {
+const customDate =
+    document.getElementById("customDate");
 
-            'Today': [
-                moment(),
-                moment()
-            ],
+const dateModal =
+    document.getElementById("dateModal");
 
-            'Yesterday': [
-                moment().subtract(1,'days'),
-                moment().subtract(1,'days')
-            ],
+const closeDateModal =
+    document.getElementById("closeDateModal");
 
-            'Last 7 Days': [
-                moment().subtract(6,'days'),
-                moment()
-            ],
 
-            'Last 30 Days': [
-                moment().subtract(29,'days'),
-                moment()
-            ],
+dateButton.addEventListener("click", function(e){
 
-            'This Month': [
-                moment().startOf('month'),
-                moment().endOf('month')
-            ],
+    e.stopPropagation();
 
-            'Last Month': [
-                moment().subtract(1,'month').startOf('month'),
-                moment().subtract(1,'month').endOf('month')
-            ],
+    dropdown.classList.toggle("show");
 
-            'This Year': [
-                moment().startOf('year'),
-                moment().endOf('year')
-            ],
+});
 
-            'Last Year': [
-                moment().subtract(1,'year').startOf('year'),
-                moment().endOf('year')
-            ]
+
+/* ==========================================================
+   TUTUP DROPDOWN KETIKA KLIK DI LUAR
+========================================================== */
+
+document.addEventListener("click", function(e){
+
+    if (!e.target.closest(".toolbar")) {
+
+        dropdown.classList.remove("show");
+
+    }
+
+});
+
+
+/* ==========================================================
+   PILIH TANGGAL CUSTOM
+========================================================== */
+
+customDate.addEventListener("click", function(){
+
+    dropdown.classList.remove("show");
+
+    dateModal.classList.add("show");
+
+});
+
+
+/* ==========================================================
+   TUTUP MODAL
+========================================================== */
+
+closeDateModal.addEventListener("click", function(){
+
+    dateModal.classList.remove("show");
+
+});
+
+
+dateModal.addEventListener("click", function(e){
+
+    if(e.target === dateModal){
+
+        dateModal.classList.remove("show");
+
+    }
+
+});
+
+
+/* ==========================================================
+   FILTER PERIODE
+========================================================== */
+
+const dateOptions =
+    document.querySelectorAll(".date-option");
+
+
+dateOptions.forEach(function(option){
+
+    option.addEventListener("click", function(){
+
+        const filter =
+            this.dataset.filter;
+
+        if(!filter){
+
+            return;
 
         }
 
-    }, function(start, end){
 
-        $('#selectedDate').text(
-            start.format('DD MMM YY')
-            + ' - ' +
-            end.format('DD MMM YY')
-        );
+        document.getElementById(
+            "filterInput"
+        ).value = filter;
 
-        window.location.href =
-            "{{ route('admin.stok-masuk.index') }}"
-            + "?start_date="
-            + start.format('YYYY-MM-DD')
-            + "&end_date="
-            + end.format('YYYY-MM-DD');
+
+        document.getElementById(
+            "tanggalInput"
+        ).value = "";
+
+
+        document.getElementById(
+            "selectedFilterText"
+        ).innerText = this.innerText.trim();
+
+
+        dropdown.classList.remove("show");
+
+
+        applyDateFilter(filter);
 
     });
 
 });
 
-</script>
 
-<script>
+/* ==========================================================
+   TERAPKAN FILTER TANGGAL
+========================================================== */
+
+function applyDateFilter(filter)
+{
+
+    const url =
+        new URL(
+            "{{ route('admin.stok-masuk.index') }}"
+        );
+
+
+    const search =
+        document.getElementById(
+            "searchStock"
+        ).value;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SEARCH
+    |--------------------------------------------------------------------------
+    */
+
+    if(search){
+
+        url.searchParams.set(
+            "search",
+            search
+        );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FILTER SEMUA TANGGAL
+    |--------------------------------------------------------------------------
+    */
+
+    if(filter === "all"){
+
+        url.searchParams.delete(
+            "filter"
+        );
+
+        url.searchParams.delete(
+            "start_date"
+        );
+
+        url.searchParams.delete(
+            "end_date"
+        );
+
+        url.searchParams.delete(
+            "tanggal"
+        );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FILTER TANGGAL
+    |--------------------------------------------------------------------------
+    */
+
+    else{
+
+        url.searchParams.set(
+            "filter",
+            filter
+        );
+
+
+        const today =
+            new Date();
+
+
+        let startDate;
+        let endDate;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | HARI INI
+        |--------------------------------------------------------------------------
+        */
+
+        if(filter === "today"){
+
+            startDate =
+                new Date(today);
+
+            endDate =
+                new Date(today);
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | KEMARIN
+        |--------------------------------------------------------------------------
+        */
+
+        else if(filter === "yesterday"){
+
+            startDate =
+                new Date(today);
+
+            startDate.setDate(
+                today.getDate() - 1
+            );
+
+            endDate =
+                new Date(startDate);
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 7 HARI TERAKHIR
+        |--------------------------------------------------------------------------
+        */
+
+        else if(filter === "week"){
+
+            startDate =
+                new Date(today);
+
+            startDate.setDate(
+                today.getDate() - 6
+            );
+
+            endDate =
+                new Date(today);
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | BULAN INI
+        |--------------------------------------------------------------------------
+        */
+
+        else if(filter === "month"){
+
+            startDate =
+                new Date(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    1
+                );
+
+            endDate =
+                new Date(
+                    today.getFullYear(),
+                    today.getMonth() + 1,
+                    0
+                );
+
+        }
+
+
+        if(startDate && endDate){
+
+            url.searchParams.set(
+                "start_date",
+                formatDate(startDate)
+            );
+
+            url.searchParams.set(
+                "end_date",
+                formatDate(endDate)
+            );
+
+        }
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PINDAH HALAMAN
+    |--------------------------------------------------------------------------
+    */
+
+    window.location.href =
+        url.toString();
+
+}
+
+
+/* ==========================================================
+   FORMAT TANGGAL YYYY-MM-DD
+========================================================== */
+
+function formatDate(date)
+{
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2,"0");
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2,"0");
+
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+/* ==========================================================
+   SIMPAN TANGGAL CUSTOM
+========================================================== */
+
+document
+.getElementById("saveDateFilter")
+.addEventListener("click", function(){
+
+    const tanggal =
+        document.getElementById(
+            "selectedDateInput"
+        ).value;
+
+
+    if(!tanggal){
+
+        alert(
+            "Silakan pilih tanggal."
+        );
+
+        return;
+
+    }
+
+
+    const url =
+        new URL(
+            "{{ route('admin.stok-masuk.index') }}"
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FILTER CUSTOM
+    |--------------------------------------------------------------------------
+    */
+
+    url.searchParams.set(
+        "filter",
+        "custom"
+    );
+
+
+    url.searchParams.set(
+        "tanggal",
+        tanggal
+    );
+
+
+    url.searchParams.set(
+        "start_date",
+        tanggal
+    );
+
+
+    url.searchParams.set(
+        "end_date",
+        tanggal
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SEARCH TETAP DIPERTAHANKAN
+    |--------------------------------------------------------------------------
+    */
+
+    const search =
+        document.getElementById(
+            "searchStock"
+        ).value;
+
+
+    if(search){
+
+        url.searchParams.set(
+            "search",
+            search
+        );
+
+    }
+
+
+    window.location.href =
+        url.toString();
+
+});
+
+
+/* ==========================================================
+   LIVE SEARCH
+========================================================== */
+
+const searchStock =
+    document.getElementById(
+        "searchStock"
+    );
+
+
+const stockRows =
+    document.querySelectorAll(
+        ".stock-row"
+    );
+
+
+searchStock.addEventListener(
+    "input",
+    function(){
+
+        const keyword =
+            this.value
+                .toLowerCase()
+                .trim();
+
+
+        stockRows.forEach(
+            function(row){
+
+                const nomorTransaksi =
+                    row
+                    .querySelector(
+                        ".stock-number"
+                    )
+                    .textContent
+                    .toLowerCase();
+
+
+                if(
+                    nomorTransaksi.includes(
+                        keyword
+                    )
+                ){
+
+                    row.style.display = "";
+
+                }else{
+
+                    row.style.display = "none";
+
+                }
+
+            }
+        );
+
+    }
+);
 
 document.getElementById('checkAll')
 ?.addEventListener('change', function(){
