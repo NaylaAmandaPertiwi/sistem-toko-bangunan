@@ -128,6 +128,16 @@ Route::middleware('auth')->group(function () {
                 [\App\Http\Controllers\Admin\ProductController::class, 'barcode']
             )->name('barcode');
 
+            Route::get(
+                '/barcode/{product}/print', 
+                [\App\Http\Controllers\Admin\ProductController::class, 'printBarcode']
+            )->name('barcode.print');
+
+            Route::get(
+                '/barcode/print-all', 
+                [\App\Http\Controllers\Admin\ProductController::class, 'printAllBarcode']
+            )->name('barcode.print-all');
+
             /*
             |--------------------------------------------------------------------------
             | SUPPLIER

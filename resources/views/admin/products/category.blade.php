@@ -33,18 +33,43 @@
     flex-wrap:wrap;
 }
 
+.category-toolbar{
+    padding:25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:20px;
+}
+
+.category-info h2{
+    margin:0 0 4px 0;
+    font-size:20px;
+    font-weight:700;
+    color:#111;
+}
+
+.category-info span{
+    color:#999;
+    font-size:16px;
+}
+
+.category-actions{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
 .search-box{
-    flex:1;
-    min-width:250px;
+    width:280px;
 }
 
 .search-box input{
     width:100%;
+    box-sizing:border-box;
     padding:12px 16px;
     border:1px solid #ddd;
     border-radius:10px;
-    box-sizing:border-box;
-    font-size:15px;
+    font-size:14px;
     outline:none;
 }
 
@@ -52,7 +77,6 @@
     border-color:#1684e0;
 }
 
-/* BUTTON */
 .add-btn{
     background:#1684e0;
     color:white;
@@ -62,14 +86,11 @@
     border-radius:10px;
     cursor:pointer;
     font-size:15px;
-
-    display:flex;
-    align-items:center;
-    gap:8px;
+    white-space:nowrap;
 }
 
 .add-btn:hover{
-    background:#0f73c7;
+    background:#1478ca;
 }
 
 /* TABLE */
@@ -144,23 +165,36 @@ table td{
 </div>
 
 <!-- FILTER -->
-<div class="filter-section">
+<div class="category-toolbar">
 
-    <div class="search-box">
+    <div class="category-info">
 
-        <input type="text"
-            id="searchKategori"
-            placeholder="Cari Kategori Produk"
-            autocomplete="off">
+        <h2>Daftar Kategori</h2>
+
+        <span>
+            <span id="categoryCount">{{ $categories->count() }}</span>
+            Kategori
+        </span>
 
     </div>
 
-    <a href="{{ route('admin.kategori-produk.create') }}"
+    <div class="category-actions">
+
+        <div class="search-box">
+            <input
+                type="text"
+                id="categorySearch"
+                placeholder="Cari Kategori Produk"
+                autocomplete="off"
+            >
+        </div>
+
+        <a href="{{ route('admin.kategori-produk.create') }}"
         class="add-btn">
+            Tambah Kategori
+        </a>
 
-        Tambah Kategori
-
-    </a>
+    </div>
 
 </div>
 
@@ -187,74 +221,73 @@ table td{
 
         </thead>
 
-        <tbody>
+        <tbody id="categoryTableBody">
 
             @forelse($categories as $category)
 
-            <tr class="category-row">
+                <tr class="category-row">
 
-                <td>
-                    {{ $category->nama_kategori }}
-                </td>
+                    <td class="category-name">
+                        {{ $category->nama_kategori }}
+                    </td>
 
-                <td>
-                    {{ $category->deskripsi }}
-                </td>
+                    <td>
+                        {{ $category->deskripsi }}
+                    </td>
 
-                <td>
-                    {{ $category->products_count }}
-                </td>
+                    <td>
+                        {{ $category->products_count }}
+                    </td>
 
-                <td>
+                    <td>
 
-                    <span class="{{ $category->status == 'Aktif' ? 'status-active' : 'status-inactive' }}">
-                        {{ $category->status }}
-                    </span>
+                        <span class="{{ $category->status == 'Aktif' ? 'status-active' : 'status-inactive' }}">
+                            {{ $category->status }}
+                        </span>
 
-                </td>
+                    </td>
 
-                <td>
+                    <td>
 
-                    <a href="{{ route('admin.kategori-produk.edit', $category->id) }}"
-                    class="action-btn edit-btn">
+                        <a href="{{ route('admin.kategori-produk.edit', $category->id) }}"
+                        class="action-btn edit-btn">
 
-                        <i class="fa-solid fa-pen"></i>
+                            <i class="fa-solid fa-pen"></i>
 
-                    </a>
+                        </a>
 
-                    <form action="{{ route('admin.kategori-produk.destroy', $category->id) }}"
-                        method="POST"
-                        style="display:inline;">
+                        <form action="{{ route('admin.kategori-produk.destroy', $category->id) }}"
+                            method="POST"
+                            style="display:inline;">
 
-                        @csrf
-                        @method('DELETE')
+                            @csrf
+                            @method('DELETE')
 
-                        <button type="submit"
-                                class="action-btn delete-btn"
-                                onclick="return confirm('Hapus kategori ini?')">
+                            <button type="submit"
+                                    class="action-btn delete-btn"
+                                    onclick="return confirm('Hapus kategori ini?')">
 
-                            <i class="fa-solid fa-trash"></i>
+                                <i class="fa-solid fa-trash"></i>
 
-                        </button>
+                            </button>
 
-                    </form>
+                        </form>
 
-                </td>
+                    </td>
 
-            </tr>
+                </tr>
 
             @empty
 
-            <tr>
+                <tr>
 
-                <td colspan="5"
-                    class="no-data">
+                    <td colspan="5" class="no-data">
 
-                    Belum ada kategori produk
+                        Belum ada kategori produk
 
-                </td>
+                    </td>
 
-            </tr>
+                </tr>
 
             @endforelse
 
@@ -275,23 +308,29 @@ table td{
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    const searchInput = document.getElementById('searchKategori');
+    const searchInput = document.getElementById('categorySearch');
     const rows = document.querySelectorAll('.category-row');
+    const categoryCount = document.getElementById('categoryCount');
 
     searchInput.addEventListener('input', function () {
 
-        const keyword = this.value.toLowerCase().trim();
+        const keyword = this.value
+            .toLowerCase()
+            .trim();
+
+        let visibleCount = 0;
 
         rows.forEach(function (row) {
 
-            const namaKategori = row
-                .querySelector('td:first-child')
+            const categoryName = row
+                .querySelector('.category-name')
                 .textContent
                 .toLowerCase();
 
-            if (namaKategori.includes(keyword)) {
+            if (categoryName.includes(keyword)) {
 
                 row.style.display = '';
+                visibleCount++;
 
             } else {
 
@@ -300,6 +339,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
         });
+
+        categoryCount.textContent = visibleCount;
 
     });
 

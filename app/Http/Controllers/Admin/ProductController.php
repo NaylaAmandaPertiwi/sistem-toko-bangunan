@@ -199,11 +199,106 @@ class ProductController extends Controller
     // Halaman Barcode
     public function barcode()
     {
-        $products = Product::all();
+        $products = Product::with('category')
+            ->where('status', 'Aktif')
+            ->whereHas('category', function ($query) {
+                $query->where('status', 'Aktif');
+            })
+            ->orderBy('nama_produk')
+            ->get();
+
+        $categories = Category::where('status', 'Aktif')
+            ->orderBy('nama_kategori')
+            ->get();
 
         return view(
             'admin.products.barcode',
+            compact(
+                'products',
+                'categories'
+            )
+        );
+    }
+
+    public function printBarcode(Product $product)
+    {
+        if (
+            $product->status !== 'Aktif' ||
+            !$product->category ||
+            $product->category->status !== 'Aktif'
+        ) {
+            abort(404);
+        }
+
+        return view(
+            'admin.products.print-barcode',
+            compact('product')
+        );
+    }
+
+    public function printAllBarcode(Request $request)
+    {
+        $query = Product::with('category')
+            ->where('status', 'Aktif')
+            ->whereHas('category', function ($query) {
+                $query->where('status', 'Aktif');
+        });
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER KATEGORI
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('category_id')) {
+
+            $query->where(
+                'category_id',
+                $request->category_id
+            );
+
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER SEARCH
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('search')) {
+
+            $keyword = $request->search;
+
+            $query->where(function ($q) use ($keyword) {
+
+                $q->where(
+                    'nama_produk',
+                    'like',
+                    '%' . $keyword . '%'
+                )
+                ->orWhere(
+                    'barcode',
+                    'like',
+                    '%' . $keyword . '%'
+                )
+                ->orWhere(
+                    'sku',
+                    'like',
+                    '%' . $keyword . '%'
+                );
+
+            });
+
+        }
+
+        $products = $query
+            ->orderBy('nama_produk')
+            ->get();
+
+        return view(
+            'admin.products.barcode-print-all',
             compact('products')
         );
     }
+
 }
