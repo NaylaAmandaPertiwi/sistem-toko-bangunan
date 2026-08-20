@@ -75,15 +75,14 @@
     border-radius:8px;
 }
 
+.form-control:focus{
+    outline:none;
+    border-color:#1684e0;
+}
+
 textarea.form-control{
     resize:none;
     height:100px;
-}
-
-.photo-box{
-    border:1px solid #ddd;
-    border-radius:8px;
-    padding:20px;
 }
 
 </style>
@@ -98,16 +97,18 @@ textarea.form-control{
 
             <div>
 
-                <a href="{{ route('admin.supplier.index') }}"
-                   class="btn-cancel">
+                <a
+                    href="{{ route('admin.supplier.index') }}"
+                    class="btn-cancel">
 
                     Batal
 
                 </a>
 
-                <button form="supplierForm"
-                        type="submit"
-                        class="btn-save">
+                <button
+                    form="supplierForm"
+                    type="submit"
+                    class="btn-save">
 
                     Simpan
 
@@ -124,14 +125,15 @@ textarea.form-control{
         <form
             id="supplierForm"
             action="{{ route('admin.supplier.store') }}"
-            method="POST"
-            enctype="multipart/form-data">
+            method="POST">
 
             @csrf
 
             <div class="form-grid">
 
-                <!-- KIRI -->
+                <!-- ==========================
+                     KIRI
+                =========================== -->
 
                 <div>
 
@@ -143,10 +145,12 @@ textarea.form-control{
 
                         <label>Nama Supplier *</label>
 
-                        <input type="text"
-                               name="nama_supplier"
-                               class="form-control"
-                               required>
+                        <input
+                            type="text"
+                            name="nama_supplier"
+                            class="form-control"
+                            value="{{ old('nama_supplier') }}"
+                            required>
 
                     </div>
 
@@ -154,9 +158,11 @@ textarea.form-control{
 
                         <label>Personal Yang Dihubungi</label>
 
-                        <input type="text"
-                               name="kontak_person"
-                               class="form-control">
+                        <input
+                            type="text"
+                            name="kontak_person"
+                            class="form-control"
+                            value="{{ old('kontak_person') }}">
 
                     </div>
 
@@ -164,9 +170,11 @@ textarea.form-control{
 
                         <label>Email</label>
 
-                        <input type="email"
-                               name="email"
-                               class="form-control">
+                        <input
+                            type="email"
+                            name="email"
+                            class="form-control"
+                            value="{{ old('email') }}">
 
                     </div>
 
@@ -174,9 +182,11 @@ textarea.form-control{
 
                         <label>Telepon</label>
 
-                        <input type="text"
-                               name="telepon"
-                               class="form-control">
+                        <input
+                            type="text"
+                            name="telepon"
+                            class="form-control"
+                            value="{{ old('telepon') }}">
 
                     </div>
 
@@ -186,13 +196,16 @@ textarea.form-control{
 
                         <textarea
                             name="catatan"
-                            class="form-control"></textarea>
+                            class="form-control">{{ old('catatan') }}</textarea>
 
                     </div>
 
                 </div>
 
-                <!-- KANAN -->
+
+                <!-- ==========================
+                     KANAN
+                =========================== -->
 
                 <div>
 
@@ -200,26 +213,15 @@ textarea.form-control{
                         Alamat
                     </h3>
 
-                    <div class="photo-box">
-
-                        <label>Foto Supplier</label>
-
-                        <input type="file"
-                               name="foto"
-                               class="form-control">
-
-                    </div>
-
-                    <br>
-
                     <div class="form-group">
 
                         <label>Negara</label>
 
-                        <input type="text"
-                               name="negara"
-                               value="Indonesia"
-                               class="form-control">
+                        <input
+                            type="text"
+                            name="negara"
+                            value="{{ old('negara', 'Indonesia') }}"
+                            class="form-control">
 
                     </div>
 
@@ -227,9 +229,11 @@ textarea.form-control{
 
                         <label>Provinsi</label>
 
-                        <input type="text"
-                               name="provinsi"
-                               class="form-control">
+                        <input
+                            type="text"
+                            name="provinsi"
+                            class="form-control"
+                            value="{{ old('provinsi') }}">
 
                     </div>
 
@@ -237,9 +241,11 @@ textarea.form-control{
 
                         <label>Kota</label>
 
-                        <input type="text"
-                               name="kota"
-                               class="form-control">
+                        <input
+                            type="text"
+                            name="kota"
+                            class="form-control"
+                            value="{{ old('kota') }}">
 
                     </div>
 
@@ -247,9 +253,11 @@ textarea.form-control{
 
                         <label>Kode Pos</label>
 
-                        <input type="text"
-                               name="kode_pos"
-                               class="form-control">
+                        <input
+                            type="text"
+                            name="kode_pos"
+                            class="form-control"
+                            value="{{ old('kode_pos') }}">
 
                     </div>
 
@@ -259,7 +267,37 @@ textarea.form-control{
 
                         <textarea
                             name="alamat"
-                            class="form-control"></textarea>
+                            class="form-control">{{ old('alamat') }}</textarea>
+
+                    </div>
+
+                    <!-- STATUS -->
+
+                    <div class="form-group">
+
+                        <label>Status</label>
+
+                        <select
+                            name="status"
+                            class="form-control">
+
+                            <option
+                                value="Aktif"
+                                {{ old('status', 'Aktif') == 'Aktif' ? 'selected' : '' }}>
+
+                                Aktif
+
+                            </option>
+
+                            <option
+                                value="Nonaktif"
+                                {{ old('status') == 'Nonaktif' ? 'selected' : '' }}>
+
+                                Nonaktif
+
+                            </option>
+
+                        </select>
 
                     </div>
 

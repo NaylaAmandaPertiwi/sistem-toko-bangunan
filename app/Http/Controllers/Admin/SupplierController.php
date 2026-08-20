@@ -8,6 +8,9 @@ use App\Models\Supplier;
 
 class SupplierController extends Controller
 {
+    // ==========================
+    // DAFTAR SUPPLIER
+    // ==========================
     public function index()
     {
         $suppliers = Supplier::latest()->get();
@@ -18,46 +21,57 @@ class SupplierController extends Controller
         );
     }
 
+    // ==========================
+    // FORM TAMBAH SUPPLIER
+    // ==========================
     public function create()
     {
         return view('admin.supplier.create');
     }
 
+    // ==========================
+    // SIMPAN SUPPLIER
+    // ==========================
     public function store(Request $request)
     {
         $data = $request->validate([
 
             'nama_supplier' => 'required',
+
             'kontak_person' => 'nullable',
+
             'email' => 'nullable',
+
             'telepon' => 'nullable',
+
             'catatan' => 'nullable',
 
-            'foto' => 'nullable|image',
-
             'negara' => 'nullable',
+
             'provinsi' => 'nullable',
+
             'kota' => 'nullable',
+
             'kode_pos' => 'nullable',
+
             'alamat' => 'nullable',
+
+            'status' => 'required|in:Aktif,Nonaktif',
+
         ]);
-
-        if ($request->hasFile('foto')) {
-
-            $data['foto'] = $request
-                ->file('foto')
-                ->store('suppliers', 'public');
-        }
 
         Supplier::create($data);
 
         return redirect()
             ->route('admin.supplier.index')
-            ->with('success', 'Supplier berhasil ditambahkan');
+            ->with(
+                'success',
+                'Supplier berhasil ditambahkan'
+            );
     }
 
     // ==========================
-    // EDIT SUPPLIER
+    // FORM EDIT SUPPLIER
     // ==========================
     public function edit(Supplier $supplier)
     {
@@ -78,28 +92,28 @@ class SupplierController extends Controller
         $data = $request->validate([
 
             'nama_supplier' => 'required',
+
             'kontak_person' => 'nullable',
+
             'email' => 'nullable',
+
             'telepon' => 'nullable',
+
             'catatan' => 'nullable',
 
-            'foto' => 'nullable|image',
-
             'negara' => 'nullable',
+
             'provinsi' => 'nullable',
+
             'kota' => 'nullable',
+
             'kode_pos' => 'nullable',
+
             'alamat' => 'nullable',
 
-            'status' => 'nullable'
+            'status' => 'required|in:Aktif,Nonaktif',
+
         ]);
-
-        if ($request->hasFile('foto')) {
-
-            $data['foto'] = $request
-                ->file('foto')
-                ->store('suppliers', 'public');
-        }
 
         $supplier->update($data);
 
@@ -126,6 +140,9 @@ class SupplierController extends Controller
             );
     }
 
+    // ==========================
+    // EXPORT
+    // ==========================
     public function export()
     {
         return redirect()

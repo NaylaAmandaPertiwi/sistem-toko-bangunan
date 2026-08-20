@@ -89,7 +89,9 @@ class StockInController extends Controller
     public function create()
     {
         $products = Product::all();
-        $suppliers = Supplier::all();
+        $suppliers = Supplier::where('status', 'Aktif')
+            ->orderBy('nama_supplier')
+            ->get();
 
         return view(
             'admin.inventory.create-stock-in',
@@ -108,7 +110,17 @@ class StockInController extends Controller
 
             'tanggal_masuk' => 'required',
 
-            'supplier_id' => 'required',
+            'supplier_id' => [
+                'required',
+                'exists:suppliers,id',
+                function ($attribute, $value, $fail) {
+                    $supplier = Supplier::find($value);
+
+                    if (!$supplier || $supplier->status !== 'Aktif') {
+                        $fail('Supplier yang dipilih sudah tidak aktif.');
+                    }
+                },
+            ],
 
             'product_id' => 'required',
 
@@ -238,7 +250,11 @@ class StockInController extends Controller
         $stockIn = StockIn::findOrFail($id);
 
         $products = Product::all();
-        $suppliers = Supplier::all();
+
+        $suppliers = Supplier::where('status', 'Aktif')
+            ->orWhere('id', $stockIn->supplier_id)
+            ->orderBy('nama_supplier')
+            ->get();
 
         return view(
             'admin.inventory.create-stock-in',
@@ -252,11 +268,44 @@ class StockInController extends Controller
 
     public function update(Request $request, $id)
     {
+        $stockIn = StockIn::findOrFail($id);
+
         $request->validate([
 
             'tanggal_masuk' => 'required|date',
 
-            'supplier_id' => 'required',
+            'supplier_id' => [
+                'required',
+                'exists:suppliers,id',
+                function ($attribute, $value, $fail) use ($stockIn) {
+
+                    $supplier = Supplier::find($value);
+
+                    /*
+                    * Supplier Aktif selalu boleh dipilih.
+                    */
+
+                    if ($supplier && $supplier->status === 'Aktif') {
+                        return;
+                    }
+
+                    /*
+                    * Supplier Nonaktif hanya boleh digunakan
+                    * jika merupakan supplier lama transaksi ini.
+                    */
+
+                    if (
+                        $supplier &&
+                        $supplier->id == $stockIn->supplier_id
+                    ) {
+                        return;
+                    }
+
+                    $fail(
+                        'Supplier yang dipilih sudah tidak aktif.'
+                    );
+                },
+            ],
 
             'product_id' => 'required',
 
@@ -265,7 +314,6 @@ class StockInController extends Controller
             'harga_beli' => 'required|numeric|min:0',
 
         ]);
-
 
         DB::beginTransaction();
 
@@ -277,7 +325,8 @@ class StockInController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            $stockIn = StockIn::findOrFail($id);
+            
+            // $stockIn sudah diambil sebelum validasi
 
 
             /*

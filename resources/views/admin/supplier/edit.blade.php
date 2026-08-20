@@ -73,6 +73,12 @@
     padding:12px;
     border:1px solid #ddd;
     border-radius:8px;
+    box-sizing:border-box;
+}
+
+.form-control:focus{
+    outline:none;
+    border-color:#1684e0;
 }
 
 textarea.form-control{
@@ -80,15 +86,14 @@ textarea.form-control{
     height:100px;
 }
 
-.photo-box{
-    border:1px solid #ddd;
-    border-radius:8px;
-    padding:20px;
-}
-
 </style>
 
+
 <div class="page-card">
+
+    {{-- ==========================
+         HEADER
+    =========================== --}}
 
     <div class="page-header">
 
@@ -98,18 +103,20 @@ textarea.form-control{
 
             <div>
 
-                <a href="{{ route('admin.supplier.index') }}"
-                   class="btn-cancel">
+                <a
+                    href="{{ route('admin.supplier.index') }}"
+                    class="btn-cancel">
 
                     Batal
 
                 </a>
 
-                <button form="supplierForm"
-                        type="submit"
-                        class="btn-save">
+                <button
+                    form="supplierForm"
+                    type="submit"
+                    class="btn-save">
 
-                    Simpan Perubahan
+                    Simpan
 
                 </button>
 
@@ -119,19 +126,29 @@ textarea.form-control{
 
     </div>
 
+
+    {{-- ==========================
+         FORM BODY
+    =========================== --}}
+
     <div class="form-body">
 
-        <form id="supplierForm"
-            action="{{ route('admin.supplier.update',$supplier->id) }}"
-            method="POST"
-            enctype="multipart/form-data">
+        <form
+            id="supplierForm"
+            action="{{ route('admin.supplier.update', $supplier) }}"
+            method="POST">
 
             @csrf
+
             @method('PUT')
+
 
             <div class="form-grid">
 
-                <!-- KIRI -->
+
+                {{-- ==========================
+                     KIRI
+                =========================== --}}
 
                 <div>
 
@@ -139,64 +156,96 @@ textarea.form-control{
                         Rincian Supplier
                     </h3>
 
+
+                    {{-- Nama Supplier --}}
+
                     <div class="form-group">
 
-                        <label>Nama Supplier *</label>
+                        <label>
+                            Nama Supplier *
+                        </label>
 
-                        <input type="text"
+                        <input
+                            type="text"
                             name="nama_supplier"
                             class="form-control"
-                            value="{{ old('nama_supplier',$supplier->nama_supplier) }}"
+                            value="{{ old('nama_supplier', $supplier->nama_supplier) }}"
                             required>
 
                     </div>
 
+
+                    {{-- Kontak Person --}}
+
                     <div class="form-group">
 
-                        <label>Personal Yang Dihubungi</label>
+                        <label>
+                            Personal Yang Dihubungi
+                        </label>
 
-                        <input type="text"
+                        <input
+                            type="text"
                             name="kontak_person"
                             class="form-control"
-                            value="{{ old('kontak_person',$supplier->kontak_person) }}">
+                            value="{{ old('kontak_person', $supplier->kontak_person) }}">
 
                     </div>
 
+
+                    {{-- Email --}}
+
                     <div class="form-group">
 
-                        <label>Email</label>
+                        <label>
+                            Email
+                        </label>
 
-                        <input type="email"
+                        <input
+                            type="email"
                             name="email"
                             class="form-control"
-                            value="{{ old('email',$supplier->email) }}">
+                            value="{{ old('email', $supplier->email) }}">
 
                     </div>
 
+
+                    {{-- Telepon --}}
+
                     <div class="form-group">
 
-                        <label>Telepon</label>
+                        <label>
+                            Telepon
+                        </label>
 
-                        <input type="text"
+                        <input
+                            type="text"
                             name="telepon"
                             class="form-control"
-                            value="{{ old('telepon',$supplier->telepon) }}">
+                            value="{{ old('telepon', $supplier->telepon) }}">
 
                     </div>
 
+
+                    {{-- Catatan --}}
+
                     <div class="form-group">
 
-                        <label>Catatan</label>
+                        <label>
+                            Catatan
+                        </label>
 
                         <textarea
                             name="catatan"
-                            class="form-control">{{ old('catatan',$supplier->catatan) }}</textarea>
+                            class="form-control">{{ old('catatan', $supplier->catatan) }}</textarea>
 
                     </div>
 
                 </div>
 
-                <!-- KANAN -->
+
+                {{-- ==========================
+                     KANAN
+                =========================== --}}
 
                 <div>
 
@@ -204,98 +253,121 @@ textarea.form-control{
                         Alamat
                     </h3>
 
-                    <div class="photo-box">
 
-                        <label>Foto Supplier</label>
-
-                        @if($supplier->foto)
-
-                            <div style="margin-top:10px">
-
-                                <img src="{{ asset('storage/'.$supplier->foto) }}"
-                                    width="120"
-                                    style="border-radius:10px">
-
-                            </div>
-
-                        @endif
-
-                    </div>
-
-                    <br>
+                    {{-- Negara --}}
 
                     <div class="form-group">
 
-                        <label>Negara</label>
+                        <label>
+                            Negara
+                        </label>
 
-                        <input type="text"
-                               name="negara"
-                               value="{{ old('negara',$supplier->negara) }}"
-                               class="form-control">
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label>Provinsi</label>
-
-                        <input type="text"
-                               name="provinsi"
-                               value="{{ old('provinsi',$supplier->provinsi) }}"
-                               class="form-control">
+                        <input
+                            type="text"
+                            name="negara"
+                            class="form-control"
+                            value="{{ old('negara', $supplier->negara) }}">
 
                     </div>
 
+
+                    {{-- Provinsi --}}
+
                     <div class="form-group">
 
-                        <label>Kota</label>
+                        <label>
+                            Provinsi
+                        </label>
 
-                        <input type="text"
-                               name="kota"
-                               value="{{ old('kota',$supplier->kota) }}"
-                               class="form-control">
+                        <input
+                            type="text"
+                            name="provinsi"
+                            class="form-control"
+                            value="{{ old('provinsi', $supplier->provinsi) }}">
 
                     </div>
 
+
+                    {{-- Kota --}}
+
                     <div class="form-group">
 
-                        <label>Kode Pos</label>
+                        <label>
+                            Kota
+                        </label>
 
-                        <input type="text"
-                               name="kode_pos"
-                               value="{{ old('kode_pos',$supplier->kode_pos) }}"
-                               class="form-control">
+                        <input
+                            type="text"
+                            name="kota"
+                            class="form-control"
+                            value="{{ old('kota', $supplier->kota) }}">
 
                     </div>
 
+
+                    {{-- Kode Pos --}}
+
                     <div class="form-group">
 
-                        <label>Alamat</label>
+                        <label>
+                            Kode Pos
+                        </label>
+
+                        <input
+                            type="text"
+                            name="kode_pos"
+                            class="form-control"
+                            value="{{ old('kode_pos', $supplier->kode_pos) }}">
+
+                    </div>
+
+
+                    {{-- Alamat --}}
+
+                    <div class="form-group">
+
+                        <label>
+                            Alamat
+                        </label>
 
                         <textarea
                             name="alamat"
-                            class="form-control">{{ old('alamat',$supplier->alamat) }}</textarea>
-                        
-                        <div class="form-group">
+                            class="form-control">{{ old('alamat', $supplier->alamat) }}</textarea>
 
-                            <label>Status</label>
+                    </div>
 
-                            <select name="status"
-                                    class="form-control">
 
-                                <option value="Aktif"
-                                    {{ $supplier->status == 'Aktif' ? 'selected' : '' }}>
-                                    Aktif
-                                </option>
+                    {{-- ==========================
+                         STATUS SUPPLIER
+                    =========================== --}}
 
-                                <option value="Nonaktif"
-                                    {{ $supplier->status == 'Nonaktif' ? 'selected' : '' }}>
-                                    Nonaktif
-                                </option>
+                    <div class="form-group">
 
-                            </select>
+                        <label>
+                            Status
+                        </label>
 
-                        </div>
+                        <select
+                            name="status"
+                            class="form-control">
+
+                            <option
+                                value="Aktif"
+                                {{ old('status', $supplier->status) == 'Aktif' ? 'selected' : '' }}>
+
+                                Aktif
+
+                            </option>
+
+                            <option
+                                value="Nonaktif"
+                                {{ old('status', $supplier->status) == 'Nonaktif' ? 'selected' : '' }}>
+
+                                Nonaktif
+
+                            </option>
+
+                        </select>
 
                     </div>
 

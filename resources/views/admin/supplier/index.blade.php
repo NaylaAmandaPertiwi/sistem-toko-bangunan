@@ -170,7 +170,6 @@ table td{
 
             <thead>
                 <tr>
-                    <th>Foto</th>
                     <th>Nama Supplier</th>
                     <th>Kontak</th>
                     <th>Telepon</th>
@@ -185,17 +184,6 @@ table td{
                 @foreach($suppliers as $supplier)
 
                 <tr>
-
-                    <td>
-
-                        @if($supplier->foto)
-
-                            <img src="{{ asset('storage/'.$supplier->foto) }}"
-                                width="50">
-
-                        @endif
-
-                    </td>
 
                     <td>{{ $supplier->nama_supplier }}</td>
 
