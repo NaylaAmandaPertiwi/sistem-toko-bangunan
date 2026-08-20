@@ -419,16 +419,6 @@ hargaJualDisplay.addEventListener('input', function(){
 
 });
 
-document.querySelector('form').addEventListener('submit', function(){
-
-    document.querySelectorAll('.price-field').forEach(function(input){
-
-        input.value = input.value.replace(/\./g, '');
-
-    });
-
-});
-
 const categorySearch = document.getElementById('categorySearch');
 const categoryId = document.getElementById('categoryId');
 const categoryResults = document.getElementById('categoryResults');

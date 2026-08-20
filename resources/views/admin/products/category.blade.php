@@ -28,12 +28,14 @@
     padding:25px;
     display:flex;
     justify-content:space-between;
+    align-items:center;
     gap:15px;
     flex-wrap:wrap;
 }
 
 .search-box{
     flex:1;
+    min-width:250px;
 }
 
 .search-box input{
@@ -41,11 +43,18 @@
     padding:12px 16px;
     border:1px solid #ddd;
     border-radius:10px;
+    box-sizing:border-box;
+    font-size:15px;
+    outline:none;
+}
+
+.search-box input:focus{
+    border-color:#1684e0;
 }
 
 /* BUTTON */
 .add-btn{
-    background:#4CAF50;
+    background:#1684e0;
     color:white;
     text-decoration:none;
     border:none;
@@ -60,7 +69,7 @@
 }
 
 .add-btn:hover{
-    background:#43a047;
+    background:#0f73c7;
 }
 
 /* TABLE */
@@ -137,21 +146,18 @@ table td{
 <!-- FILTER -->
 <div class="filter-section">
 
-    <form method="GET"
-        action="{{ route('admin.kategori-produk.index') }}"
-        class="search-box">
+    <div class="search-box">
 
         <input type="text"
-            name="search"
-            value="{{ request('search') }}"
-            placeholder="Cari Kategori Produk">
+            id="searchKategori"
+            placeholder="Cari Kategori Produk"
+            autocomplete="off">
 
-    </form>
+    </div>
 
     <a href="{{ route('admin.kategori-produk.create') }}"
-    class="add-btn">
+        class="add-btn">
 
-        <i class="fa-solid fa-plus"></i>
         Tambah Kategori
 
     </a>
@@ -185,7 +191,7 @@ table td{
 
             @forelse($categories as $category)
 
-            <tr>
+            <tr class="category-row">
 
                 <td>
                     {{ $category->nama_kategori }}
@@ -260,5 +266,45 @@ table td{
 
 
 </div>
+
+@endsection
+
+@section('scripts')
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const searchInput = document.getElementById('searchKategori');
+    const rows = document.querySelectorAll('.category-row');
+
+    searchInput.addEventListener('input', function () {
+
+        const keyword = this.value.toLowerCase().trim();
+
+        rows.forEach(function (row) {
+
+            const namaKategori = row
+                .querySelector('td:first-child')
+                .textContent
+                .toLowerCase();
+
+            if (namaKategori.includes(keyword)) {
+
+                row.style.display = '';
+
+            } else {
+
+                row.style.display = 'none';
+
+            }
+
+        });
+
+    });
+
+});
+
+</script>
 
 @endsection

@@ -54,7 +54,10 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $totalProduk = Product::count();
+        $totalProduk = Product::where(
+            'status',
+            'Aktif'
+        )->count();
 
 
         /*
@@ -63,7 +66,7 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $totalKategori = Category::count();
+        $totalKategori = Category::where('status', 'Aktif')->count();
 
 
         /*

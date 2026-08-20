@@ -12,7 +12,10 @@ class ProductController extends Controller
     // Daftar Produk
     public function index(Request $request)
     {
-        $products = Product::with('category');
+        $products = Product::with('category')
+        ->whereHas('category', function ($query) {
+            $query->where('status', 'Aktif');
+        });
 
         // Filter kategori
         if($request->filled('category'))
@@ -37,7 +40,9 @@ class ProductController extends Controller
             ->latest()
             ->get();
 
-        $categories = Category::all();
+        $categories = Category::where('status', 'Aktif')
+            ->orderBy('nama_kategori')
+            ->get();
 
         return view(
             'admin.products.index',
@@ -51,7 +56,9 @@ class ProductController extends Controller
     // Form Tambah Produk
     public function create()
     {
-        $categories = Category::all();
+        $categories = Category::where('status', 'Aktif')
+            ->orderBy('nama_kategori')
+            ->get();
 
         return view(
             'admin.products.create',
@@ -63,7 +70,18 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'category_id' => 'required',
+            'category_id' => [
+                'required',
+                'exists:categories,id',
+                function ($attribute, $value, $fail) {
+
+                    $category = Category::find($value);
+
+                    if (!$category || $category->status !== 'Aktif') {
+                        $fail('Kategori yang dipilih sedang nonaktif.');
+                    }
+                },
+            ],
             'nama_produk' => 'required',
             'sku' => 'nullable',
             'barcode' => 'nullable',
@@ -88,7 +106,10 @@ class ProductController extends Controller
     // Form Edit Produk
     public function edit(Product $produk)
     {
-        $categories = Category::all();
+        $categories = Category::where('status', 'Aktif')
+            ->orWhere('id', $produk->category_id)
+            ->orderBy('nama_kategori')
+            ->get();
 
         return view(
             'admin.products.edit',
@@ -106,7 +127,26 @@ class ProductController extends Controller
     )
     {
         $data = $request->validate([
-            'category_id' => 'required',
+            'category_id' => [
+                'required',
+                'exists:categories,id',
+                function ($attribute, $value, $fail) use ($produk) {
+
+                    // Jika kategori tidak berubah,
+                    // tetap izinkan menggunakan kategori lama
+                    if ((int) $value === (int) $produk->category_id) {
+                        return;
+                    }
+
+                    // Jika memilih kategori baru,
+                    // kategori tersebut harus Aktif
+                    $category = Category::find($value);
+
+                    if (!$category || $category->status !== 'Aktif') {
+                        $fail('Kategori yang dipilih sedang nonaktif.');
+                    }
+                },
+            ],
             'nama_produk' => 'required',
             'sku' => 'nullable',
             'barcode' => 'nullable',
