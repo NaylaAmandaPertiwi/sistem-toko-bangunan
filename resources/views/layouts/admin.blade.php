@@ -39,6 +39,8 @@ body{
     color:white;
 
     overflow:hidden;
+
+    box-sizing:border-box;
 }
 
 .sidebar-menu{
@@ -345,28 +347,26 @@ body{
 /* CONTENT */
 .content{
     margin-left:260px;
+    width:calc(100% - 260px);
+    min-height:100vh;
     padding:30px;
+    box-sizing:border-box;
+    overflow-x:hidden;
 }
 
-/* Prevent accidental page scaling and keep content responsive */
-.content{
-    max-width: calc(100% - 260px);
-    box-sizing: border-box;
-    transform: none !important;
-    -webkit-transform: none !important;
-    zoom: 1;
-    overflow-x: hidden;
-}
+@media (max-width:700px){
 
-@media (max-width: 900px){
     .content{
         margin-left:0;
+        width:100%;
         padding:20px;
     }
+
     .sidebar{
         position:fixed;
         transform:translateX(-100%);
     }
+
 }
 
 /* HEADER */

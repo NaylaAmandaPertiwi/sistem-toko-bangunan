@@ -212,15 +212,30 @@ Route::middleware('auth')->group(function () {
                 [\App\Http\Controllers\Admin\StockOpnameController::class,'store']
             )->name('stok-opname.store');
 
-            Route::delete(
-                '/stok-opname/bulk-delete',
-                [\App\Http\Controllers\Admin\StockOpnameController::class,'bulkDelete']
-            )->name('stok-opname.bulk-delete');
+            Route::get(
+                '/stok-opname/{id}/edit',
+                [\App\Http\Controllers\Admin\StockOpnameController::class, 'edit']
+            )->name('stok-opname.edit');
+
+            Route::put(
+                '/stok-opname/{id}',
+                [\App\Http\Controllers\Admin\StockOpnameController::class, 'update']
+            )->name('stok-opname.update');
+
+            Route::get(
+                '/stok-opname/{id}',
+                [\App\Http\Controllers\Admin\StockOpnameController::class,'show']
+            )->name('stok-opname.show');
 
             Route::put(
                 '/stok-opname/{id}/status',
                 [\App\Http\Controllers\Admin\StockOpnameController::class,'updateStatus']
             )->name('stok-opname.update-status');
+
+            Route::delete(
+                '/stok-opname/bulk-delete',
+                [\App\Http\Controllers\Admin\StockOpnameController::class,'bulkDelete']
+            )->name('stok-opname.bulk-delete');
 
             Route::get(
                 '/stok-opname/{id}/print',
@@ -231,11 +246,6 @@ Route::middleware('auth')->group(function () {
                 '/stok-opname/{id}/pdf',
                 [\App\Http\Controllers\Admin\StockOpnameController::class,'pdf']
             )->name('stok-opname.pdf');
-
-            Route::get(
-                '/stok-opname/{id}',
-                [\App\Http\Controllers\Admin\StockOpnameController::class,'show']
-            )->name('stok-opname.show');
 
                 /*
                 |--------------------------------------------------------------------------

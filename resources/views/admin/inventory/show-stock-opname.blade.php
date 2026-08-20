@@ -85,6 +85,18 @@
     text-decoration:none;
 }
 
+.btn-warning{
+    background:#f0ad4e;
+    color:white;
+    padding:12px 18px;
+    border-radius:10px;
+    text-decoration:none;
+}
+
+.btn-warning:hover{
+    background:#ec9a24;
+}
+
 .badge-success{
     background:#d4edda;
     color:#155724;
@@ -284,9 +296,27 @@
 
             </a>
 
+
+            @if($opname->status === 'Draft')
+
+                <a
+                    href="{{ route('admin.stok-opname.edit', $opname->id) }}"
+                    class="btn-warning">
+
+                    <i class="fa-solid fa-pen"></i>
+
+                    Edit
+
+                </a>
+
+            @endif
+
+
             <a
                 href="{{ route('admin.stok-opname.print', $opname->id) }}"
-                class="btn btn-primary">
+                class="btn-primary">
+
+                <i class="fa-solid fa-print"></i>
 
                 Cetak
 
