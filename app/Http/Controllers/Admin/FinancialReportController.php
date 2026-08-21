@@ -213,15 +213,16 @@ class FinancialReportController extends Controller
 
 
         /*
+        |--------------------------------------------------------------------------
         | PENJUALAN BERSIH
         |
-        | subtotal - diskon
+        | Mengikuti total_bayar pada transaksi penjualan.
+        |--------------------------------------------------------------------------
         */
 
-        $totalPenjualanBersih =
-            $totalPenjualanBruto
-            -
-            $totalDiskon;
+        $totalPenjualanBersih = $sales->sum(
+            'total_bayar'
+        );
 
 
         /*
@@ -355,6 +356,7 @@ class FinancialReportController extends Controller
 
         $totalKasMasuk = $cashTransactions
             ->where('jenis', 'masuk')
+            ->where('sumber', 'tukar_barang')
             ->sum('nominal');
 
 
@@ -364,6 +366,7 @@ class FinancialReportController extends Controller
 
         $totalKasKeluar = $cashTransactions
             ->where('jenis', 'keluar')
+            ->where('sumber', 'retur_uang')
             ->sum('nominal');
 
 
@@ -466,11 +469,9 @@ class FinancialReportController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $tanggalMulai =
-            $request->tanggal_mulai;
+        $tanggalMulai = $request->tanggal_mulai;
 
-        $tanggalAkhir =
-            $request->tanggal_akhir;
+        $tanggalAkhir = $request->tanggal_akhir;
 
 
         /*
@@ -479,7 +480,7 @@ class FinancialReportController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $query = Sale::with([
+        $salesQuery = Sale::with([
             'user',
             'saleDetails.product'
         ]);
@@ -487,7 +488,7 @@ class FinancialReportController extends Controller
 
         if ($tanggalMulai) {
 
-            $query->whereDate(
+            $salesQuery->whereDate(
                 'tanggal',
                 '>=',
                 $tanggalMulai
@@ -497,7 +498,7 @@ class FinancialReportController extends Controller
 
         if ($tanggalAkhir) {
 
-            $query->whereDate(
+            $salesQuery->whereDate(
                 'tanggal',
                 '<=',
                 $tanggalAkhir
@@ -506,29 +507,106 @@ class FinancialReportController extends Controller
         }
 
 
-        $sales = $query
+        $sales = $salesQuery
             ->orderByDesc('tanggal')
             ->get();
 
 
         /*
         |--------------------------------------------------------------------------
-        | TOTAL PENJUALAN
+        | QUERY RETUR
         |--------------------------------------------------------------------------
         */
 
-        $totalPenjualan =
-            $sales->sum('total_bayar');
+        $returnsQuery = ReturnSale::with([
+            'user',
+            'sale',
+            'details.product'
+        ]);
+
+
+        if ($tanggalMulai) {
+
+            $returnsQuery->whereDate(
+                'tanggal',
+                '>=',
+                $tanggalMulai
+            );
+
+        }
+
+        if ($tanggalAkhir) {
+
+            $returnsQuery->whereDate(
+                'tanggal',
+                '<=',
+                $tanggalAkhir
+            );
+
+        }
+
+
+        $returns = $returnsQuery
+            ->orderByDesc('tanggal')
+            ->get();
 
 
         /*
         |--------------------------------------------------------------------------
-        | TOTAL DISKON
+        | QUERY TRANSAKSI KAS
         |--------------------------------------------------------------------------
         */
 
-        $totalDiskon =
-            $sales->sum('diskon');
+        $cashQuery = CashTransaction::with(
+            'returnSale'
+        );
+
+
+        if ($tanggalMulai) {
+
+            $cashQuery->whereDate(
+                'tanggal',
+                '>=',
+                $tanggalMulai
+            );
+
+        }
+
+        if ($tanggalAkhir) {
+
+            $cashQuery->whereDate(
+                'tanggal',
+                '<=',
+                $tanggalAkhir
+            );
+
+        }
+
+
+        $cashTransactions = $cashQuery
+            ->orderByDesc('tanggal')
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RINGKASAN PENJUALAN
+        |--------------------------------------------------------------------------
+        */
+
+        $totalPenjualanBruto = $sales->sum(
+            'subtotal'
+        );
+
+
+        $totalDiskon = $sales->sum(
+            'diskon'
+        );
+
+
+        $totalPenjualanBersih = $sales->sum(
+            'total_bayar'
+        );
 
 
         /*
@@ -564,9 +642,78 @@ class FinancialReportController extends Controller
         */
 
         $labaKotor =
-            $totalPenjualan
+            $totalPenjualanBersih
             -
             $totalHpp;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RINGKASAN RETUR
+        |--------------------------------------------------------------------------
+        */
+
+        $totalRetur = $returns->sum(
+            'total_retur'
+        );
+
+
+        $totalReturUang = $returns
+            ->where('return_type', 'uang')
+            ->sum('total_retur');
+
+
+        $totalTukarBarang = $returns
+            ->where('return_type', 'tukar')
+            ->sum('total_retur');
+
+
+        $totalNilaiPengganti = $returns
+            ->where('return_type', 'tukar')
+            ->sum('total_pengganti');
+
+
+        $totalSelisihPembayaran = $returns
+            ->where('return_type', 'tukar')
+            ->sum('selisih_bayar');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ARUS KAS
+        |--------------------------------------------------------------------------
+        */
+
+        $totalKasMasuk = $cashTransactions
+            ->where('jenis', 'masuk')
+            ->where('sumber', 'tukar_barang')
+            ->sum('nominal');
+
+
+        $totalKasKeluar = $cashTransactions
+            ->where('jenis', 'keluar')
+            ->where('sumber', 'retur_uang')
+            ->sum('nominal');
+
+
+        $arusKasBersih =
+            $totalKasMasuk
+            -
+            $totalKasKeluar;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ALIAS UNTUK PDF
+        |--------------------------------------------------------------------------
+        |
+        | Disamakan dengan nama yang digunakan
+        | pada Blade PDF.
+        |
+        */
+
+        $totalPenjualan =
+            $totalPenjualanBersih;
 
 
         /*
@@ -578,13 +725,45 @@ class FinancialReportController extends Controller
         $pdf = Pdf::loadView(
             'admin.laporan.pdf.keuangan',
             compact(
+
                 'sales',
+
+                'returns',
+
+                'cashTransactions',
+
                 'tanggalMulai',
+
                 'tanggalAkhir',
+
                 'totalPenjualan',
+
+                'totalPenjualanBruto',
+
+                'totalPenjualanBersih',
+
                 'totalDiskon',
+
                 'totalHpp',
-                'labaKotor'
+
+                'labaKotor',
+
+                'totalRetur',
+
+                'totalReturUang',
+
+                'totalTukarBarang',
+
+                'totalNilaiPengganti',
+
+                'totalSelisihPembayaran',
+
+                'totalKasMasuk',
+
+                'totalKasKeluar',
+
+                'arusKasBersih'
+
             )
         );
 
@@ -622,7 +801,7 @@ class FinancialReportController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $query = Sale::with([
+        $salesQuery = Sale::with([
             'user',
             'saleDetails.product'
         ]);
@@ -630,7 +809,7 @@ class FinancialReportController extends Controller
 
         if ($tanggalMulai) {
 
-            $query->whereDate(
+            $salesQuery->whereDate(
                 'tanggal',
                 '>=',
                 $tanggalMulai
@@ -638,9 +817,10 @@ class FinancialReportController extends Controller
 
         }
 
+
         if ($tanggalAkhir) {
 
-            $query->whereDate(
+            $salesQuery->whereDate(
                 'tanggal',
                 '<=',
                 $tanggalAkhir
@@ -649,29 +829,126 @@ class FinancialReportController extends Controller
         }
 
 
-        $sales = $query
+        $sales = $salesQuery
             ->orderByDesc('tanggal')
             ->get();
 
 
         /*
         |--------------------------------------------------------------------------
-        | TOTAL PENJUALAN
+        | QUERY RETUR
         |--------------------------------------------------------------------------
         */
 
-        $totalPenjualan =
-            $sales->sum('total_bayar');
+        $returnsQuery = ReturnSale::with([
+            'user',
+            'sale',
+            'details.product'
+        ]);
+
+
+        if ($tanggalMulai) {
+
+            $returnsQuery->whereDate(
+                'tanggal',
+                '>=',
+                $tanggalMulai
+            );
+
+        }
+
+
+        if ($tanggalAkhir) {
+
+            $returnsQuery->whereDate(
+                'tanggal',
+                '<=',
+                $tanggalAkhir
+            );
+
+        }
+
+
+        $returns = $returnsQuery
+            ->orderByDesc('tanggal')
+            ->get();
 
 
         /*
         |--------------------------------------------------------------------------
-        | TOTAL DISKON
+        | QUERY TRANSAKSI KAS
         |--------------------------------------------------------------------------
+        */
+
+        $cashQuery = CashTransaction::query();
+
+
+        if ($tanggalMulai) {
+
+            $cashQuery->whereDate(
+                'tanggal',
+                '>=',
+                $tanggalMulai
+            );
+
+        }
+
+
+        if ($tanggalAkhir) {
+
+            $cashQuery->whereDate(
+                'tanggal',
+                '<=',
+                $tanggalAkhir
+            );
+
+        }
+
+
+        $cashTransactions = $cashQuery
+            ->orderByDesc('tanggal')
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RINGKASAN PENJUALAN
+        |--------------------------------------------------------------------------
+        */
+
+        /*
+        * Penjualan Bruto
+        * = subtotal seluruh transaksi penjualan
+        */
+
+        $totalPenjualanBruto =
+            $sales->sum('subtotal');
+
+
+        /*
+        * Total Diskon
         */
 
         $totalDiskon =
             $sales->sum('diskon');
+
+
+        /*
+        * Penjualan Bersih
+        * = total_bayar seluruh transaksi penjualan
+        */
+
+        $totalPenjualanBersih =
+            $sales->sum('total_bayar');
+
+
+        /*
+        * Tetap disediakan sebagai totalPenjualan
+        * agar kompatibel dengan struktur laporan.
+        */
+
+        $totalPenjualan =
+            $totalPenjualanBersih;
 
 
         /*
@@ -707,9 +984,99 @@ class FinancialReportController extends Controller
         */
 
         $labaKotor =
-            $totalPenjualan
+            $totalPenjualanBersih
             -
             $totalHpp;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | RINGKASAN RETUR
+        |--------------------------------------------------------------------------
+        */
+
+        /*
+        * Total seluruh retur
+        */
+
+        $totalRetur =
+            $returns->sum('total_retur');
+
+
+        /*
+        * Retur Uang
+        */
+
+        $totalReturUang =
+            $returns
+                ->where('return_type', 'uang')
+                ->sum('total_retur');
+
+
+        /*
+        * Tukar Barang
+        */
+
+        $totalTukarBarang =
+            $returns
+                ->where('return_type', 'tukar')
+                ->sum('total_retur');
+
+
+        /*
+        * Nilai Barang Pengganti
+        */
+
+        $totalNilaiPengganti =
+            $returns
+                ->where('return_type', 'tukar')
+                ->sum('total_pengganti');
+
+
+        /*
+        * Selisih Pembayaran
+        */
+
+        $totalSelisihPembayaran =
+            $returns
+                ->where('return_type', 'tukar')
+                ->sum('selisih_bayar');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ARUS KAS
+        |--------------------------------------------------------------------------
+        */
+
+        /*
+        * Kas Masuk
+        */
+
+        $totalKasMasuk =
+            $cashTransactions
+                ->where('jenis', 'masuk')
+                ->sum('nominal');
+
+
+        /*
+        * Kas Keluar
+        */
+
+        $totalKasKeluar =
+            $cashTransactions
+                ->where('jenis', 'keluar')
+                ->sum('nominal');
+
+
+        /*
+        * Arus Kas Bersih
+        */
+
+        $arusKasBersih =
+            $totalKasMasuk
+            -
+            $totalKasKeluar;
 
 
         /*
@@ -721,13 +1088,45 @@ class FinancialReportController extends Controller
         return Excel::download(
 
             new FinancialReportExport(
+
                 $sales,
+
+                $returns,
+
+                $cashTransactions,
+
                 $tanggalMulai,
+
                 $tanggalAkhir,
+
                 $totalPenjualan,
+
+                $totalPenjualanBruto,
+
+                $totalPenjualanBersih,
+
                 $totalDiskon,
+
                 $totalHpp,
-                $labaKotor
+
+                $labaKotor,
+
+                $totalRetur,
+
+                $totalReturUang,
+
+                $totalTukarBarang,
+
+                $totalNilaiPengganti,
+
+                $totalSelisihPembayaran,
+
+                $totalKasMasuk,
+
+                $totalKasKeluar,
+
+                $arusKasBersih
+
             ),
 
             'laporan-keuangan.xlsx'

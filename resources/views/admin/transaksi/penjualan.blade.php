@@ -1093,6 +1093,30 @@ dateOptions.forEach(function(option){
         ).value = "";
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | Hapus periode dari Laporan Keuangan
+        |--------------------------------------------------------------------------
+        */
+
+        const currentUrl =
+            new URL(window.location.href);
+
+        currentUrl.searchParams.delete(
+            "tanggal_mulai"
+        );
+
+        currentUrl.searchParams.delete(
+            "tanggal_akhir"
+        );
+
+        history.replaceState(
+            {},
+            "",
+            currentUrl
+        );
+
+
         document.getElementById(
             "selectedFilterText"
         ).innerText = this.innerText;
@@ -1141,6 +1165,30 @@ saveDateFilter.addEventListener("click", function(){
     document.querySelector(
         'input[name="tanggal"]'
     ).value = tanggal;
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Hapus periode Laporan Keuangan
+    |--------------------------------------------------------------------------
+    */
+
+    const currentUrl =
+        new URL(window.location.href);
+
+    currentUrl.searchParams.delete(
+        "tanggal_mulai"
+    );
+
+    currentUrl.searchParams.delete(
+        "tanggal_akhir"
+    );
+
+    history.replaceState(
+        {},
+        "",
+        currentUrl
+    );
 
 
     document.getElementById(
@@ -1382,37 +1430,117 @@ function renderPagination(data)
 
 function fetchData(page = 1)
 {
-    const kode = document.getElementById("searchKode").value;
+    const kode =
+        document.getElementById("searchKode").value;
 
-    const kasir = document.getElementById("kasirFilter").value;
+    const kasir =
+        document.getElementById("kasirFilter").value;
 
-    const filter = document.querySelector('input[name="filter"]').value;
+    const filter =
+        document.querySelector('input[name="filter"]').value;
 
-    const tanggal = document.querySelector('input[name="tanggal"]').value;
+    const tanggal =
+        document.querySelector('input[name="tanggal"]').value;
 
-    const perPage = document.getElementById("perPage").value;
+    const perPage =
+        document.getElementById("perPage").value;
 
-    const params = new URLSearchParams({
 
-        kode: kode,
+    /*
+    |--------------------------------------------------------------------------
+    | Ambil periode dari URL
+    |--------------------------------------------------------------------------
+    |
+    | Jika halaman Penjualan dibuka dari Laporan Keuangan,
+    | URL akan membawa:
+    |
+    | tanggal_mulai
+    | tanggal_akhir
+    |
+    | Kedua parameter ini harus ikut dikirim
+    | ketika AJAX mengambil data.
+    |
+    */
 
-        kasir: kasir,
+    const currentUrl =
+        new URL(window.location.href);
 
-        filter: filter,
+    const tanggalMulai =
+        currentUrl.searchParams.get("tanggal_mulai");
 
-        tanggal: tanggal,
+    const tanggalAkhir =
+        currentUrl.searchParams.get("tanggal_akhir");
 
-        per_page: perPage,
 
-        page: page
+    /*
+    |--------------------------------------------------------------------------
+    | Parameter AJAX
+    |--------------------------------------------------------------------------
+    */
 
-    });
+    const params =
+        new URLSearchParams({
+
+            kode: kode,
+
+            kasir: kasir,
+
+            filter: filter,
+
+            tanggal: tanggal,
+
+            per_page: perPage,
+
+            page: page
+
+        });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pertahankan periode dari Laporan Keuangan
+    |--------------------------------------------------------------------------
+    */
+
+    if (tanggalMulai && tanggalAkhir) {
+
+        params.set(
+            "tanggal_mulai",
+            tanggalMulai
+        );
+
+        params.set(
+            "tanggal_akhir",
+            tanggalAkhir
+        );
+
+    }
 
     const url = new URL(window.location);
 
     url.searchParams.set("page", page);
 
     url.searchParams.set("per_page", perPage);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pertahankan periode dari Laporan Keuangan
+    |--------------------------------------------------------------------------
+    */
+
+    if (tanggalMulai && tanggalAkhir) {
+
+        url.searchParams.set(
+            "tanggal_mulai",
+            tanggalMulai
+        );
+
+        url.searchParams.set(
+            "tanggal_akhir",
+            tanggalAkhir
+        );
+
+    }
 
     if (kode) {
 

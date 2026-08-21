@@ -68,6 +68,67 @@
     background: transparent;
 }
 
+/* =========================================================
+   QUICK DATE FILTER
+   ========================================================= */
+
+.quick-date-wrapper{
+    position:relative;
+}
+
+.quick-date-button{
+    background:#fff;
+    color:#354258;
+    border:1px solid #e3e8f0;
+    min-width:180px;
+    justify-content:space-between;
+}
+
+.quick-date-arrow{
+    font-size:10px;
+    margin-left:8px;
+}
+
+.quick-date-menu{
+    display:none;
+    position:absolute;
+    top:calc(100% + 8px);
+    right:0;
+    width:180px;
+    background:#fff;
+    border:1px solid #e3e8f0;
+    border-radius:10px;
+    box-shadow:0 5px 18px rgba(30,50,80,.12);
+    padding:6px 0;
+    z-index:1000;
+}
+
+.quick-date-menu.show{
+    display:block;
+}
+
+.quick-date-menu button{
+    width:100%;
+    display:block;
+    border:none;
+    background:#fff;
+    color:#26364d;
+    text-align:left;
+    padding:11px 14px;
+    font-size:13px;
+    cursor:pointer;
+}
+
+.quick-date-menu button:hover{
+    background:#f3f6fb;
+}
+
+.quick-date-menu button.active{
+    background:#eef4ff;
+    color:#2463d4;
+    font-weight:600;
+}
+
 .btn-finance {
     border: none;
     border-radius: 10px;
@@ -568,54 +629,169 @@
 
         <div class="finance-filter">
 
-            <form
-                method="GET"
-                action="{{ route('admin.laporan.keuangan') }}"
-                style="display:flex; gap:10px; align-items:center;"
-            >
+            {{-- TANGGAL MULAI & AKHIR --}}
+            <div class="date-filter">
 
-                <div class="date-filter">
+                📅
 
+                <input
+                    type="date"
+                    id="tanggal_mulai"
+                    name="tanggal_mulai"
+                    value="{{ request('tanggal_mulai') }}"
+                >
+
+                <span>–</span>
+
+                <input
+                    type="date"
+                    id="tanggal_akhir"
+                    name="tanggal_akhir"
+                    value="{{ request('tanggal_akhir') }}"
+                >
+
+            </div>
+
+
+            {{-- FILTER TANGGAL --}}
+            <div class="quick-date-wrapper">
+
+                <button
+                    type="button"
+                    id="quickDateButton"
+                    class="btn-finance quick-date-button"
+                >
                     📅
+                    <span id="quickDateLabel">
+                        @php
 
-                    <input
-                        type="date"
-                        name="tanggal_mulai"
-                        value="{{ request('tanggal_mulai') }}"
+                            $filterStart = request('tanggal_mulai');
+                            $filterEnd = request('tanggal_akhir');
+
+                            $today = now()->startOfDay();
+                            $yesterday = now()->subDay()->startOfDay();
+                            $sevenDaysAgo = now()->subDays(6)->startOfDay();
+                            $monthStart = now()->startOfMonth();
+
+                        @endphp
+
+
+                        @if(!$filterStart && !$filterEnd)
+
+                            Semua Tanggal
+
+                        @elseif(
+                            $filterStart === $today->format('Y-m-d')
+                            &&
+                            $filterEnd === $today->format('Y-m-d')
+                        )
+
+                            Hari Ini
+
+                        @elseif(
+                            $filterStart === $yesterday->format('Y-m-d')
+                            &&
+                            $filterEnd === $yesterday->format('Y-m-d')
+                        )
+
+                            Kemarin
+
+                        @elseif(
+                            $filterStart === $sevenDaysAgo->format('Y-m-d')
+                            &&
+                            $filterEnd === $today->format('Y-m-d')
+                        )
+
+                            7 Hari Terakhir
+
+                        @elseif(
+                            $filterStart === $monthStart->format('Y-m-d')
+                            &&
+                            $filterEnd === $today->format('Y-m-d')
+                        )
+
+                            Bulan Ini
+
+                        @else
+
+                            Pilih Tanggal...
+
+                        @endif
+
+                    </span>
+
+                    <span class="quick-date-arrow">
+                        ▼
+                    </span>
+                </button>
+
+
+                <div
+                    id="quickDateMenu"
+                    class="quick-date-menu"
+                >
+
+                    <button
+                        type="button"
+                        data-filter="all"
                     >
+                        Semua Tanggal
+                    </button>
 
-                    <span>–</span>
-
-                    <input
-                        type="date"
-                        name="tanggal_akhir"
-                        value="{{ request('tanggal_akhir') }}"
+                    <button
+                        type="button"
+                        data-filter="today"
                     >
+                        Hari Ini
+                    </button>
+
+                    <button
+                        type="button"
+                        data-filter="yesterday"
+                    >
+                        Kemarin
+                    </button>
+
+                    <button
+                        type="button"
+                        data-filter="7days"
+                    >
+                        7 Hari Terakhir
+                    </button>
+
+                    <button
+                        type="button"
+                        data-filter="month"
+                    >
+                        Bulan Ini
+                    </button>
+
+                    <button
+                        type="button"
+                        data-filter="custom"
+                    >
+                        Pilih Tanggal...
+                    </button>
 
                 </div>
 
-
-                <button
-                    type="submit"
-                    class="btn-finance"
-                    style="background:#355cc9;color:white;"
-                >
-                    🔍 Tampilkan
-                </button>
-
-            </form>
+            </div>
 
 
+            {{-- CETAK PDF --}}
             <a
                 href="#"
+                id="pdfButton"
                 class="btn-finance btn-print"
             >
                 🧾 Cetak PDF
             </a>
 
 
+            {{-- EXPORT EXCEL --}}
             <a
                 href="#"
+                id="excelButton"
                 class="btn-finance btn-excel"
             >
                 📊 Export Excel
@@ -1111,10 +1287,13 @@
             <div class="finance-panel-title">
 
                 <h2>
-                    Transaksi Keuangan Terbaru
+                    Ringkasan Retur
                 </h2>
 
-                <a href="{{ route('admin.transaksi.retur') }}">
+                <a href="{{ route('admin.transaksi.retur', [
+                    'tanggal_mulai' => $tanggalMulai,
+                    'tanggal_akhir' => $tanggalAkhir
+                ]) }}">
                     Lihat semua →
                 </a>
 
@@ -1244,7 +1423,10 @@
                     Ringkasan Penjualan
                 </h2>
 
-                <a href="{{ route('admin.transaksi.penjualan') }}">
+                <a href="{{ route('admin.transaksi.penjualan', [
+                    'tanggal_mulai' => $tanggalMulai,
+                    'tanggal_akhir' => $tanggalAkhir
+                ]) }}">
                     Lihat semua →
                 </a>
 
@@ -1267,7 +1449,7 @@
 
                             <th>Kasir</th>
 
-                            <th>Penjualan</th>
+                            <th>Penjualan Bersih</th>
 
                             <th>Diskon</th>
 
@@ -1417,150 +1599,432 @@
 
 <script>
 
-document.addEventListener(
-    'DOMContentLoaded',
-    function () {
+document.addEventListener('DOMContentLoaded', function () {
 
-        const tanggalMulai =
-            document.getElementById(
-                'tanggal_mulai'
+    const tanggalMulai =
+        document.getElementById('tanggal_mulai');
+
+    const tanggalAkhir =
+        document.getElementById('tanggal_akhir');
+
+    const quickDateButton =
+        document.getElementById('quickDateButton');
+
+    const quickDateMenu =
+        document.getElementById('quickDateMenu');
+
+    const quickDateLabel =
+        document.getElementById('quickDateLabel');
+
+    const pdfButton =
+        document.getElementById('pdfButton');
+
+    const excelButton =
+        document.getElementById('excelButton');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | URL FILTER
+    |--------------------------------------------------------------------------
+    */
+
+    function applyFilter(start = '', end = '') {
+
+        const params =
+            new URLSearchParams();
+
+
+        if (start !== '') {
+
+            params.set(
+                'tanggal_mulai',
+                start
             );
-
-        const tanggalAkhir =
-            document.getElementById(
-                'tanggal_akhir'
-            );
-
-        const pdfButton =
-            document.getElementById(
-                'pdfButton'
-            );
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | UPDATE URL PDF
-        |--------------------------------------------------------------------------
-        */
-
-        function updatePdfUrl() {
-
-            const params =
-                new URLSearchParams();
-
-
-            if (tanggalMulai.value !== '') {
-
-                params.set(
-                    'tanggal_mulai',
-                    tanggalMulai.value
-                );
-
-            }
-
-
-            if (tanggalAkhir.value !== '') {
-
-                params.set(
-                    'tanggal_akhir',
-                    tanggalAkhir.value
-                );
-
-            }
-
-
-            const baseUrl =
-                '{{ route('admin.laporan.keuangan.pdf') }}';
-
-
-            pdfButton.href =
-                baseUrl
-                + (
-                    params.toString()
-                        ? '?' + params.toString()
-                        : ''
-                );
 
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TANGGAL
-        |--------------------------------------------------------------------------
-        */
+        if (end !== '') {
 
-        function applyFilter() {
-
-            const params =
-                new URLSearchParams();
-
-
-            if (tanggalMulai.value !== '') {
-
-                params.set(
-                    'tanggal_mulai',
-                    tanggalMulai.value
-                );
-
-            }
-
-
-            if (tanggalAkhir.value !== '') {
-
-                params.set(
-                    'tanggal_akhir',
-                    tanggalAkhir.value
-                );
-
-            }
-
-
-            const url =
-                '{{ route(
-                    'admin.laporan.keuangan'
-                ) }}'
-                + (
-                    params.toString()
-                        ? '?' + params.toString()
-                        : ''
-                );
-
-
-            window.location.href = url;
+            params.set(
+                'tanggal_akhir',
+                end
+            );
 
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | EVENT FILTER
-        |--------------------------------------------------------------------------
-        */
+        const baseUrl =
+            '{{ route('admin.laporan.keuangan') }}';
 
-        tanggalMulai.addEventListener(
-            'change',
-            applyFilter
+
+        window.location.href =
+            baseUrl +
+            (
+                params.toString()
+                    ? '?' + params.toString()
+                    : ''
+            );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE URL PDF
+    |--------------------------------------------------------------------------
+    */
+
+    function updateExportUrl() {
+
+        const params =
+            new URLSearchParams();
+
+
+        if (tanggalMulai.value !== '') {
+
+            params.set(
+                'tanggal_mulai',
+                tanggalMulai.value
+            );
+
+        }
+
+
+        if (tanggalAkhir.value !== '') {
+
+            params.set(
+                'tanggal_akhir',
+                tanggalAkhir.value
+            );
+
+        }
+
+
+        const query =
+            params.toString();
+
+
+        pdfButton.href =
+            '{{ route('admin.laporan.keuangan.pdf') }}' +
+            (
+                query
+                    ? '?' + query
+                    : ''
+            );
+
+
+        excelButton.href =
+            '{{ route('admin.laporan.keuangan.excel') }}' +
+            (
+                query
+                    ? '?' + query
+                    : ''
+            );
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TANGGAL MULAI / AKHIR = LIVE
+    |--------------------------------------------------------------------------
+    */
+
+    tanggalMulai.addEventListener(
+        'change',
+        function () {
+
+            applyFilter(
+                tanggalMulai.value,
+                tanggalAkhir.value
+            );
+
+        }
+    );
+
+
+    tanggalAkhir.addEventListener(
+        'change',
+        function () {
+
+            applyFilter(
+                tanggalMulai.value,
+                tanggalAkhir.value
+            );
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | BUKA / TUTUP DROPDOWN
+    |--------------------------------------------------------------------------
+    */
+
+    quickDateButton.addEventListener(
+        'click',
+        function (event) {
+
+            event.stopPropagation();
+
+            quickDateMenu.classList.toggle('show');
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PILIH FILTER TANGGAL
+    |--------------------------------------------------------------------------
+    */
+
+    quickDateMenu
+        .querySelectorAll('button')
+        .forEach(function (button) {
+
+            button.addEventListener(
+                'click',
+                function () {
+
+                    const filter =
+                        this.dataset.filter;
+
+
+                    const today =
+                        new Date();
+
+
+                    let start = '';
+                    let end = '';
+
+
+                    /*
+                    | SEMUA TANGGAL
+                    */
+
+                    if (filter === 'all') {
+
+                        quickDateLabel.textContent =
+                            'Semua Tanggal';
+
+                        applyFilter();
+
+                        return;
+
+                    }
+
+
+                    /*
+                    | HARI INI
+                    */
+
+                    if (filter === 'today') {
+
+                        start =
+                            formatDate(today);
+
+                        end =
+                            formatDate(today);
+
+                        quickDateLabel.textContent =
+                            'Hari Ini';
+
+                    }
+
+
+                    /*
+                    | KEMARIN
+                    */
+
+                    if (filter === 'yesterday') {
+
+                        const yesterday =
+                            new Date(today);
+
+                        yesterday.setDate(
+                            today.getDate() - 1
+                        );
+
+                        start =
+                            formatDate(yesterday);
+
+                        end =
+                            formatDate(yesterday);
+
+                        quickDateLabel.textContent =
+                            'Kemarin';
+
+                    }
+
+
+                    /*
+                    | 7 HARI TERAKHIR
+                    */
+
+                    if (filter === '7days') {
+
+                        const sevenDaysAgo =
+                            new Date(today);
+
+                        sevenDaysAgo.setDate(
+                            today.getDate() - 6
+                        );
+
+                        start =
+                            formatDate(sevenDaysAgo);
+
+                        end =
+                            formatDate(today);
+
+                        quickDateLabel.textContent =
+                            '7 Hari Terakhir';
+
+                    }
+
+
+                    /*
+                    | BULAN INI
+                    */
+
+                    if (filter === 'month') {
+
+                        const firstDay =
+                            new Date(
+                                today.getFullYear(),
+                                today.getMonth(),
+                                1
+                            );
+
+                        start =
+                            formatDate(firstDay);
+
+                        end =
+                            formatDate(today);
+
+                        quickDateLabel.textContent =
+                            'Bulan Ini';
+
+                    }
+
+
+                    /*
+                    | PILIH TANGGAL
+                    */
+
+                    if (filter === 'custom') {
+
+                        quickDateLabel.textContent =
+                            'Pilih Tanggal...';
+
+                        quickDateMenu.classList.remove(
+                            'show'
+                        );
+
+                        tanggalMulai.focus();
+
+                        return;
+
+                    }
+
+
+                    /*
+                    | MASUKKAN TANGGAL
+                    */
+
+                    tanggalMulai.value =
+                        start;
+
+                    tanggalAkhir.value =
+                        end;
+
+
+                    quickDateMenu.classList.remove(
+                        'show'
+                    );
+
+
+                    applyFilter(
+                        start,
+                        end
+                    );
+
+                }
+            );
+
+        });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FORMAT DATE
+    |--------------------------------------------------------------------------
+    */
+
+    function formatDate(date) {
+
+        const year =
+            date.getFullYear();
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(2, '0');
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(2, '0');
+
+
+        return (
+            year +
+            '-' +
+            month +
+            '-' +
+            day
         );
 
-
-        tanggalAkhir.addEventListener(
-            'change',
-            applyFilter
-        );
+    }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | URL PDF SAAT HALAMAN DIBUKA
-        |--------------------------------------------------------------------------
-        */
+    /*
+    |--------------------------------------------------------------------------
+    | KLIK DI LUAR DROPDOWN
+    |--------------------------------------------------------------------------
+    */
 
-        updatePdfUrl();
+    document.addEventListener(
+        'click',
+        function (event) {
 
-    };
+            if (
+                !quickDateButton.contains(event.target) &&
+                !quickDateMenu.contains(event.target)
+            ) {
 
-);
+                quickDateMenu.classList.remove(
+                    'show'
+                );
+
+            }
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | URL PDF & EXCEL SAAT HALAMAN DIBUKA
+    |--------------------------------------------------------------------------
+    */
+
+    updateExportUrl();
+
+});
 
 </script>
 

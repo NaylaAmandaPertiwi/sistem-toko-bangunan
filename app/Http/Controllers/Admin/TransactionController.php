@@ -25,8 +25,6 @@ class TransactionController extends Controller
     public function penjualan(Request $request)
     {
 
-        $perPage = $request->get('per_page', 10);
-
         $perPage = $request->integer('per_page', 10);
 
         $sales = $this->filterSales($request)
@@ -82,56 +80,90 @@ class TransactionController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $filter = $request->get('filter', 'all');
+        // PRIORITAS 1:
+        // Jika laporan mengirim periode tanggal,
+        // gunakan tanggal_mulai dan tanggal_akhir.
+        if (
+            $request->filled('tanggal_mulai') &&
+            $request->filled('tanggal_akhir')
+        ) {
 
-        switch ($filter) {
+            $query->whereBetween(
+                'tanggal',
+                [
+                    $request->tanggal_mulai,
+                    $request->tanggal_akhir
+                ]
+            );
 
-            case 'today':
+        } else {
 
-                $query->whereDate('tanggal', now());
+            /*
+            |--------------------------------------------------------------------------
+            | FILTER TANGGAL LAMA
+            |--------------------------------------------------------------------------
+            */
 
-                break;
+            $filter = $request->get('filter', 'all');
 
-            case 'yesterday':
+            switch ($filter) {
 
-                $query->whereDate(
-                    'tanggal',
-                    now()->subDay()
-                );
-
-                break;
-
-            case 'week':
-
-                $query->whereBetween(
-                    'tanggal',
-                    [
-                        now()->subDays(6)->startOfDay(),
-                        now()->endOfDay()
-                    ]
-                );
-
-                break;
-
-            case 'month':
-
-                $query->whereMonth('tanggal', now()->month)
-                    ->whereYear('tanggal', now()->year);
-
-                break;
-
-            case 'custom':
-
-                if ($request->filled('tanggal')) {
+                case 'today':
 
                     $query->whereDate(
                         'tanggal',
-                        $request->tanggal
+                        now()
                     );
 
-                }
+                    break;
 
-                break;
+                case 'yesterday':
+
+                    $query->whereDate(
+                        'tanggal',
+                        now()->subDay()
+                    );
+
+                    break;
+
+                case 'week':
+
+                    $query->whereBetween(
+                        'tanggal',
+                        [
+                            now()->subDays(6)->startOfDay(),
+                            now()->endOfDay()
+                        ]
+                    );
+
+                    break;
+
+                case 'month':
+
+                    $query->whereMonth(
+                        'tanggal',
+                        now()->month
+                    )
+                    ->whereYear(
+                        'tanggal',
+                        now()->year
+                    );
+
+                    break;
+
+                case 'custom':
+
+                    if ($request->filled('tanggal')) {
+
+                        $query->whereDate(
+                            'tanggal',
+                            $request->tanggal
+                        );
+
+                    }
+
+                    break;
+            }
         }
 
         /*
@@ -142,7 +174,10 @@ class TransactionController extends Controller
 
         if ($request->filled('kasir')) {
 
-            $query->where('user_id', $request->kasir);
+            $query->where(
+                'user_id',
+                $request->kasir
+            );
 
         }
 
@@ -178,61 +213,82 @@ class TransactionController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $filter = $request->get('filter', 'all');
+        // Jika laporan mengirim periode tanggal
+        if (
+            $request->filled('tanggal_mulai') &&
+            $request->filled('tanggal_akhir')
+        ) {
 
-        switch ($filter) {
+            $query->whereBetween(
+                'tanggal',
+                [
+                    $request->tanggal_mulai,
+                    $request->tanggal_akhir
+                ]
+            );
 
-            case 'today':
+        } else {
 
-                $query->whereDate('tanggal', now());
+            $filter = $request->get('filter', 'all');
 
-                break;
+            switch ($filter) {
 
-            case 'yesterday':
-
-                $query->whereDate(
-                    'tanggal',
-                    now()->subDay()
-                );
-
-                break;
-
-            case 'week':
-
-                $query->whereBetween(
-                    'tanggal',
-                    [
-                        now()->subDays(6)->startOfDay(),
-                        now()->endOfDay()
-                    ]
-                );
-
-                break;
-
-            case 'month':
-
-                $query->whereMonth(
-                    'tanggal',
-                    now()->month
-                )->whereYear(
-                    'tanggal',
-                    now()->year
-                );
-
-                break;
-
-            case 'custom':
-
-                if ($request->filled('tanggal')) {
+                case 'today':
 
                     $query->whereDate(
                         'tanggal',
-                        $request->tanggal
+                        now()
                     );
 
-                }
+                    break;
 
-                break;
+                case 'yesterday':
+
+                    $query->whereDate(
+                        'tanggal',
+                        now()->subDay()
+                    );
+
+                    break;
+
+                case 'week':
+
+                    $query->whereBetween(
+                        'tanggal',
+                        [
+                            now()->subDays(6)->startOfDay(),
+                            now()->endOfDay()
+                        ]
+                    );
+
+                    break;
+
+                case 'month':
+
+                    $query->whereMonth(
+                        'tanggal',
+                        now()->month
+                    )
+                    ->whereYear(
+                        'tanggal',
+                        now()->year
+                    );
+
+                    break;
+
+                case 'custom':
+
+                    if ($request->filled('tanggal')) {
+
+                        $query->whereDate(
+                            'tanggal',
+                            $request->tanggal
+                        );
+
+                    }
+
+                    break;
+            }
         }
 
         /*
