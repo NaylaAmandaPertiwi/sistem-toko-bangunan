@@ -147,6 +147,151 @@
 
 }
 
+.category-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.category-button {
+    width: 100%;
+    height: 40px;
+
+    padding: 0 12px;
+
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    background: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-size: 14px;
+    color: #222;
+
+    cursor: pointer;
+
+    box-sizing: border-box;
+}
+
+.category-button:hover {
+    border-color: #1684e0;
+}
+
+.category-arrow {
+    font-size: 11px;
+    color: #555;
+
+    transition: transform .2s;
+}
+
+.category-dropdown.active .category-arrow {
+    transform: rotate(180deg);
+}
+
+.category-menu {
+    display: none;
+
+    position: absolute;
+
+    top: calc(100% + 5px);
+    left: 0;
+
+    width: 100%;
+
+    background: white;
+
+    border: 1px solid #ddd;
+    border-radius: 8px;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,.12);
+
+    z-index: 1000;
+
+    overflow: hidden;
+
+    padding: 8px;
+    
+    box-sizing: border-box;
+}
+
+.category-dropdown.active .category-menu {
+    display: block;
+}
+
+.category-search {
+    width: 100%;
+
+    margin: 0 0 8px 0;
+
+    padding: 9px 10px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 7px;
+
+    box-sizing: border-box;
+
+    font-size: 13px;
+
+    color: #222;
+
+    background: #fff;
+
+    outline: none;
+}
+
+.category-search::placeholder {
+    color: #888;
+}
+
+.category-search:focus {
+    border-color: #1684e0;
+}
+
+.category-options {
+    max-height: 220px;
+
+    overflow-y: auto;
+}
+
+.category-option {
+    padding: 10px 12px;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+    color: #222 !important;
+
+    background: #fff;
+}
+
+.category-option:hover {
+    background: #f3f6fb;
+
+    color: #222 !important;
+}
+
+.category-option.selected {
+    background: #eaf2ff;
+
+    color: #222 !important;
+
+    font-weight: 600;
+}
+
+.category-no-result {
+    padding: 12px;
+
+    text-align: center;
+
+    color: #888;
+
+    font-size: 13px;
+}
+
 /* =========================
    RINGKASAN
 ========================= */
@@ -359,31 +504,74 @@
         {{-- KATEGORI --}}
         <div class="filter-group">
 
-            <label for="category">
+            <label>
                 Kategori
             </label>
 
-                    <select
-                id="category"
-                name="category"
-            >
+            <div class="category-dropdown">
 
-                <option value="">
-                    Semua Kategori
-                </option>
+                <button
+                    type="button"
+                    class="category-button"
+                    id="categoryButton"
+                >
+                    <span id="categorySelectedText">
+                        {{ $category ? $categories->firstWhere('id', $category)?->nama_kategori : 'Semua Kategori' }}
+                    </span>
 
-                @foreach($categories as $item)
+                    <span class="category-arrow">
+                        ▼
+                    </span>
+                </button>
 
-                    <option
-                        value="{{ $item->id }}"
-                        {{ $category == $item->id ? 'selected' : '' }}
+                <div
+                    class="category-menu"
+                    id="categoryMenu"
+                >
+
+                    <input
+                        type="text"
+                        id="categorySearch"
+                        class="category-search"
+                        placeholder="Cari Kategori..."
+                        autocomplete="off"
                     >
-                        {{ $item->nama_kategori }}
-                    </option>
 
-                @endforeach
+                    <div
+                        class="category-options"
+                        id="categoryOptions"
+                    >
 
-            </select>
+                        <div
+                            class="category-option {{ !$category ? 'selected' : '' }}"
+                            data-value=""
+                        >
+                            Semua Kategori
+                        </div>
+
+                        @foreach($categories as $item)
+
+                            <div
+                                class="category-option {{ $category == $item->id ? 'selected' : '' }}"
+                                data-value="{{ $item->id }}"
+                                data-name="{{ strtolower($item->nama_kategori) }}"
+                            >
+                                {{ $item->nama_kategori }}
+                            </div>
+
+                        @endforeach
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <input
+                type="hidden"
+                id="category"
+                value="{{ $category }}"
+            >
 
         </div>
 
@@ -611,12 +799,39 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    const tanggalMulai = document.getElementById('tanggal_mulai');
+    const tanggalMulai =
+        document.getElementById('tanggal_mulai');
 
-    const tanggalAkhir = document.getElementById('tanggal_akhir');
+    const tanggalAkhir =
+        document.getElementById('tanggal_akhir');
 
-    const category = document.getElementById('category');
+    const category =
+        document.getElementById('category');
 
+    const categoryDropdown =
+        document.querySelector('.category-dropdown');
+
+    const categoryButton =
+        document.getElementById('categoryButton');
+
+    const categoryMenu =
+        document.getElementById('categoryMenu');
+
+    const categorySearch =
+        document.getElementById('categorySearch');
+
+    const categoryOptions =
+        document.querySelectorAll('.category-option');
+
+    const categorySelectedText =
+        document.getElementById('categorySelectedText');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | TERAPKAN FILTER
+    |--------------------------------------------------------------------------
+    */
 
     function applyFilter() {
 
@@ -655,9 +870,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const url =
             '{{ route('admin.laporan.barang-terlaris') }}'
-            + (params.toString()
-                ? '?' + params.toString()
-                : ''
+            +
+            (
+                params.toString()
+                    ? '?' + params.toString()
+                    : ''
             );
 
 
@@ -666,11 +883,209 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
 
-    category.addEventListener(
-        'change',
-        applyFilter
+    /*
+    |--------------------------------------------------------------------------
+    | BUKA / TUTUP DROPDOWN
+    |--------------------------------------------------------------------------
+    */
+
+    categoryButton.addEventListener('click', function () {
+
+        categoryDropdown.classList.toggle('active');
+
+        if (categoryDropdown.classList.contains('active')) {
+
+            categorySearch.value = '';
+
+            categoryOptions.forEach(function(option) {
+
+                option.style.display = 'block';
+
+            });
+
+            const noResult =
+                document.getElementById('categoryNoResult');
+
+            if (noResult) {
+                noResult.remove();
+            }
+
+            // Fokus langsung ke search
+            categorySearch.focus();
+        }
+
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | SEARCH KATEGORI
+    |--------------------------------------------------------------------------
+    */
+
+    categorySearch.addEventListener('input', function () {
+
+        const keyword = this.value.toLowerCase().trim();
+
+        let found = false;
+
+        categoryOptions.forEach(function (option) {
+
+            const name = option.textContent
+                .toLowerCase()
+                .trim();
+
+            // Selalu tampilkan "Semua Kategori"
+            if (option.dataset.value === '') {
+                option.style.display = 'block';
+                return;
+            }
+
+            if (name.includes(keyword)) {
+
+                option.style.display = 'block';
+                found = true;
+
+            } else {
+
+                option.style.display = 'none';
+
+            }
+
+        });
+
+
+        let noResult =
+            document.getElementById('categoryNoResult');
+
+
+        if (!found && keyword !== '') {
+
+            if (!noResult) {
+
+                noResult = document.createElement('div');
+
+                noResult.id = 'categoryNoResult';
+
+                noResult.className =
+                    'category-no-result';
+
+                noResult.textContent =
+                    'Kategori tidak ditemukan';
+
+                document
+                    .getElementById('categoryOptions')
+                    .appendChild(noResult);
+
+            }
+
+        } else {
+
+            if (noResult) {
+                noResult.remove();
+            }
+
+        }
+
+    });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | PILIH KATEGORI
+    |--------------------------------------------------------------------------
+    */
+
+    categoryOptions.forEach(
+        function (option) {
+
+            option.addEventListener(
+                'click',
+                function () {
+
+                    const value =
+                        this.dataset.value;
+
+                    const name =
+                        this.textContent.trim();
+
+
+                    category.value = value;
+
+
+                    categorySelectedText.textContent =
+                        name;
+
+
+                    categoryDropdown.classList.remove(
+                        'active'
+                    );
+
+
+                    categorySearch.value = '';
+
+
+                    categoryOptions.forEach(
+                        function (item) {
+
+                            item.style.display =
+                                'block';
+
+                        }
+                    );
+
+
+                    const noResult =
+                        document.getElementById(
+                            'categoryNoResult'
+                        );
+
+                    if (noResult) {
+
+                        noResult.remove();
+
+                    }
+
+
+                    applyFilter();
+
+                }
+            );
+
+        }
     );
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | TUTUP DROPDOWN KETIKA KLIK DI LUAR
+    |--------------------------------------------------------------------------
+    */
+
+    document.addEventListener(
+        'click',
+        function (event) {
+
+            if (
+                !categoryDropdown.contains(
+                    event.target
+                )
+            ) {
+
+                categoryDropdown.classList.remove(
+                    'active'
+                );
+
+            }
+
+        }
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | FILTER TANGGAL
+    |--------------------------------------------------------------------------
+    */
 
     tanggalMulai.addEventListener(
         'change',
