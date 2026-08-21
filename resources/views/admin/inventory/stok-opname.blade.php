@@ -32,82 +32,152 @@
     margin-bottom:20px;
 }
 
+/* ==========================================================
+   TOOLBAR FILTER OPNAME
+========================================================== */
+
 .opname-filter-row{
     display:flex;
     align-items:center;
-    gap:14px;
+    justify-content:flex-end;
+    gap:15px;
     margin-top:30px;
     margin-bottom:30px;
 }
 
-.opname-search{
-    width:340px;
-    flex:0 0 340px;
-}
 
-.opname-search .search-box{
-    width:100%;
-    height:46px;
-    padding:0 15px;
-    box-sizing:border-box;
+/* ==========================================================
+   SEARCH
+========================================================== */
+
+.opname-search{
+    width:285px;
+    flex:0 0 285px;
 }
 
 .opname-search input{
     width:100%;
     height:46px;
-    padding:0 16px;
+
+    padding:0 15px;
+
     border:1px solid #ddd;
     border-radius:10px;
-    box-sizing:border-box;
+
     outline:none;
+
     font-size:14px;
+
+    box-sizing:border-box;
 }
 
 .opname-search input:focus{
     border-color:#1684e0;
 }
 
-.opname-date-wrapper,
+
+/* ==========================================================
+   FILTER STATUS
+========================================================== */
+
 .opname-status-wrapper{
     position:relative;
-    flex:0 0 auto;
 }
 
-.opname-date-btn,
 .opname-status-btn{
+
+    width:180px;
     height:46px;
-    min-width:190px;
-    padding:0 15px;
-    background:#fff;
-    border:1px solid #ddd;
-    border-radius:10px;
-    cursor:pointer;
 
     display:flex;
     align-items:center;
     justify-content:space-between;
 
+    padding:0 15px;
+
+    background:#fff;
+
+    border:1px solid #ddd;
+    border-radius:10px;
+
+    cursor:pointer;
+
     font-size:14px;
-    color:#222;
+
+    box-sizing:border-box;
 }
 
-.opname-status-btn{
-    min-width:170px;
-}
-
-.opname-date-btn:hover,
 .opname-status-btn:hover{
     border-color:#1684e0;
 }
 
+.opname-status-btn i{
+    font-size:11px;
+    color:#666;
+
+    transition:transform .2s ease;
+}
+
+.opname-status-wrapper.active
+.opname-status-btn i{
+    transform:rotate(180deg);
+}
+
+
+/* ==========================================================
+   FILTER TANGGAL
+========================================================== */
+
+.opname-date-wrapper{
+    position:relative;
+}
+
+.opname-date-btn{
+
+    width:230px;
+    height:46px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 15px;
+
+    background:#fff;
+
+    border:1px solid #ddd;
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:14px;
+
+    box-sizing:border-box;
+}
+
+.opname-date-btn:hover{
+    border-color:#1684e0;
+}
+
+.opname-date-btn i{
+    color:#222;
+}
+
+
+/* ==========================================================
+   DROPDOWN
+========================================================== */
+
 .opname-dropdown{
+
     position:absolute;
+
     top:54px;
-    left:0;
 
     width:230px;
 
     background:#fff;
+
     border:1px solid #ddd;
     border-radius:10px;
 
@@ -117,39 +187,81 @@
 
     overflow:hidden;
 
-    z-index:1000;
+    z-index:4000;
 }
 
 .opname-dropdown.show{
     display:block;
 }
 
+
+/* STATUS DROPDOWN */
+
+.opname-status-wrapper .opname-dropdown{
+
+    left:0;
+
+    width:180px;
+
+}
+
+
+/* TANGGAL DROPDOWN */
+
+.opname-date-wrapper .opname-dropdown{
+
+    right:0;
+
+    width:230px;
+
+}
+
+
+/* ==========================================================
+   OPTION
+========================================================== */
+
 .opname-option{
+
     width:100%;
-    padding:14px 16px;
+
+    padding:12px 16px;
+
+    border:none;
 
     background:#fff;
-    border:none;
 
     text-align:left;
 
     font-size:14px;
+
+    color:#222;
+
     cursor:pointer;
 }
 
 .opname-option:hover{
-    background:#f3f5fa;
+    background:#f4f6fb;
 }
 
 .opname-option.active{
-    background:#f3f5fa;
+    background:#f4f6fb;
     font-weight:600;
 }
 
+
+/* ==========================================================
+   CUSTOM DATE
+========================================================== */
+
 .opname-custom-date{
+
     display:none;
+
     padding:14px;
+
     border-top:1px solid #eee;
+
     background:#fff;
 }
 
@@ -158,20 +270,30 @@
 }
 
 .opname-custom-date label{
+
     display:block;
+
     margin-bottom:8px;
+
     font-size:13px;
+
     color:#555;
 }
 
 .opname-custom-date input{
+
     width:100%;
     height:40px;
+
     padding:0 10px;
+
     border:1px solid #ddd;
     border-radius:8px;
+
     box-sizing:border-box;
+
     font-size:13px;
+
     outline:none;
 }
 
@@ -180,14 +302,23 @@
 }
 
 .opname-custom-date button{
+
     width:100%;
+
     margin-top:10px;
+
     height:40px;
+
     border:none;
+
     border-radius:8px;
+
     background:#1684e0;
+
     color:#fff;
+
     cursor:pointer;
+
     font-size:13px;
 }
 
@@ -339,6 +470,163 @@
     color:#ff4d4f;
 }
 
+/* =========================================================
+   MODAL PILIH TANGGAL
+========================================================= */
+
+.opname-date-modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.35);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+    z-index:9999;
+
+}
+
+
+.opname-date-modal.show{
+
+    display:flex;
+
+}
+
+
+.opname-date-modal-box{
+
+    width:440px;
+
+    background:#fff;
+
+    border-radius:16px;
+
+    box-shadow:0 10px 35px rgba(0,0,0,.20);
+
+    overflow:hidden;
+
+}
+
+
+.opname-date-modal-header{
+
+    padding:20px;
+
+    border-bottom:1px solid #eee;
+
+}
+
+
+.opname-date-modal-header h3{
+
+    margin:0;
+
+    font-size:20px;
+
+    color:#222;
+
+}
+
+
+.opname-date-modal-header i{
+
+    margin-right:8px;
+
+}
+
+
+.opname-date-modal-body{
+
+    padding:22px;
+
+}
+
+
+.opname-date-modal-body input{
+
+    width:100%;
+
+    height:48px;
+
+    padding:0 14px;
+
+    border:1px solid #ddd;
+
+    border-radius:10px;
+
+    font-size:14px;
+
+    box-sizing:border-box;
+
+    outline:none;
+
+}
+
+
+.opname-date-modal-body input:focus{
+
+    border-color:#1684e0;
+
+}
+
+
+.opname-date-modal-footer{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:10px;
+
+    padding:16px 20px;
+
+    border-top:1px solid #eee;
+
+}
+
+
+.opname-date-cancel,
+.opname-date-save{
+
+    height:40px;
+
+    padding:0 20px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-size:14px;
+
+}
+
+
+.opname-date-cancel{
+
+    background:#eee;
+
+    color:#333;
+
+}
+
+
+.opname-date-save{
+
+    background:#1684e0;
+
+    color:#fff;
+
+}
+
 </style>
 
 <div class="page-header">
@@ -377,130 +665,27 @@
 
         <div class="opname-filter-row">
 
-            {{-- LIVE SEARCH --}}
+            {{-- ==================================================
+                SEARCH
+            ================================================== --}}
+
             <div class="opname-search">
 
                 <input
                     type="text"
                     id="opnameSearch"
-                    class="search-box"
                     placeholder="Cari No. Opname / Keterangan..."
-                    autocomplete="off">
+                    autocomplete="off"
+                    value=""
+                >
 
             </div>
 
 
-            {{-- FILTER TANGGAL --}}
-            <div class="opname-date-wrapper">
+            {{-- ==================================================
+                FILTER STATUS
+            ================================================== --}}
 
-                <button
-                    type="button"
-                    class="opname-date-btn"
-                    id="opnameDateButton">
-
-                    <span>
-
-                        <i class="fa-regular fa-calendar"></i>
-
-                        <span id="opnameDateText">
-                            Semua Tanggal
-                        </span>
-
-                    </span>
-
-                    <i class="fa-solid fa-chevron-down"></i>
-
-                </button>
-
-                <div
-                    class="opname-dropdown"
-                    id="opnameDateDropdown">
-
-                    <button
-                        type="button"
-                        class="opname-option active"
-                        data-date-filter="all">
-
-                        Semua Tanggal
-
-                    </button>
-
-                    <button
-                        type="button"
-                        class="opname-option"
-                        data-date-filter="today">
-
-                        Hari Ini
-
-                    </button>
-
-                    <button
-                        type="button"
-                        class="opname-option"
-                        data-date-filter="yesterday">
-
-                        Kemarin
-
-                    </button>
-
-                    <button
-                        type="button"
-                        class="opname-option"
-                        data-date-filter="week">
-
-                        7 Hari Terakhir
-
-                    </button>
-
-                    <button
-                        type="button"
-                        class="opname-option"
-                        data-date-filter="month">
-
-                        Bulan Ini
-
-                    </button>
-
-                    <button
-                        type="button"
-                        class="opname-option"
-                        id="customDateOption">
-
-                        Pilih Tanggal...
-
-                    </button>
-
-
-                    {{-- CALENDAR CUSTOM --}}
-
-                    <div
-                        class="opname-custom-date"
-                        id="opnameCustomDate">
-
-                        <label for="customOpnameDate">
-                            Pilih tanggal
-                        </label>
-
-                        <input
-                            type="date"
-                            id="customOpnameDate">
-
-                        <button
-                            type="button"
-                            id="applyCustomDate">
-
-                            Terapkan
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            {{-- FILTER STATUS --}}
             <div class="opname-status-wrapper">
 
                 <button
@@ -509,7 +694,30 @@
                     id="opnameStatusButton">
 
                     <span id="opnameStatusText">
-                        Semua Status
+
+                        @switch(request('status'))
+
+                            @case('Draft')
+                                Draft
+                                @break
+
+                            @case('Disetujui')
+                                Disetujui
+                                @break
+
+                            @case('Selesai')
+                                Selesai
+                                @break
+
+                            @case('Dibatalkan')
+                                Dibatalkan
+                                @break
+
+                            @default
+                                Semua Status
+
+                        @endswitch
+
                     </span>
 
                     <i class="fa-solid fa-chevron-down"></i>
@@ -523,8 +731,8 @@
 
                     <button
                         type="button"
-                        class="opname-option active"
-                        data-status-filter="all">
+                        class="opname-option"
+                        data-status="">
 
                         Semua Status
 
@@ -533,7 +741,7 @@
                     <button
                         type="button"
                         class="opname-option"
-                        data-status-filter="Draft">
+                        data-status="Draft">
 
                         Draft
 
@@ -542,7 +750,7 @@
                     <button
                         type="button"
                         class="opname-option"
-                        data-status-filter="Disetujui">
+                        data-status="Disetujui">
 
                         Disetujui
 
@@ -551,7 +759,7 @@
                     <button
                         type="button"
                         class="opname-option"
-                        data-status-filter="Selesai">
+                        data-status="Selesai">
 
                         Selesai
 
@@ -560,9 +768,127 @@
                     <button
                         type="button"
                         class="opname-option"
-                        data-status-filter="Dibatalkan">
+                        data-status="Dibatalkan">
 
                         Dibatalkan
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            {{-- ==================================================
+                FILTER TANGGAL
+            ================================================== --}}
+
+            <div class="opname-date-wrapper">
+
+                <button
+                    type="button"
+                    class="opname-date-btn"
+                    id="opnameDateButton">
+
+                    <span>
+
+                        <i class="fa-regular fa-calendar"></i>
+
+                        <span id="opnameDateText">
+
+                            @switch(request('filter'))
+
+                                @case('today')
+                                    Hari Ini
+                                    @break
+
+                                @case('yesterday')
+                                    Kemarin
+                                    @break
+
+                                @case('week')
+                                    7 Hari Terakhir
+                                    @break
+
+                                @case('month')
+                                    Bulan Ini
+                                    @break
+
+                                @case('custom')
+                                    {{ request('tanggal') }}
+                                    @break
+
+                                @default
+                                    Semua Tanggal
+
+                            @endswitch
+
+                        </span>
+
+                    </span>
+
+                    <i class="fa-solid fa-chevron-down"></i>
+
+                </button>
+
+
+                <div
+                    class="opname-dropdown"
+                    id="opnameDateDropdown">
+
+                    <button
+                        type="button"
+                        class="opname-option"
+                        data-filter="all">
+
+                        Semua Tanggal
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="opname-option"
+                        data-filter="today">
+
+                        Hari Ini
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="opname-option"
+                        data-filter="yesterday">
+
+                        Kemarin
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="opname-option"
+                        data-filter="week">
+
+                        7 Hari Terakhir
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="opname-option"
+                        data-filter="month">
+
+                        Bulan Ini
+
+                    </button>
+
+                    <hr style="margin:0;border:0;border-top:1px solid #eee;">
+
+                    <button
+                        type="button"
+                        class="opname-option"
+                        id="customDateOption">
+
+                        Pilih Tanggal...
 
                     </button>
 
@@ -748,6 +1074,63 @@
 
 </div>
 
+<!-- =========================================================
+     MODAL PILIH TANGGAL
+========================================================= -->
+
+<div
+    class="opname-date-modal"
+    id="opnameDateModal">
+
+    <div class="opname-date-modal-box">
+
+        <div class="opname-date-modal-header">
+
+            <h3>
+                <i class="fa-regular fa-calendar"></i>
+                Pilih Tanggal
+            </h3>
+
+        </div>
+
+
+        <div class="opname-date-modal-body">
+
+            <input
+                type="date"
+                id="opnameCustomDate"
+            >
+
+        </div>
+
+
+        <div class="opname-date-modal-footer">
+
+            <button
+                type="button"
+                id="cancelOpnameDate"
+                class="opname-date-cancel">
+
+                Batal
+
+            </button>
+
+
+            <button
+                type="button"
+                id="saveOpnameDate"
+                class="opname-date-save">
+
+                Simpan
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 <script>
 
 /* =========================================================
@@ -856,561 +1239,598 @@ document
 
 /* =========================================================
    FILTER OPNAME
+   MENYAMAKAN PERILAKU DENGAN PERGERAKAN STOK
 ========================================================= */
 
-let selectedDateFilter = 'all';
-let selectedStatusFilter = 'all';
-let selectedCustomDate = null;
-
-
-/* =========================================================
-   ELEMENT
-========================================================= */
-
-const opnameSearch =
-    document.getElementById('opnameSearch');
-
-const opnameRows =
-    document.querySelectorAll('.opname-row');
-
-const dateButton =
-    document.getElementById('opnameDateButton');
-
-const dateDropdown =
-    document.getElementById('opnameDateDropdown');
-
-const dateText =
-    document.getElementById('opnameDateText');
-
-const statusButton =
-    document.getElementById('opnameStatusButton');
-
-const statusDropdown =
-    document.getElementById('opnameStatusDropdown');
-
-const statusText =
-    document.getElementById('opnameStatusText');
-
-const customDateOption =
-    document.getElementById('customDateOption');
-
-const customDateBox =
-    document.getElementById('opnameCustomDate');
-
-const customDateInput =
-    document.getElementById('customOpnameDate');
-
-const applyCustomDate =
-    document.getElementById('applyCustomDate');
-
-
-/* =========================================================
-   BUKA DROPDOWN TANGGAL
-========================================================= */
-
-dateButton.addEventListener('click', function(event){
-
-    event.stopPropagation();
-
-    dateDropdown.classList.toggle('show');
-
-    statusDropdown.classList.remove('show');
-
-});
-
-
-/* =========================================================
-   BUKA DROPDOWN STATUS
-========================================================= */
-
-statusButton.addEventListener('click', function(event){
-
-    event.stopPropagation();
-
-    statusDropdown.classList.toggle('show');
-
-    dateDropdown.classList.remove('show');
-
-});
-
-
-/* =========================================================
-   KLIK DI LUAR DROPDOWN
-========================================================= */
-
-document.addEventListener('click', function(event){
-
-    if(
-        !dateButton.contains(event.target) &&
-        !dateDropdown.contains(event.target)
-    ){
-
-        dateDropdown.classList.remove('show');
-
-    }
-
-
-    if(
-        !statusButton.contains(event.target) &&
-        !statusDropdown.contains(event.target)
-    ){
-
-        statusDropdown.classList.remove('show');
-
-    }
-
-});
-
-
-/* =========================================================
-   FORMAT TANGGAL
-========================================================= */
-
-function getDateOnly(date){
-
-    return new Date(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate()
-    );
-
-}
-
-
-/* =========================================================
-   CEK FILTER TANGGAL
-========================================================= */
-
-function matchDateFilter(dateValue){
-
-    if(selectedDateFilter === 'all'){
-
-        return true;
-
-    }
-
-
-    const rowDate =
-        new Date(dateValue);
-
-
-    const today =
-        getDateOnly(new Date());
-
-
-    const targetDate =
-        getDateOnly(rowDate);
-
-
-    /* -------------------------
-       HARI INI
-    ------------------------- */
-
-    if(selectedDateFilter === 'today'){
-
-        return targetDate.getTime() ===
-            today.getTime();
-
-    }
-
-
-    /* -------------------------
-       KEMARIN
-    ------------------------- */
-
-    if(selectedDateFilter === 'yesterday'){
-
-        const yesterday =
-            new Date(today);
-
-
-        yesterday.setDate(
-            yesterday.getDate() - 1
-        );
-
-
-        return targetDate.getTime() ===
-            yesterday.getTime();
-
-    }
-
-
-    /* -------------------------
-       7 HARI TERAKHIR
-    ------------------------- */
-
-    if(selectedDateFilter === 'week'){
-
-        const startDate =
-            new Date(today);
-
-
-        startDate.setDate(
-            startDate.getDate() - 6
-        );
-
-
-        return targetDate >= startDate &&
-            targetDate <= today;
-
-    }
-
-
-    /* -------------------------
-       BULAN INI
-    ------------------------- */
-
-    if(selectedDateFilter === 'month'){
-
-        return (
-            targetDate.getMonth() ===
-            today.getMonth()
-        )
-        &&
-        (
-            targetDate.getFullYear() ===
-            today.getFullYear()
-        );
-
-    }
-
-    if(selectedDateFilter === 'custom'){
-
-        if(!selectedCustomDate){
-
-            return true;
-
-        }
-
-
-        return dateValue === selectedCustomDate;
-
-    }
-
-
-    return true;
-
-}
-
-
-/* =========================================================
-   FILTER UTAMA
-========================================================= */
-
-function filterOpname(){
-
-    const keyword =
-        opnameSearch.value
-            .toLowerCase()
-            .trim();
-
-
-    opnameRows.forEach(function(row){
-
-        /* -------------------------
-           DATA NOMOR OPNAME
-        ------------------------- */
-
-        const nomor =
-            row
-                .querySelector('.opname-number')
-                ?.textContent
-                .toLowerCase()
-                .trim() || '';
-
-
-        /* -------------------------
-           DATA KETERANGAN
-        ------------------------- */
-
-        const keterangan =
-            row
-                .querySelector('.opname-note')
-                ?.textContent
-                .toLowerCase()
-                .trim() || '';
-
-
-        /* -------------------------
-           DATA STATUS
-        ------------------------- */
-
-        const status =
-            row.dataset.status || '';
-
-
-        /* -------------------------
-           DATA TANGGAL
-        ------------------------- */
-
-        const tanggal =
-            row.dataset.date || '';
-
-
-        /* -------------------------
-           FILTER SEARCH
-        ------------------------- */
-
-        const cocokSearch =
-            nomor.includes(keyword) ||
-            keterangan.includes(keyword);
-
-
-        /* -------------------------
-           FILTER STATUS
-        ------------------------- */
-
-        const cocokStatus =
-            selectedStatusFilter === 'all' ||
-            status === selectedStatusFilter;
-
-
-        /* -------------------------
-           FILTER TANGGAL
-        ------------------------- */
-
-        const cocokTanggal =
-            matchDateFilter(tanggal);
-
-
-        /* -------------------------
-           HASIL AKHIR
-        ------------------------- */
-
-        if(
-            cocokSearch &&
-            cocokStatus &&
-            cocokTanggal
-        ){
-
-            row.style.display = '';
-
-        }else{
-
-            row.style.display = 'none';
-
-        }
-
-    });
-
-}
-
-
-/* =========================================================
-   LIVE SEARCH
-========================================================= */
-
-opnameSearch.addEventListener(
-    'input',
+document.addEventListener(
+    'DOMContentLoaded',
     function(){
 
-        filterOpname();
-
-    }
-);
+        const searchInput =
+            document.getElementById('opnameSearch');
 
 
-/* =========================================================
-   PILIH FILTER TANGGAL
-========================================================= */
+        /* ==================================================
+           FILTER STATUS
+        ================================================== */
 
-document
-    .querySelectorAll('[data-date-filter]')
-    .forEach(function(option){
+        const statusWrapper =
+            document.querySelector(
+                '.opname-status-wrapper'
+            );
 
-        option.addEventListener(
+        const statusButton =
+            document.getElementById(
+                'opnameStatusButton'
+            );
+
+        const statusDropdown =
+            document.getElementById(
+                'opnameStatusDropdown'
+            );
+
+
+        statusButton.addEventListener(
             'click',
-            function(){
+            function(event){
 
-                selectedDateFilter =
-                    this.dataset.dateFilter;
+                event.stopPropagation();
 
-
-                dateText.textContent =
-                    this.textContent.trim();
-
-
-                document
-                    .querySelectorAll(
-                        '[data-date-filter]'
-                    )
-                    .forEach(function(item){
-
-                        item.classList.remove(
-                            'active'
-                        );
-
-                    });
-
-
-                this.classList.add('active');
-
-
-                dateDropdown.classList.remove(
+                statusDropdown.classList.toggle(
                     'show'
                 );
 
+                statusWrapper.classList.toggle(
+                    'active'
+                );
 
-                filterOpname();
+                document
+                    .getElementById('opnameDateDropdown')
+                    .classList.remove('show');
+
+                document
+                    .querySelector('.opname-date-wrapper')
+                    .classList.remove('active');
 
             }
         );
 
-    });
 
-/* =========================================================
-   PILIH TANGGAL CUSTOM
-========================================================= */
-
-customDateOption.addEventListener(
-    'click',
-    function(event){
-
-        event.stopPropagation();
-
-        customDateBox.classList.toggle('show');
-
-    }
-);
-
-/* =========================================================
-   TERAPKAN TANGGAL CUSTOM
-========================================================= */
-
-applyCustomDate.addEventListener(
-    'click',
-    function(){
-
-        const selected =
-            customDateInput.value;
-
-
-        if(!selected){
-
-            alert('Silakan pilih tanggal terlebih dahulu.');
-
-            return;
-
-        }
-
-
-        selectedCustomDate = selected;
-
-        selectedDateFilter = 'custom';
-
-
-        dateText.textContent =
-            formatCustomDate(selected);
-
+        /* ==================================================
+           PILIH STATUS
+        ================================================== */
 
         document
             .querySelectorAll(
-                '[data-date-filter]'
+                '[data-status]'
             )
-            .forEach(function(item){
+            .forEach(
+                function(option){
 
-                item.classList.remove(
-                    'active'
+                    option.addEventListener(
+                        'click',
+                        function(){
+
+                            const status =
+                                this.dataset.status;
+
+
+                            const url =
+                                new URL(
+                                    window.location.href
+                                );
+
+
+                            if(status){
+
+                                url.searchParams.set(
+                                    'status',
+                                    status
+                                );
+
+                            }else{
+
+                                url.searchParams.delete(
+                                    'status'
+                                );
+
+                            }
+
+
+                            url.searchParams.delete(
+                                'page'
+                            );
+
+
+                            /*
+                             * Pertahankan search
+                             */
+
+                            const search =
+                                searchInput.value.trim();
+
+
+                            if(search){
+
+                                url.searchParams.set(
+                                    'search',
+                                    search
+                                );
+
+                            }else{
+
+                                url.searchParams.delete(
+                                    'search'
+                                );
+
+                            }
+
+
+                            window.location.href =
+                                url.toString();
+
+                        }
+                    );
+
+                }
+            );
+
+
+        /* ==================================================
+           FILTER TANGGAL
+        ================================================== */
+
+        const dateWrapper =
+            document.querySelector(
+                '.opname-date-wrapper'
+            );
+
+        const dateButton =
+            document.getElementById(
+                'opnameDateButton'
+            );
+
+        const dateDropdown =
+            document.getElementById(
+                'opnameDateDropdown'
+            );
+
+
+        dateButton.addEventListener(
+            'click',
+            function(event){
+
+                event.stopPropagation();
+
+                dateDropdown.classList.toggle(
+                    'show'
                 );
 
-            });
-
-
-        customDateOption.classList.add(
-            'active'
-        );
-
-
-        customDateBox.classList.remove(
-            'show'
-        );
-
-
-        dateDropdown.classList.remove(
-            'show'
-        );
-
-
-        filterOpname();
-
-    }
-);
-
-/* =========================================================
-   FORMAT TANGGAL CUSTOM
-========================================================= */
-
-function formatCustomDate(dateValue){
-
-    const parts =
-        dateValue.split('-');
-
-
-    if(parts.length !== 3){
-
-        return dateValue;
-
-    }
-
-
-    return (
-        parts[2] +
-        '-' +
-        parts[1] +
-        '-' +
-        parts[0]
-    );
-
-}
-
-/* =========================================================
-   PILIH FILTER STATUS
-========================================================= */
-
-document
-    .querySelectorAll('[data-status-filter]')
-    .forEach(function(option){
-
-        option.addEventListener(
-            'click',
-            function(){
-
-                selectedStatusFilter =
-                    this.dataset.statusFilter;
-
-
-                statusText.textContent =
-                    this.textContent.trim();
-
-
-                document
-                    .querySelectorAll(
-                        '[data-status-filter]'
-                    )
-                    .forEach(function(item){
-
-                        item.classList.remove(
-                            'active'
-                        );
-
-                    });
-
-
-                this.classList.add('active');
-
+                dateWrapper.classList.toggle(
+                    'active'
+                );
 
                 statusDropdown.classList.remove(
                     'show'
                 );
 
-
-                filterOpname();
+                statusWrapper.classList.remove(
+                    'active'
+                );
 
             }
         );
 
-    });
 
+        /* ==================================================
+           PILIH FILTER TANGGAL
+        ================================================== */
+
+        document
+            .querySelectorAll(
+                '[data-filter]'
+            )
+            .forEach(
+                function(option){
+
+                    option.addEventListener(
+                        'click',
+                        function(){
+
+                            const filter =
+                                this.dataset.filter;
+
+
+                            const url =
+                                new URL(
+                                    window.location.href
+                                );
+
+
+                            if(filter === 'all'){
+
+                                url.searchParams.delete(
+                                    'filter'
+                                );
+
+                                url.searchParams.delete(
+                                    'tanggal'
+                                );
+
+                            }else{
+
+                                url.searchParams.set(
+                                    'filter',
+                                    filter
+                                );
+
+                                url.searchParams.delete(
+                                    'tanggal'
+                                );
+
+                            }
+
+
+                            url.searchParams.delete(
+                                'page'
+                            );
+
+
+                            /*
+                             * Pertahankan search
+                             */
+
+                            const search =
+                                searchInput.value.trim();
+
+
+                            if(search){
+
+                                url.searchParams.set(
+                                    'search',
+                                    search
+                                );
+
+                            }else{
+
+                                url.searchParams.delete(
+                                    'search'
+                                );
+
+                            }
+
+
+                            /*
+                             * Pertahankan status
+                             */
+
+                            const status =
+                                new URL(
+                                    window.location.href
+                                ).searchParams.get(
+                                    'status'
+                                );
+
+
+                            if(status){
+
+                                url.searchParams.set(
+                                    'status',
+                                    status
+                                );
+
+                            }
+
+
+                            window.location.href =
+                                url.toString();
+
+                        }
+                    );
+
+                }
+            );
+
+
+        /* =========================================================
+        LIVE SEARCH
+        ========================================================= */
+
+        searchInput.addEventListener(
+            'input',
+            function(){
+
+                const keyword =
+                    this.value
+                        .toLowerCase()
+                        .trim();
+
+
+                document
+                    .querySelectorAll('.opname-row')
+                    .forEach(function(row){
+
+                        const nomor =
+                            row
+                                .querySelector('.opname-number')
+                                .textContent
+                                .toLowerCase();
+
+
+                        const keterangan =
+                            row
+                                .querySelector('.opname-note')
+                                .textContent
+                                .toLowerCase();
+
+
+                        if(
+                            nomor.includes(keyword) ||
+                            keterangan.includes(keyword)
+                        ){
+
+                            row.style.display = '';
+
+                        }else{
+
+                            row.style.display = 'none';
+
+                        }
+
+                    });
+
+            }
+        );
+
+
+        /* ==================================================
+           TUTUP DROPDOWN KETIKA KLIK DI LUAR
+        ================================================== */
+
+        document.addEventListener(
+            'click',
+            function(event){
+
+                if(
+                    !statusWrapper.contains(
+                        event.target
+                    )
+                ){
+
+                    statusDropdown.classList.remove(
+                        'show'
+                    );
+
+                    statusWrapper.classList.remove(
+                        'active'
+                    );
+
+                }
+
+
+                if(
+                    !dateWrapper.contains(
+                        event.target
+                    )
+                ){
+
+                    dateDropdown.classList.remove(
+                        'show'
+                    );
+
+                    dateWrapper.classList.remove(
+                        'active'
+                    );
+
+                }
+
+            }
+        );
+
+    }
+);
+
+/* ==================================================
+   CUSTOM DATE - PILIH TANGGAL
+================================================== */
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const customDateOption =
+        document.getElementById('customDateOption');
+
+    const dateDropdown =
+        document.getElementById('opnameDateDropdown');
+
+    const dateWrapper =
+        document.querySelector('.opname-date-wrapper');
+
+    const dateModal =
+        document.getElementById('opnameDateModal');
+
+    const customDateInput =
+        document.getElementById('opnameCustomDate');
+
+    const cancelDateButton =
+        document.getElementById('cancelOpnameDate');
+
+    const saveDateButton =
+        document.getElementById('saveOpnameDate');
+
+
+    /* ================================================
+       KLIK "PILIH TANGGAL..."
+    ================================================ */
+
+    if (customDateOption) {
+
+        customDateOption.addEventListener('click', function (event) {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Tutup dropdown
+            if (dateDropdown) {
+                dateDropdown.classList.remove('show');
+            }
+
+            if (dateWrapper) {
+                dateWrapper.classList.remove('active');
+            }
+
+            // Buka modal
+            if (dateModal) {
+                dateModal.classList.add('show');
+            }
+
+        });
+
+    }
+
+
+    /* ================================================
+       TOMBOL BATAL
+    ================================================ */
+
+    if (cancelDateButton) {
+
+        cancelDateButton.addEventListener('click', function (event) {
+
+            event.preventDefault();
+
+            if (dateModal) {
+                dateModal.classList.remove('show');
+            }
+
+        });
+
+    }
+
+
+    /* ================================================
+       TOMBOL SIMPAN
+    ================================================ */
+
+    if (saveDateButton) {
+
+        saveDateButton.addEventListener('click', function (event) {
+
+            event.preventDefault();
+
+            const tanggal =
+                customDateInput
+                    ? customDateInput.value
+                    : '';
+
+
+            if (!tanggal) {
+
+                alert(
+                    'Silakan pilih tanggal terlebih dahulu.'
+                );
+
+                return;
+
+            }
+
+
+            const url =
+                new URL(window.location.href);
+
+
+            /* Filter tanggal */
+            url.searchParams.set(
+                'filter',
+                'custom'
+            );
+
+
+            /* Tanggal yang dipilih */
+            url.searchParams.set(
+                'tanggal',
+                tanggal
+            );
+
+
+            /* Reset pagination */
+            url.searchParams.delete(
+                'page'
+            );
+
+
+            /*
+             * Pertahankan status
+             */
+
+            const status =
+                url.searchParams.get('status');
+
+            if (status) {
+
+                url.searchParams.set(
+                    'status',
+                    status
+                );
+
+            }
+
+
+            /*
+             * Search tidak dimasukkan
+             * karena live search berjalan
+             * di frontend.
+             */
+
+            url.searchParams.delete(
+                'search'
+            );
+
+
+            /* Tutup modal */
+            if (dateModal) {
+
+                dateModal.classList.remove(
+                    'show'
+                );
+
+            }
+
+
+            /* Jalankan filter */
+            window.location.href =
+                url.toString();
+
+        });
+
+    }
+
+
+    /* ================================================
+       KLIK DI LUAR MODAL
+    ================================================ */
+
+    if (dateModal) {
+
+        dateModal.addEventListener(
+            'click',
+            function (event) {
+
+                if (
+                    event.target === dateModal
+                ) {
+
+                    dateModal.classList.remove(
+                        'show'
+                    );
+
+                }
+
+            }
+        );
+
+    }
+
+});
 </script>
 
 @endsection
