@@ -612,9 +612,154 @@ const discounts = @json($discounts);
 =            ELEMENT HTML                 =
 =========================================*/
 
-const searchInput = document.getElementById('searchProduk');
-const resultBox   = document.getElementById('productResult');
-const bayarInput  = document.getElementById('bayar');
+const barcodeInput = document.getElementById('barcode');
+const searchInput  = document.getElementById('searchProduk');
+const resultBox    = document.getElementById('productResult');
+const bayarInput   = document.getElementById('bayar');
+
+/*=========================================
+=            BARCODE SCANNER              =
+=========================================*/
+
+barcodeInput.addEventListener('keydown', function(e){
+
+    /*
+    |--------------------------------------------------------------------------
+    | Barcode scanner biasanya mengirim ENTER
+    |--------------------------------------------------------------------------
+    */
+
+    if(e.key !== 'Enter'){
+        return;
+    }
+
+    e.preventDefault();
+
+    const barcode = this.value.trim();
+
+    /*
+    |--------------------------------------------------------------------------
+    | Jika kosong
+    |--------------------------------------------------------------------------
+    */
+
+    if(barcode === ''){
+
+        return;
+
+    }
+
+    searchBarcode(barcode);
+
+});
+
+
+async function searchBarcode(barcode){
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tampilkan kode sebentar
+    |--------------------------------------------------------------------------
+    */
+
+    barcodeInput.value = barcode;
+
+    try{
+
+        /*
+        |--------------------------------------------------------------------------
+        | Cari produk berdasarkan barcode
+        |--------------------------------------------------------------------------
+        */
+
+        const url =
+            "{{ route('kasir.produk.barcode', ['barcode' => '__BARCODE__']) }}"
+            .replace(
+                '__BARCODE__',
+                encodeURIComponent(barcode)
+            );
+
+
+        const response = await fetch(url, {
+
+            method: 'GET',
+
+            headers: {
+
+                'Accept': 'application/json',
+
+                'X-Requested-With': 'XMLHttpRequest'
+
+            }
+
+        });
+
+
+        const data = await response.json();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Jika produk tidak ditemukan
+        |--------------------------------------------------------------------------
+        */
+
+        if(!response.ok || !data.success){
+
+            alert(
+                data.message ||
+                'Produk dengan barcode tersebut tidak ditemukan.'
+            );
+
+            barcodeInput.select();
+
+            return;
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Produk ditemukan
+        |--------------------------------------------------------------------------
+        */
+
+        addProduct(data.product.id);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Kosongkan kembali input barcode
+        |--------------------------------------------------------------------------
+        */
+
+        barcodeInput.value = '';
+
+        /*
+        |--------------------------------------------------------------------------
+        | Fokus kembali ke scanner
+        |--------------------------------------------------------------------------
+        */
+
+        barcodeInput.focus();
+
+
+    }catch(error){
+
+        console.error(
+            'Error barcode:',
+            error
+        );
+
+        alert(
+            'Terjadi kesalahan saat mencari barcode.'
+        );
+
+        barcodeInput.focus();
+
+    }
+
+}
 
 /*=========================================
 =            AUTOCOMPLETE                 =

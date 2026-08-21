@@ -223,6 +223,41 @@ class SaleController extends Controller
         }
     }
 
+    public function searchBarcode($barcode)
+    {
+        $product = Product::where('barcode', $barcode)
+            ->where('status', 'Aktif')
+            ->whereHas('category', function ($query) {
+                $query->where('status', 'Aktif');
+            })
+            ->first();
+
+        if (!$product) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Produk dengan barcode tersebut tidak ditemukan.'
+            ], 404);
+        }
+
+        if ($product->stok <= 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Stok produk habis.'
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'product' => [
+                'id' => $product->id,
+                'nama_produk' => $product->nama_produk,
+                'barcode' => $product->barcode,
+                'harga_jual' => $product->harga_jual,
+                'stok' => $product->stok,
+            ]
+        ]);
+    }
+
     public function print(Sale $sale)
     {
         $sale->load([

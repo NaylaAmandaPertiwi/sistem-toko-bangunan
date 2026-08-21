@@ -524,6 +524,11 @@ Route::middleware('auth')->group(function () {
                 [KasirSaleController::class,'searchProduct']
             )->name('produk.search');
 
+            Route::get(
+                '/produk/barcode/{barcode}',
+                [KasirSaleController::class, 'searchBarcode']
+            )->name('produk.barcode');
+
             Route::post(
                 '/penjualan',
                 [KasirSaleController::class, 'store']
@@ -533,8 +538,6 @@ Route::middleware('auth')->group(function () {
                 '/penjualan/{sale}/print',
                 [KasirSaleController::class,'print']
             )->name('penjualan.print');
-
-            
 
             /*
             |--------------------------------------------------------------------------
