@@ -17,36 +17,133 @@ class StockOpnameController extends Controller
     // Halaman daftar stok opname
     public function index(Request $request)
     {
-        $stockOpnames = StockOpname::query();
+        $query = StockOpname::query();
 
-        if($request->filled('search'))
-        {
-            $search = $request->search;
+        /*
+        |--------------------------------------------------------------------------
+        | SEARCH
+        |--------------------------------------------------------------------------
+        */
 
-            $stockOpnames->where(function($query) use ($search){
+        if ($request->filled('search')) {
 
-                $query->where(
+            $keyword = $request->search;
+
+            $query->where(function ($q) use ($keyword) {
+
+                $q->where(
                     'nomor_opname',
                     'like',
-                    "%{$search}%"
+                    '%' . $keyword . '%'
                 )
                 ->orWhere(
                     'keterangan',
                     'like',
-                    "%{$search}%"
-                )
-                ->orWhere(
-                    'petugas',
-                    'like',
-                    "%{$search}%"
+                    '%' . $keyword . '%'
                 );
 
             });
+
         }
 
-        $stockOpnames = $stockOpnames
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER STATUS
+        |--------------------------------------------------------------------------
+        */
+
+        if ($request->filled('status')) {
+
+            $query->where(
+                'status',
+                $request->status
+            );
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | FILTER TANGGAL
+        |--------------------------------------------------------------------------
+        */
+
+        $filter = $request->get(
+            'filter',
+            'all'
+        );
+
+
+        switch ($filter) {
+
+            case 'today':
+
+                $query->whereDate(
+                    'tanggal_opname',
+                    now()
+                );
+
+                break;
+
+
+            case 'yesterday':
+
+                $query->whereDate(
+                    'tanggal_opname',
+                    now()->subDay()
+                );
+
+                break;
+
+
+            case 'week':
+
+                $query->whereBetween(
+                    'tanggal_opname',
+                    [
+                        now()->subDays(6)->startOfDay(),
+                        now()->endOfDay()
+                    ]
+                );
+
+                break;
+
+
+            case 'month':
+
+                $query->whereMonth(
+                    'tanggal_opname',
+                    now()->month
+                )
+                ->whereYear(
+                    'tanggal_opname',
+                    now()->year
+                );
+
+                break;
+
+
+            case 'custom':
+
+                if ($request->filled('tanggal')) {
+
+                    $query->whereDate(
+                        'tanggal_opname',
+                        $request->tanggal
+                    );
+
+                }
+
+                break;
+
+        }
+
+
+        $stockOpnames = $query
             ->latest()
             ->get();
+
 
         return view(
             'admin.inventory.stok-opname',

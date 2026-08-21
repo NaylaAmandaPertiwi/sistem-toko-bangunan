@@ -151,17 +151,14 @@
 
             </form>
 
-            <form method="GET">
-
+            <div>
                 <input
                     type="text"
-                    name="search"
+                    id="searchProduct"
                     class="search-box"
                     placeholder="Cari Produk"
-                    value="{{ request('search') }}"
-                    onchange="this.form.submit()">
-
-            </form>
+                    autocomplete="off">
+            </div>
 
         </div>
 
@@ -186,11 +183,12 @@
 
             </thead>
 
-            <tbody>
+            <tbody id="stockAlertTableBody">
 
             @foreach($products as $product)
 
-            <tr>
+            <tr data-product-name="{{ strtolower($product->nama_produk) }}"
+                data-product-sku="{{ strtolower($product->sku) }}">
 
                 <td>{{ $product->nama_produk }}</td>
 
@@ -235,8 +233,67 @@
 
         </table>
 
-    </div>
+        </div>
 
 </div>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const searchInput = document.getElementById('searchProduct');
+    const tableBody = document.getElementById('stockAlertTableBody');
+
+    if (!searchInput || !tableBody) {
+        return;
+    }
+
+    searchInput.addEventListener('input', function () {
+
+        const keyword = this.value
+            .toLowerCase()
+            .trim();
+
+        const rows = tableBody.querySelectorAll('tr');
+
+        let visibleCount = 0;
+
+        rows.forEach(function (row) {
+
+            const productName = row.dataset.productName || '';
+            const productSku = row.dataset.productSku || '';
+
+            const match =
+                productName.includes(keyword) ||
+                productSku.includes(keyword);
+
+            if (match) {
+
+                row.style.display = '';
+
+                visibleCount++;
+
+            } else {
+
+                row.style.display = 'none';
+
+            }
+
+        });
+
+        const stockInfo = document.querySelector('.stock-info span');
+
+        if (stockInfo) {
+
+            stockInfo.textContent =
+                visibleCount + ' Produk Perlu Dipantau';
+
+        }
+
+    });
+
+});
+
+</script>
 
 @endsection
