@@ -117,11 +117,10 @@
 
             <input
                 type="text"
-                name="search"
+                id="discountSearch"
                 class="search-box"
-                placeholder="Cari Diskon"
-                value="{{ request('search') }}"
-                onkeyup="this.form.submit()">
+                placeholder="Cari Diskon..."
+                autocomplete="off">
 
         </form>
 
@@ -176,7 +175,7 @@
             </thead>
 
 
-            <tbody>
+            <tbody id="discountTableBody">
 
 
             @forelse($discounts as $discount)
@@ -383,5 +382,46 @@
     </div>
 
 </div>
+
+@endsection
+
+@section('scripts')
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const searchInput = document.getElementById('discountSearch');
+    const tableBody = document.getElementById('discountTableBody');
+
+    searchInput.addEventListener('input', function () {
+
+        const keyword = this.value
+            .toLowerCase()
+            .trim();
+
+        const rows = tableBody.querySelectorAll('tr');
+
+        rows.forEach(function (row) {
+
+            const text = row.textContent.toLowerCase();
+
+            if (text.includes(keyword)) {
+
+                row.style.display = '';
+
+            } else {
+
+                row.style.display = 'none';
+
+            }
+
+        });
+
+    });
+
+});
+
+</script>
 
 @endsection
