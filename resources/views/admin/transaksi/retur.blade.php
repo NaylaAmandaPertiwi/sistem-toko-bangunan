@@ -340,6 +340,14 @@
 
     transition:.2s;
 
+    text-decoration:none;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
 }
 
 .btn-detail:hover{ 
