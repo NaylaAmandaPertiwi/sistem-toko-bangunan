@@ -52,19 +52,70 @@ class StockMovementController extends Controller
         }
 
         // Filter Tanggal
-        if(
-            $request->filled('start_date')
-            &&
-            $request->filled('end_date')
-        )
-        {
-            $query->whereBetween(
-                'tanggal',
-                [
-                    $request->start_date,
-                    $request->end_date
-                ]
-            );
+        $filter = $request->get('filter', 'all');
+
+        switch ($filter) {
+
+            case 'today':
+
+                $query->whereDate(
+                    'tanggal',
+                    now()
+                );
+
+                break;
+
+
+            case 'yesterday':
+
+                $query->whereDate(
+                    'tanggal',
+                    now()->subDay()
+                );
+
+                break;
+
+
+            case 'week':
+
+                $query->whereBetween(
+                    'tanggal',
+                    [
+                        now()->subDays(6)->startOfDay(),
+                        now()->endOfDay()
+                    ]
+                );
+
+                break;
+
+
+            case 'month':
+
+                $query->whereMonth(
+                    'tanggal',
+                    now()->month
+                )
+                ->whereYear(
+                    'tanggal',
+                    now()->year
+                );
+
+                break;
+
+
+            case 'custom':
+
+                if ($request->filled('tanggal')) {
+
+                    $query->whereDate(
+                        'tanggal',
+                        $request->tanggal
+                    );
+
+                }
+
+                break;
+
         }
 
         $movements = $query
