@@ -1079,6 +1079,17 @@ rel="stylesheet">
         </div>
 
     </div>
+
+    <!-- STAFF -->
+
+    <a href="{{ route('admin.staff.index') }}"
+    class="{{ request()->is('admin/staff*') ? 'active' : '' }}">
+
+        <i class="fa-solid fa-users"></i>
+
+        Staff
+
+    </a>
     
 </div>
 
@@ -1103,25 +1114,16 @@ rel="stylesheet">
     <div id="profileMenu"
         class="profile-menu">
 
-        <a href="/profil">
+        <a href="{{ route('admin.profil') }}">
 
             <i class="fa-regular fa-user"></i>
             Profil Saya
 
         </a>
 
-        <a href="/pengaturan-akun">
-
-            <i class="fa-solid fa-gear"></i>
-            Pengaturan Akun
-
-        </a>
-
-        <a href="/ubah-password">
-
-            <i class="fa-solid fa-lock"></i>
-            Ubah Password
-
+        <a href="{{ route('password.edit') }}">
+            <i class="..."></i>
+            <span>Ubah Password</span>
         </a>
 
         <div class="menu-divider"></div>

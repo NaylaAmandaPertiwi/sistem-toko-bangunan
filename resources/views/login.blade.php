@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Login</title>
 
     <style>
@@ -47,6 +48,7 @@
             border-radius: 8px;
             outline: none;
             transition: 0.3s;
+            box-sizing: border-box;
         }
 
         input:focus {
@@ -66,7 +68,7 @@
         }
 
         button:hover {
-            background: #1d59ba;
+            background: #154a9c;
         }
 
         .error {
@@ -86,36 +88,86 @@
         }
     </style>
 </head>
+
 <body>
 
 <div class="login-container">
+
     <h2>Login</h2>
 
+    {{-- PESAN ERROR --}}
+
     @if ($errors->any())
+
         <div class="error">
             {{ $errors->first() }}
         </div>
+
     @endif
 
-    <form method="POST" action="/login">
+
+    {{-- FORM LOGIN --}}
+
+    <form method="POST" action="{{ url('/login') }}">
+
         @csrf
 
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email" name="email" placeholder="Masukkan email" required>
-        </div>
+
+        {{-- EMAIL / USERNAME --}}
 
         <div class="form-group">
-            <label>Password</label>
-            <input type="password" name="password" placeholder="Masukkan password" required>
+
+            <label for="identifier">
+                Email / Username
+            </label>
+
+            <input
+                type="text"
+                id="identifier"
+                name="identifier"
+                value="{{ old('identifier') }}"
+                placeholder="Email Admin / Username Kasir"
+                autocomplete="username"
+                required
+                autofocus
+            >
+
         </div>
 
-        <button type="submit">Login</button>
+
+        {{-- PASSWORD --}}
+
+        <div class="form-group">
+
+            <label for="password">
+                Password
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Masukkan password"
+                autocomplete="current-password"
+                required
+            >
+
+        </div>
+
+
+        {{-- BUTTON LOGIN --}}
+
+        <button type="submit">
+            Login
+        </button>
+
     </form>
+
 
     <div class="footer">
         © nayla bangunan
     </div>
+
 </div>
 
 </body>

@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PasswordController;
 
 use App\Http\Controllers\Admin\DashboardController;
 
@@ -25,6 +27,8 @@ use App\Http\Controllers\Admin\SalesReportController;
 use App\Http\Controllers\Admin\StockReportController;
 use App\Http\Controllers\Admin\BestSellingReportController;
 use App\Http\Controllers\Admin\FinancialReportController;
+
+use App\Http\Controllers\Admin\StaffController;
 
 use App\Http\Controllers\Kasir\DashboardController as KasirDashboardController;
 use App\Http\Controllers\Kasir\SaleController as KasirSaleController;
@@ -71,6 +75,27 @@ Route::post('/logout',
     [AuthController::class, 'logout'])
     ->middleware('auth');
 
+/*
+|--------------------------------------------------------------------------
+| UBAH PASSWORD
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware('auth')->group(function () {
+
+    Route::get(
+        '/ubah-password',
+        [PasswordController::class, 'edit']
+    )->name('password.edit');
+
+    Route::post(
+        '/ubah-password',
+        [PasswordController::class, 'update']
+    )->name('password.update');
+
+
+});
+
 
 /*
 |--------------------------------------------------------------------------
@@ -97,6 +122,11 @@ Route::middleware('auth')->group(function () {
                 '/dashboard',
                 [\App\Http\Controllers\Admin\DashboardController::class,'index']
             )->name('dashboard');
+
+            Route::get(
+            '/profil',
+                [ProfileController::class, 'admin']
+            )->name('profil');
 
             /*
             |--------------------------------------------------------------------------
@@ -478,7 +508,48 @@ Route::middleware('auth')->group(function () {
                 '/laporan/keuangan/excel',
                 [\App\Http\Controllers\Admin\FinancialReportController::class, 'excel']
             )->name('laporan.keuangan.excel');
-            
+
+            /*
+            |--------------------------------------------------------------------------
+            | MANAJEMEN KASIR
+            |--------------------------------------------------------------------------
+            */
+
+            Route::get(
+                '/staff',
+                [\App\Http\Controllers\Admin\StaffController::class, 'index']
+            )->name('staff.index');
+
+            Route::get(
+                '/staff/create',
+                [\App\Http\Controllers\Admin\StaffController::class, 'create']
+            )->name('staff.create');
+
+            Route::post(
+                '/staff',
+                [\App\Http\Controllers\Admin\StaffController::class, 'store']
+            )->name('staff.store');
+
+            Route::patch(
+                '/staff/{id}/deactivate',
+                [\App\Http\Controllers\Admin\StaffController::class, 'deactivate']
+            )->name('staff.deactivate');
+
+            Route::patch(
+                '/staff/{id}/activate',
+                [\App\Http\Controllers\Admin\StaffController::class, 'activate']
+            )->name('staff.activate');
+
+            Route::get(
+                '/staff/{staff}/reset-password',
+                [\App\Http\Controllers\Admin\StaffController::class, 'resetPasswordForm']
+            )->name('staff.reset-password');
+
+            Route::post(
+                '/staff/{staff}/reset-password',
+                [\App\Http\Controllers\Admin\StaffController::class, 'resetPassword']
+            )->name('staff.reset-password.update');
+                        
 
         });
 
@@ -506,7 +577,12 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/dashboard/data', 
                 [KasirDashboardController::class, 'getDashboardData']
-            )->name('kasir.dashboard.data');
+            )->name('dashboard.data');
+
+            Route::get(
+                '/profil',
+                [ProfileController::class, 'kasir']
+            )->name('profil');
 
             /*
             |--------------------------------------------------------------------------
@@ -623,279 +699,3 @@ Route::middleware('auth')->group(function () {
 
 
     });
-    /*
-    |--------------------------------------------------------------------------
-    | DASHBOARD
-    |--------------------------------------------------------------------------
-    */
-
-    //Route::get('/dashboard',
-        //[DashboardController::class, 'index']);
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | PRODUK
-    |--------------------------------------------------------------------------
-    */
-
-//     // produk
-//     Route::delete(
-//         '/produk/bulk-delete',
-//         [ProductController::class, 'bulkDelete']
-//     )->name('produk.bulkDelete');
-
-//     Route::resource(
-//         'produk',
-//         ProductController::class
-
-//     );
-
-//     // kategori produk
-//     Route::resource(
-//         'kategori-produk',
-//         CategoryController::class
-//     );
-
-//     // barcode
-//     Route::get('/barcode',
-//         [ProductController::class, 'barcode']);
-
-
-//     /*
-//     |--------------------------------------------------------------------------
-//     |  SUPPLIER
-//     |--------------------------------------------------------------------------
-//     */
-
-//     // supplier
-//     Route::resource(
-//         'supplier',
-//         SupplierController::class
-//     );
-
-//     Route::get(
-//         '/supplier-export',
-//         [SupplierController::class,'export']
-//     )->name('supplier.export');
-        
-
-//     /*
-//     |--------------------------------------------------------------------------
-//     | INVENTORY
-//     |--------------------------------------------------------------------------
-//     */    
-
-//     // Inventory
-//     Route::get('/inventory',
-//         [InventoryController::class,'index']);
-
-//         /*
-//         |--------------------------------------------------------------------------
-//         | STOK MASUK
-//         |--------------------------------------------------------------------------
-//         */ 
-
-//     // Menampilkan daftar stok masuk
-//     Route::get('/stok-masuk',
-//         [StockInController::class,'index'])
-//         ->name('stok-masuk.index');
-
-//     // Menampilkan form tambah stok masuk
-//     Route::get('/stok-masuk/create',
-//         [StockInController::class,'create'])
-//         ->name('stok-masuk.create');
-
-//     // Menyimpan data stok masuk baru
-//     Route::post('/stok-masuk',
-//         [StockInController::class,'store'])
-//         ->name('stok-masuk.store');
-
-//     // Menampilkan form edit stok masuk
-//     Route::get('/stok-masuk/{id}/edit',
-//         [StockInController::class,'edit'])
-//         ->name('stok-masuk.edit');
-
-//     // Menyimpan hasil edit stok masuk
-//     Route::put('/stok-masuk/{id}',
-//         [StockInController::class,'update'])
-//         ->name('stok-masuk.update');
-
-//     // Hapus banyak data sekaligus
-//     Route::delete('/stok-masuk/bulk-delete',
-//         [StockInController::class,'bulkDelete'])
-//         ->name('stok-masuk.bulkDelete');
-
-//         /*
-//         |--------------------------------------------------------------------------
-//         | STOK OPNAME
-//         |--------------------------------------------------------------------------
-//         */     
-
-//     // stok opname
-
-//     Route::get(
-//         '/stok-opname',
-//         [StockOpnameController::class,'index']
-//     )->name('stok-opname.index');
-
-//     Route::get(
-//         '/stok-opname/create',
-//         [StockOpnameController::class,'create']
-//     )->name('stok-opname.create');
-
-//     Route::post(
-//         '/stok-opname',
-//         [StockOpnameController::class,'store']
-//     )->name('stok-opname.store');
-
-//     Route::delete(
-//         '/stok-opname/bulk-delete',
-//         [StockOpnameController::class,'bulkDelete']
-//     )->name('stok-opname.bulk-delete');
-
-//    Route::put(
-//         '/stok-opname/{id}/status',
-//         [StockOpnameController::class,'updateStatus']
-//     )->name('stok-opname.update-status');
-
-//     Route::get(
-//         '/stok-opname/{id}/print',
-//         [StockOpnameController::class,'print']
-//     )->name('stok-opname.print');
-
-//     Route::get(
-//         '/stok-opname/{id}',
-//         [StockOpnameController::class,'show']
-//     )->name('stok-opname.show');
-
-//     /*
-//         |--------------------------------------------------------------------------
-//         | PERGERAKAN STOK
-//         |--------------------------------------------------------------------------
-//         */ 
-    
-//     // pergerakan stok    
-//         Route::get(
-//         '/stock-movement',
-//         [StockMovementController::class,'index']
-//     )->name('stock-movement.index');
-
-
-//         /*
-//         |--------------------------------------------------------------------------
-//         | PERINGATAN STOK
-//         |--------------------------------------------------------------------------
-//         */ 
-
-//     // peringatan stok
-//     Route::get(
-//         '/peringatan-stok',
-//         [StockAlertController::class,'index']
-//     )->name('stock-alert.index');
-
-
-//     /*
-//     |--------------------------------------------------------------------------
-//     | TRANSAKSI
-//     |--------------------------------------------------------------------------
-//     */
-
-//         /*
-//         |--------------------------------------------------------------------------
-//         | PENJUALAN
-//         |--------------------------------------------------------------------------
-//         */ 
-
-//     // penjualan
-//     Route::get(
-//         '/penjualan',
-//         [SaleController::class, 'index']
-//     )->name('penjualan.index');
-
-//     Route::post(
-//     '/penjualan/simpan',
-//         [SaleController::class,'store']
-//     )->name('penjualan.store');
-
-
-//     /*
-//         |--------------------------------------------------------------------------
-//         | RETUR BARANG
-//         |--------------------------------------------------------------------------
-//         */ 
-
-//     // retur barang
-//     Route::get(
-//         '/retur',
-//         [ReturnController::class,'index']
-//     )->name('retur.index');
-
-//     Route::get(
-//         '/retur/create',
-//         [ReturnController::class,'create']
-//     )->name('retur.create');
-
-//     Route::post(
-//         '/retur',
-//         [ReturnController::class,'store']
-//     )->name('retur.store');
-
-//     Route::get(
-//         '/retur/{retur}',
-//         [ReturnController::class,'show']
-//     )->name('retur.show');
-
-//     Route::delete(
-//         '/retur/{retur}',
-//         [ReturnController::class,'destroy']
-//     )->name('retur.destroy');
-
-
-
-//     // riwayat transaksi
-//     Route::get('/riwayat-transaksi', function () {
-//         return view('transaksi.riwayat-transaksi');
-//     });
-
-
-//     /*
-//     |--------------------------------------------------------------------------
-//     | DISKON
-//     |--------------------------------------------------------------------------
-//     */
-
-//     // diskon
-//     Route::resource(
-//         'diskon',
-//         DiscountController::class
-//     );
-
-//     /*
-//     |--------------------------------------------------------------------------
-//     | LAPORAN
-//     |--------------------------------------------------------------------------
-//     */
-
-//     // laporan penjualan
-//     Route::get('/laporan-penjualan', function () {
-//         return view('laporan.penjualan');
-//     });
-
-//     // laporan stok
-//     Route::get('/laporan-stok', function () {
-//         return view('laporan.stok');
-//     });
-
-//     // laporan barang terlaris
-//     Route::get('/laporan-barang-terlaris', function () {
-//         return view('laporan.barang-terlaris');
-//     });
-
-//     // laporan keuangan
-//     Route::get('/laporan-keuangan', function () {
-//         return view('laporan.keuangan');
-//     });
-
-    
-// });*/

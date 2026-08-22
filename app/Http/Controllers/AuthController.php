@@ -2,56 +2,221 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    // Tampilkan halaman login
+    /*
+    |--------------------------------------------------------------------------
+    | Tampilkan Halaman Login
+    |--------------------------------------------------------------------------
+    */
+
     public function showLogin()
     {
         return view('login');
     }
 
-    // Proses login
+
+    /*
+    |--------------------------------------------------------------------------
+    | Proses Login Admin dan Kasir
+    |--------------------------------------------------------------------------
+    */
+
     public function login(Request $request)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | VALIDASI
+        |--------------------------------------------------------------------------
+        */
+
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required']
+            'identifier' => ['required', 'string'],
+            'password'   => ['required', 'string'],
+        ], [
+
+            'identifier.required' =>
+                'Email atau username wajib diisi.',
+
+            'password.required' =>
+                'Password wajib diisi.',
+
         ]);
 
-        if (Auth::attempt($credentials)) {
+
+        /*
+        |--------------------------------------------------------------------------
+        | TENTUKAN JENIS LOGIN
+        |--------------------------------------------------------------------------
+        |
+        | Jika identifier mengandung @
+        | → dianggap sebagai email Admin.
+        |
+        | Jika tidak mengandung @
+        | → dianggap sebagai username Kasir.
+        |
+        */
+
+        $identifier = $credentials['identifier'];
+
+        $password = $credentials['password'];
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOGIN ADMIN
+        |--------------------------------------------------------------------------
+        */
+
+        if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
+
+            $login = Auth::attempt([
+                'email'    => $identifier,
+                'password' => $password,
+                'role'     => 'Admin',
+            ]);
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOGIN KASIR
+        |--------------------------------------------------------------------------
+        */
+
+        else {
+
+            /*
+            |--------------------------------------------------------------------------
+            | CEK AKUN KASIR
+            |--------------------------------------------------------------------------
+            */
+
+            $kasir = User::where('username', $identifier)
+                ->where('role', 'Kasir')
+                ->first();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | CEK STATUS KASIR
+            |--------------------------------------------------------------------------
+            */
+
+            if ($kasir && $kasir->status === 'Nonaktif') {
+
+                return back()
+                    ->withInput(
+                        $request->only('identifier')
+                    )
+                    ->withErrors([
+                        'identifier' =>
+                            'Akun Kasir Anda sedang dinonaktifkan. Silakan hubungi Admin.',
+                    ]);
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | LOGIN KASIR
+            |--------------------------------------------------------------------------
+            */
+
+            $login = Auth::attempt([
+                'username' => $identifier,
+                'password' => $password,
+                'role'     => 'Kasir',
+                'status'   => 'Aktif',
+            ]);
+
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOGIN BERHASIL
+        |--------------------------------------------------------------------------
+        */
+
+        if ($login) {
 
             $request->session()->regenerate();
 
-            if (Auth::user()->role == 'Admin') {
-                return redirect()->route('admin.dashboard');
+
+            /*
+            |--------------------------------------------------------------------------
+            | Redirect berdasarkan Role
+            |--------------------------------------------------------------------------
+            */
+
+            if (Auth::user()->role === 'Admin') {
+
+                return redirect()
+                    ->route('admin.dashboard');
+
             }
 
-            if (Auth::user()->role == 'Kasir') {
-                return redirect()->route('kasir.dashboard');
+
+            if (Auth::user()->role === 'Kasir') {
+
+                return redirect()
+                    ->route('kasir.dashboard');
+
             }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Role Tidak Dikenali
+            |--------------------------------------------------------------------------
+            */
 
             Auth::logout();
 
             return redirect('/login')
                 ->withErrors([
-                    'email' => 'Role tidak dikenali.'
+                    'identifier' =>
+                        'Role pengguna tidak dikenali.',
                 ]);
+
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah',
-        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | LOGIN GAGAL
+        |--------------------------------------------------------------------------
+        */
+
+        return back()
+            ->withInput(
+                $request->only('identifier')
+            )
+            ->withErrors([
+                'identifier' =>
+                    'Email/username atau password salah.',
+            ]);
     }
 
-    // Logout
+
+    /*
+    |--------------------------------------------------------------------------
+    | Logout
+    |--------------------------------------------------------------------------
+    */
+
     public function logout(Request $request)
     {
         Auth::logout();
 
         $request->session()->invalidate();
+
         $request->session()->regenerateToken();
 
         return redirect('/login');
