@@ -165,16 +165,35 @@
     </div>
 
 
-    <button
-        type="button"
-        class="print-button"
-        onclick="window.print()">
+        @if($product->barcode)
 
-        🖨 Cetak Barcode
+        <button
+            type="button"
+            class="print-button"
+            onclick="window.print()">
 
-    </button>
+            🖨 Cetak Barcode
+
+        </button>
+
+    @endif
 
 </div>
+
+
+<script>
+
+    window.addEventListener('load', function () {
+
+        @if($product->barcode)
+
+            window.print();
+
+        @endif
+
+    });
+
+</script>
 
 
 </body>

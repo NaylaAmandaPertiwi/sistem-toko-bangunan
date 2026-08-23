@@ -671,6 +671,16 @@ class ProductController extends Controller
             abort(404);
         }
 
+        if (empty($product->barcode)) {
+
+            return redirect()
+                ->route('admin.barcode')
+                ->with(
+                    'error',
+                    'Produk belum memiliki barcode.'
+                );
+        }
+
         return view(
             'admin.products.print-barcode',
             compact('product')
@@ -683,7 +693,9 @@ class ProductController extends Controller
             ->where('status', 'Aktif')
             ->whereHas('category', function ($query) {
                 $query->where('status', 'Aktif');
-        });
+            })
+            ->whereNotNull('barcode')
+            ->where('barcode', '!=', '');
 
         /*
         |--------------------------------------------------------------------------
@@ -735,6 +747,28 @@ class ProductController extends Controller
         $products = $query
             ->orderBy('nama_produk')
             ->get();
+
+        /*
+        |--------------------------------------------------------------------------
+        | TIDAK ADA PRODUK YANG DAPAT DICETAK
+        |--------------------------------------------------------------------------
+        */
+
+        if ($products->isEmpty()) {
+
+            return redirect()
+                ->route('admin.barcode')
+                ->with(
+                    'error',
+                    'Tidak ada produk yang dapat dicetak.'
+                );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | TAMPILKAN HALAMAN CETAK
+        |--------------------------------------------------------------------------
+        */
 
         return view(
             'admin.products.barcode-print-all',

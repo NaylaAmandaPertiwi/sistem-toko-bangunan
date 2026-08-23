@@ -260,6 +260,16 @@ table td{
     color:#999;
 }
 
+.alert-error{
+    margin:20px 25px 0 25px;
+    padding:12px 16px;
+    background:#fee2e2;
+    color:#b91c1c;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:500;
+}
+
 .barcode-preview{
     min-width:180px;
     vertical-align:middle;
@@ -312,6 +322,14 @@ table td{
         Barcode Produk
 
     </div>
+
+    @if(session('error'))
+
+        <div class="alert-error">
+            {{ session('error') }}
+        </div>
+
+    @endif
 
     <!-- BARCODE TOOLBAR -->
 
@@ -841,6 +859,23 @@ document.addEventListener('DOMContentLoaded', function () {
             | BUKA HALAMAN CETAK
             |----------------------------------------------------------------------
             */
+
+            const visibleRows =
+                Array.from(rows).filter(function (row) {
+
+                    return row.style.display !== 'none';
+
+                });
+
+
+            if (visibleRows.length === 0) {
+
+                alert('Tidak ada produk yang dapat dicetak.');
+
+                return;
+
+            }
+
 
             const url =
                 "{{ route('admin.barcode.print-all') }}" +
