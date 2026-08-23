@@ -233,7 +233,8 @@
                             type="text"
                             name="nama_produk"
                             value="{{ $produk->nama_produk }}"
-                            class="form-control">
+                            class="form-control"
+                            required>
 
                     </div>
 
@@ -245,7 +246,8 @@
                             type="text"
                             name="sku"
                             value="{{ $produk->sku }}"
-                            class="form-control">
+                            class="form-control"
+                            required>
                     </div>
 
                     <div class="form-group">
@@ -272,11 +274,13 @@
 
                         <label>Stok Awal</label>
 
-                        <input
+                        <input 
                             type="number"
                             name="stok"
                             value="{{ $produk->stok }}"
-                            class="form-control">
+                            class="form-control"
+                            min="0"
+                            required>
 
                     </div>
 
@@ -288,7 +292,9 @@
                             type="number"
                             name="stok_minimum"
                             value="{{ $produk->stok_minimum ?? 10 }}"
-                            class="form-control">
+                            class="form-control"
+                            min="0"
+                            required>
 
                     </div>
 
@@ -301,7 +307,8 @@
                             name="satuan"
                             value="{{ $produk->satuan }}"
                             class="form-control"
-                            placeholder="Contoh: Sak, Kg, Batang">
+                            placeholder="Contoh: Sak, Kg, Batang"
+                            required>
 
                     </div>
 
@@ -349,7 +356,8 @@
 
                         <select
                             name="status"
-                            class="form-control">
+                            class="form-control"
+                            required>
 
                             <option value="Aktif"
                                 {{ $produk->status == 'Aktif' ? 'selected' : '' }}>
@@ -554,32 +562,48 @@ document.addEventListener('DOMContentLoaded', function () {
         'hargaJual'
     );
 
-
     /* =====================================
-       VALIDASI FORM
+    VALIDASI FORM
     ===================================== */
 
     const form =
-        document.querySelector('form');
+        document.getElementById('productForm');
 
     if (form) {
 
         form.addEventListener('submit', function (event) {
 
-            // Pastikan kategori sudah dipilih
+            /*
+            |--------------------------------------------------------------------------
+            | KATEGORI
+            |--------------------------------------------------------------------------
+            */
+
             if (!categoryId.value) {
 
                 event.preventDefault();
 
-                alert('Silakan pilih kategori produk.');
+                categorySearch.setCustomValidity(
+                    'Silakan pilih kategori produk.'
+                );
 
-                categorySearch.focus();
+                categorySearch.reportValidity();
 
                 return;
 
+            } else {
+
+                categorySearch.setCustomValidity('');
+
             }
 
-            // Pastikan harga beli berupa angka
+
+            /*
+            |--------------------------------------------------------------------------
+            | HARGA BELI
+            |--------------------------------------------------------------------------
+            */
+
             if (
                 !/^\d+$/.test(
                     document.getElementById('hargaBeli').value
@@ -588,13 +612,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 event.preventDefault();
 
-                alert('Harga beli hanya boleh berisi angka.');
+                document
+                    .getElementById('hargaBeliDisplay')
+                    .setCustomValidity(
+                        'Harga beli wajib diisi.'
+                    );
+
+                document
+                    .getElementById('hargaBeliDisplay')
+                    .reportValidity();
 
                 return;
 
+            } else {
+
+                document
+                    .getElementById('hargaBeliDisplay')
+                    .setCustomValidity('');
+
             }
 
-            // Pastikan harga jual berupa angka
+
+            /*
+            |--------------------------------------------------------------------------
+            | HARGA JUAL
+            |--------------------------------------------------------------------------
+            */
+
             if (
                 !/^\d+$/.test(
                     document.getElementById('hargaJual').value
@@ -603,9 +647,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 event.preventDefault();
 
-                alert('Harga jual hanya boleh berisi angka.');
+                document
+                    .getElementById('hargaJualDisplay')
+                    .setCustomValidity(
+                        'Harga jual wajib diisi.'
+                    );
+
+                document
+                    .getElementById('hargaJualDisplay')
+                    .reportValidity();
 
                 return;
+
+            } else {
+
+                document
+                    .getElementById('hargaJualDisplay')
+                    .setCustomValidity('');
 
             }
 

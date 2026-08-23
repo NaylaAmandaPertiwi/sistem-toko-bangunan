@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\Category;
 use App\Models\Product;
 
@@ -70,30 +71,248 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
+
+            /*
+            |--------------------------------------------------------------------------
+            | KATEGORI
+            |--------------------------------------------------------------------------
+            */
+
             'category_id' => [
                 'required',
                 'exists:categories,id',
+
                 function ($attribute, $value, $fail) {
 
                     $category = Category::find($value);
 
                     if (!$category || $category->status !== 'Aktif') {
-                        $fail('Kategori yang dipilih sedang nonaktif.');
+
+                        $fail(
+                            'Kategori yang dipilih sedang nonaktif.'
+                        );
+
                     }
                 },
             ],
-            'nama_produk' => 'required',
-            'sku' => 'nullable',
-            'barcode' => 'nullable',
-            'stok' => 'required',
-            'stok_minimum' => 'required|numeric',
-            'satuan' => 'required',
-            'harga_beli' => 'required',
-            'harga_jual' => 'required',
-            'status' => 'required'
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | NAMA PRODUK
+            |--------------------------------------------------------------------------
+            */
+
+            'nama_produk' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SKU
+            |--------------------------------------------------------------------------
+            */
+
+            'sku' => [
+                'required',
+                'string',
+                'max:100',
+                'unique:products,sku',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | BARCODE
+            |--------------------------------------------------------------------------
+            |
+            | Barcode boleh kosong.
+            |
+            */
+
+            'barcode' => [
+                'nullable',
+                'string',
+                'max:100',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | STOK AWAL
+            |--------------------------------------------------------------------------
+            |
+            | Wajib diisi dan tidak boleh negatif.
+            |
+            */
+
+            'stok' => [
+                'required',
+                'integer',
+                'min:0',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | STOK MINIMUM
+            |--------------------------------------------------------------------------
+            */
+
+            'stok_minimum' => [
+                'required',
+                'integer',
+                'min:0',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SATUAN
+            |--------------------------------------------------------------------------
+            */
+
+            'satuan' => [
+                'required',
+                'string',
+                'max:50',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | HARGA BELI
+            |--------------------------------------------------------------------------
+            */
+
+            'harga_beli' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | HARGA JUAL
+            |--------------------------------------------------------------------------
+            */
+
+            'harga_jual' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | STATUS
+            |--------------------------------------------------------------------------
+            */
+
+            'status' => [
+                'required',
+                'in:Aktif,Nonaktif',
+            ],
+
+        ], [
+
+            /*
+            |--------------------------------------------------------------------------
+            | PESAN VALIDASI
+            |--------------------------------------------------------------------------
+            */
+
+            'category_id.required' =>
+                'Kategori wajib dipilih.',
+
+            'category_id.exists' =>
+                'Kategori yang dipilih tidak valid.',
+
+
+            'nama_produk.required' =>
+                'Nama produk wajib diisi.',
+
+            'nama_produk.string' =>
+                'Nama produk harus berupa teks.',
+
+
+            'sku.required' =>
+                'SKU wajib diisi.',
+
+            'sku.unique' =>
+                'SKU tersebut sudah digunakan.',
+
+
+            'barcode.string' =>
+                'Barcode harus berupa teks.',
+
+
+            'stok.required' =>
+                'Stok awal wajib diisi.',
+
+            'stok.integer' =>
+                'Stok awal harus berupa angka bulat.',
+
+            'stok.min' =>
+                'Stok awal tidak boleh kurang dari 0.',
+
+
+            'stok_minimum.required' =>
+                'Stok minimum wajib diisi.',
+
+            'stok_minimum.integer' =>
+                'Stok minimum harus berupa angka bulat.',
+
+            'stok_minimum.min' =>
+                'Stok minimum tidak boleh kurang dari 0.',
+
+
+            'satuan.required' =>
+                'Satuan wajib diisi.',
+
+
+            'harga_beli.required' =>
+                'Harga beli wajib diisi.',
+
+            'harga_beli.numeric' =>
+                'Harga beli harus berupa angka.',
+
+            'harga_beli.min' =>
+                'Harga beli tidak boleh kurang dari 0.',
+
+
+            'harga_jual.required' =>
+                'Harga jual wajib diisi.',
+
+            'harga_jual.numeric' =>
+                'Harga jual harus berupa angka.',
+
+            'harga_jual.min' =>
+                'Harga jual tidak boleh kurang dari 0.',
+
+
+            'status.required' =>
+                'Status produk wajib dipilih.',
+
+            'status.in' =>
+                'Status produk tidak valid.',
+
         ]);
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN PRODUK
+        |--------------------------------------------------------------------------
+        */
+
         Product::create($data);
+
 
         return redirect()
             ->route('admin.produk.index')
@@ -127,38 +346,260 @@ class ProductController extends Controller
     )
     {
         $data = $request->validate([
+
+            /*
+            |--------------------------------------------------------------------------
+            | KATEGORI
+            |--------------------------------------------------------------------------
+            */
+
             'category_id' => [
                 'required',
                 'exists:categories,id',
+
                 function ($attribute, $value, $fail) use ($produk) {
 
-                    // Jika kategori tidak berubah,
-                    // tetap izinkan menggunakan kategori lama
+                    /*
+                    | Jika kategori tidak berubah,
+                    | tetap izinkan menggunakan kategori tersebut.
+                    */
+
                     if ((int) $value === (int) $produk->category_id) {
+
                         return;
+
                     }
 
-                    // Jika memilih kategori baru,
-                    // kategori tersebut harus Aktif
+
+                    /*
+                    | Jika memilih kategori baru,
+                    | kategori harus Aktif.
+                    */
+
                     $category = Category::find($value);
 
                     if (!$category || $category->status !== 'Aktif') {
-                        $fail('Kategori yang dipilih sedang nonaktif.');
+
+                        $fail(
+                            'Kategori yang dipilih sedang nonaktif.'
+                        );
+
                     }
                 },
             ],
-            'nama_produk' => 'required',
-            'sku' => 'nullable',
-            'barcode' => 'nullable',
-            'stok' => 'required',
-            'stok_minimum' => 'required|numeric',
-            'satuan' => 'required',
-            'harga_beli' => 'required',
-            'harga_jual' => 'required',
-            'status' => 'required'
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | NAMA PRODUK
+            |--------------------------------------------------------------------------
+            */
+
+            'nama_produk' => [
+                'required',
+                'string',
+                'max:255',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SKU
+            |--------------------------------------------------------------------------
+            |
+            | Wajib diisi dan tidak boleh sama dengan SKU produk lain.
+            |
+            */
+
+            'sku' => [
+                'required',
+                'string',
+                'max:100',
+
+                Rule::unique('products', 'sku')
+                    ->ignore($produk->id),
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | BARCODE
+            |--------------------------------------------------------------------------
+            |
+            | Barcode tetap boleh kosong.
+            |
+            */
+
+            'barcode' => [
+                'nullable',
+                'string',
+                'max:100',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | STOK
+            |--------------------------------------------------------------------------
+            */
+
+            'stok' => [
+                'required',
+                'integer',
+                'min:0',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | STOK MINIMUM
+            |--------------------------------------------------------------------------
+            */
+
+            'stok_minimum' => [
+                'required',
+                'integer',
+                'min:0',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SATUAN
+            |--------------------------------------------------------------------------
+            */
+
+            'satuan' => [
+                'required',
+                'string',
+                'max:50',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | HARGA BELI
+            |--------------------------------------------------------------------------
+            */
+
+            'harga_beli' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | HARGA JUAL
+            |--------------------------------------------------------------------------
+            */
+
+            'harga_jual' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | STATUS
+            |--------------------------------------------------------------------------
+            */
+
+            'status' => [
+                'required',
+                'in:Aktif,Nonaktif',
+            ],
+
+        ], [
+
+            /*
+            |--------------------------------------------------------------------------
+            | PESAN VALIDASI
+            |--------------------------------------------------------------------------
+            */
+
+            'category_id.required' =>
+                'Kategori wajib dipilih.',
+
+            'category_id.exists' =>
+                'Kategori yang dipilih tidak valid.',
+
+
+            'nama_produk.required' =>
+                'Nama produk wajib diisi.',
+
+
+            'sku.required' =>
+                'SKU wajib diisi.',
+
+            'sku.unique' =>
+                'SKU tersebut sudah digunakan.',
+
+
+            'stok.required' =>
+                'Stok wajib diisi.',
+
+            'stok.integer' =>
+                'Stok harus berupa angka bulat.',
+
+            'stok.min' =>
+                'Stok tidak boleh kurang dari 0.',
+
+
+            'stok_minimum.required' =>
+                'Stok minimum wajib diisi.',
+
+            'stok_minimum.integer' =>
+                'Stok minimum harus berupa angka bulat.',
+
+            'stok_minimum.min' =>
+                'Stok minimum tidak boleh kurang dari 0.',
+
+
+            'satuan.required' =>
+                'Satuan wajib diisi.',
+
+
+            'harga_beli.required' =>
+                'Harga beli wajib diisi.',
+
+            'harga_beli.numeric' =>
+                'Harga beli harus berupa angka.',
+
+            'harga_beli.min' =>
+                'Harga beli tidak boleh kurang dari 0.',
+
+
+            'harga_jual.required' =>
+                'Harga jual wajib diisi.',
+
+            'harga_jual.numeric' =>
+                'Harga jual harus berupa angka.',
+
+            'harga_jual.min' =>
+                'Harga jual tidak boleh kurang dari 0.',
+
+
+            'status.required' =>
+                'Status produk wajib dipilih.',
+
+            'status.in' =>
+                'Status produk tidak valid.',
+
         ]);
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE PRODUK
+        |--------------------------------------------------------------------------
+        */
+
         $produk->update($data);
+
 
         return redirect()
             ->route('admin.produk.index')

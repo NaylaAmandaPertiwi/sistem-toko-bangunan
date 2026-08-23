@@ -194,7 +194,8 @@
                                 id="categorySearch"
                                 class="form-control"
                                 placeholder="Cari kategori..."
-                                autocomplete="off">
+                                autocomplete="off"
+                                required>
 
                             <input type="hidden"
                                 name="category_id"
@@ -228,7 +229,8 @@
                         <input
                             type="text"
                             name="nama_produk"
-                            class="form-control">
+                            class="form-control"
+                            required>
 
                     </div>
 
@@ -239,7 +241,8 @@
                         <input
                             type="text"
                             name="sku"
-                            class="form-control">
+                            class="form-control"
+                            required>
 
                     </div>
 
@@ -269,7 +272,9 @@
                         <input
                             type="number"
                             name="stok"
-                            class="form-control">
+                            class="form-control"
+                            min="0"
+                            required>
 
                     </div>
 
@@ -281,7 +286,9 @@
                             type="number"
                             name="stok_minimum"
                             value="10"
-                            class="form-control">
+                            class="form-control"
+                            min="0"
+                            required>
 
                     </div>
 
@@ -293,7 +300,8 @@
                             type="text"
                             name="satuan"
                             class="form-control"
-                            placeholder="Contoh: Sak, Kg, Batang">
+                            placeholder="Contoh: Sak, Kg, Batang"
+                            required>
 
                     </div>
 
@@ -310,7 +318,8 @@
                                 class="form-control price-field"
                                 placeholder="0"
                                 autocomplete="off"
-                                inputmode="numeric">
+                                inputmode="numeric"
+                                required>
 
                             <input type="hidden"
                                 name="harga_beli"
@@ -333,7 +342,8 @@
                                 class="form-control price-field"
                                 placeholder="0"
                                 autocomplete="off"
-                                inputmode="numeric">
+                                inputmode="numeric"
+                                required>
 
                             <input type="hidden"
                                 name="harga_jual"
@@ -349,7 +359,8 @@
 
                         <select
                             name="status"
-                            class="form-control">
+                            class="form-control"
+                            required>
 
                             <option value="Aktif">
                                 Aktif
@@ -487,13 +498,19 @@ document.addEventListener('click', function(event){
 
 });
 
-document.querySelector('form').addEventListener('submit', function(event){
+document.getElementById('productForm').addEventListener('submit', function(event){
+
+    /*
+    |--------------------------------------------------------------------------
+    | KATEGORI
+    |--------------------------------------------------------------------------
+    | Jika Admin belum memilih kategori dari daftar,
+    | kosongkan input agar validasi required browser bekerja.
+    */
 
     if(!categoryId.value){
 
-        event.preventDefault();
-
-        alert('Silakan pilih kategori terlebih dahulu.');
+        categorySearch.value = '';
 
         categorySearch.focus();
 
@@ -501,11 +518,19 @@ document.querySelector('form').addEventListener('submit', function(event){
 
     }
 
-    document.querySelectorAll('.price-field').forEach(function(input){
 
-        input.value = input.value.replace(/\./g, '');
+    /*
+    |--------------------------------------------------------------------------
+    | HARGA
+    |--------------------------------------------------------------------------
+    | Hilangkan titik pemisah ribuan sebelum data dikirim.
+    */
 
-    });
+    hargaBeli.value =
+        hargaBeliDisplay.value.replace(/\./g, '');
+
+    hargaJual.value =
+        hargaJualDisplay.value.replace(/\./g, '');
 
 });
 
