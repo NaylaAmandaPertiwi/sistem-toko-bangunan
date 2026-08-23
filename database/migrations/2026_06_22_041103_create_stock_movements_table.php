@@ -15,7 +15,13 @@ return new class extends Migration
 
             $table->id();
 
-            $table->foreignId('product_id');
+            $table->foreignId('product_id')
+                ->constrained();
+
+            $table->foreignId('stock_opname_id')
+                ->nullable()
+                ->constrained('stock_opnames')
+                ->nullOnDelete();
 
             $table->dateTime('tanggal');
 

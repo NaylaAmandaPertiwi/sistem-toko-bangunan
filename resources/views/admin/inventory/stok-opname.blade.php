@@ -943,7 +943,8 @@
                         <input
                             type="checkbox"
                             class="row-checkbox"
-                            value="{{ $opname->id }}">
+                            value="{{ $opname->id }}"
+                        >
                     </td>
 
                     <td class="opname-number">
@@ -1135,19 +1136,61 @@
 
 /* =========================================================
    CHECK ALL
+   Semua data Stock Opname dapat dipilih
+========================================================= */
+
+const checkAll =
+    document.getElementById('checkAll');
+
+if (checkAll) {
+
+    checkAll.addEventListener(
+        'change',
+        function () {
+
+            document
+                .querySelectorAll('.row-checkbox')
+                .forEach(function (checkbox) {
+
+                    checkbox.checked =
+                        checkAll.checked;
+
+                });
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SINKRONISASI CHECK ALL
 ========================================================= */
 
 document
-    .getElementById('checkAll')
-    .addEventListener('change', function(){
+    .querySelectorAll('.row-checkbox')
+    .forEach(function (checkbox) {
 
-        document
-            .querySelectorAll('.row-checkbox')
-            .forEach(function(cb){
+        checkbox.addEventListener(
+            'change',
+            function () {
 
-                cb.checked = this.checked;
+                const checkboxes =
+                    document.querySelectorAll(
+                        '.row-checkbox'
+                    );
 
-            }, this);
+                const checked =
+                    document.querySelectorAll(
+                        '.row-checkbox:checked'
+                    );
+
+                checkAll.checked =
+                    checkboxes.length > 0 &&
+                    checked.length === checkboxes.length;
+
+            }
+        );
 
     });
 
@@ -1156,86 +1199,162 @@ document
    BULK DELETE
 ========================================================= */
 
-document
-    .getElementById('deleteSelected')
-    .addEventListener('click', function(){
+const deleteSelected =
+    document.getElementById('deleteSelected');
 
-        let ids = [];
+if (deleteSelected) {
 
-        document
-            .querySelectorAll('.row-checkbox:checked')
-            .forEach(function(cb){
+    deleteSelected.addEventListener(
+        'click',
+        function () {
 
-                ids.push(cb.value);
+            /*
+            |--------------------------------------------------------------------------
+            | Ambil HANYA checkbox yang dicentang
+            |--------------------------------------------------------------------------
+            */
+
+            const checked =
+                document.querySelectorAll(
+                    '.row-checkbox:checked'
+                );
+
+            const ids = Array.from(
+                checked
+            ).map(function (checkbox) {
+
+                return checkbox.value;
 
             });
 
 
-        if(ids.length === 0){
+            /*
+            |--------------------------------------------------------------------------
+            | Tidak ada data dipilih
+            |--------------------------------------------------------------------------
+            */
 
-            alert('Pilih data yang akan dihapus');
+            if (ids.length === 0) {
 
-            return;
+                alert(
+                    'Pilih data Stock Opname yang ingin dihapus.'
+                );
 
-        }
-
-
-        if(!confirm(
-            'Yakin ingin menghapus data terpilih?'
-        )){
-
-            return;
-
-        }
-
-
-        fetch(
-            "{{ route('admin.stok-opname.bulk-delete') }}",
-            {
-                method: 'DELETE',
-
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-
-                body: JSON.stringify({
-                    ids: ids.join(',')
-                })
-            }
-        )
-
-        .then(response => response.json())
-
-        .then(data => {
-
-            console.log(data);
-
-
-            if(data.success){
-
-                alert('Berhasil dihapus');
-
-                location.reload();
-
-            }else{
-
-                alert('Gagal hapus');
-
+                return;
             }
 
-        })
 
-        .catch(error => {
+            /*
+            |--------------------------------------------------------------------------
+            | Tampilkan ID yang dipilih untuk pengecekan
+            |--------------------------------------------------------------------------
+            */
 
-            console.log(error);
+            console.log(
+                'ID yang akan dihapus:',
+                ids
+            );
 
-            alert('Terjadi error');
 
-        });
+            /*
+            |--------------------------------------------------------------------------
+            | Konfirmasi
+            |--------------------------------------------------------------------------
+            */
 
-    });
+            if (!confirm(
+                'Yakin ingin menghapus ' +
+                ids.length +
+                ' data Stock Opname yang dipilih?'
+            )) {
 
+                return;
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Kirim ke Controller
+            |--------------------------------------------------------------------------
+            */
+
+            fetch(
+                "{{ route('admin.stok-opname.bulk-delete') }}",
+                {
+                    method: 'DELETE',
+
+                    headers: {
+
+                        'Content-Type':
+                            'application/json',
+
+                        'Accept':
+                            'application/json',
+
+                        'X-CSRF-TOKEN':
+                            '{{ csrf_token() }}'
+
+                    },
+
+                    body: JSON.stringify({
+
+                        ids: ids
+
+                    })
+
+                }
+            )
+
+            .then(function (response) {
+
+                return response.json();
+
+            })
+
+            .then(function (data) {
+
+                console.log(
+                    'Response:',
+                    data
+                );
+
+
+                if (data.success) {
+
+                    alert(
+                        data.message
+                    );
+
+                    window.location.reload();
+
+                } else {
+
+                    alert(
+                        data.message ||
+                        'Data Stock Opname gagal dihapus.'
+                    );
+
+                }
+
+            })
+
+            .catch(function (error) {
+
+                console.error(
+                    'Error:',
+                    error
+                );
+
+                alert(
+                    'Terjadi kesalahan saat menghapus data.'
+                );
+
+            });
+
+        }
+    );
+
+}
 
 /* =========================================================
    FILTER OPNAME

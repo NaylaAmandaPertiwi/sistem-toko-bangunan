@@ -222,106 +222,219 @@ class StockOpnameController extends Controller
     // Simpan stok opname
     public function store(Request $request)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | 1. Validasi data
+        |--------------------------------------------------------------------------
+        */
 
         $request->validate([
-            'tanggal_opname' => 'required',
-            'petugas' => 'required',
-            'status' => 'required',
-            'products' => 'required|array|min:1',
-        ]);
 
-        $nomorOpname =
-            'SO-' .
-            now()->format('YmdHis') .
-            rand(100,999);
+            'tanggal_opname' =>
+                'required|date',
 
-        $opname = StockOpname::create([
+            'keterangan' =>
+                'nullable|string',
 
-            'nomor_opname'
-                => $nomorOpname,
+            'products' =>
+                'required|array|min:1',
 
-            'tanggal_opname'
-                => $request->tanggal_opname,
+            'products.*.product_id' =>
+                'required|exists:products,id',
 
-            'keterangan'
-                => $request->keterangan,
-
-            'petugas'
-                => auth()->user()->name,
-
-            'status'
-                => $request->status
-        ]);
-
-        foreach($request->products as $item)
-    {
-        $selisih =
-            $item['stok_fisik']
-            -
-            $item['stok_sistem'];
-
-        StockOpnameDetail::create([
-
-            'stock_opname_id'
-                => $opname->id,
-
-            'product_id'
-                => $item['product_id'],
-
-            'stok_sistem'
-                => $item['stok_sistem'],
-
-            'stok_fisik'
-                => $item['stok_fisik'],
-
-            'selisih'
-                => $selisih
-        ]);
-
-
-        Product::where(
-            'id',
-            $item['product_id']
-        )->update([
-
-            'stok'
-                => $item['stok_fisik']
+            'products.*.stok_fisik' =>
+                'required|numeric|min:0',
 
         ]);
 
 
-        StockMovement::create([
+        /*
+        |--------------------------------------------------------------------------
+        | 2. Mulai transaction
+        |--------------------------------------------------------------------------
+        */
 
-            'stock_opname_id'
-                => $opname->id,
+        DB::beginTransaction();
 
-            'product_id'
-                => $item['product_id'],
 
-            'tanggal'
-                => $request->tanggal_opname,
+        try {
 
-            'jenis'
-                => 'Opname',
+            /*
+            |--------------------------------------------------------------------------
+            | 3. Buat nomor opname
+            |--------------------------------------------------------------------------
+            */
 
-            'qty'
-                => $selisih,
+            $nomorOpname =
+                'SO-' .
+                now()->format('YmdHis') .
+                rand(100,999);
 
-            'stok_awal'
-                => $item['stok_sistem'],
 
-            'stok_akhir'
-                => $item['stok_fisik'],
+            /*
+            |--------------------------------------------------------------------------
+            | 4. Semua opname baru selalu dimulai sebagai Draft
+            |--------------------------------------------------------------------------
+            */
 
-            'keterangan'
-                => 'Stok Opname ' .
-                $nomorOpname
+            $opname = StockOpname::create([
 
-        ]);
-    }
+                'nomor_opname'
+                    => $nomorOpname,
 
-        return redirect()
-            ->route('admin.stok-opname.index');
+                'tanggal_opname'
+                    => $request->tanggal_opname,
+
+                'keterangan'
+                    => $request->keterangan,
+
+                'petugas'
+                    => auth()->user()->name,
+
+                'status'
+                    => 'Draft'
+
+            ]);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 5. Simpan detail opname
+            |--------------------------------------------------------------------------
+            */
+
+            foreach ($request->products as $item) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | Ambil produk langsung dari database
+                |--------------------------------------------------------------------------
+                */
+
+                $product = Product::find(
+                    $item['product_id']
+                );
+
+
+                if (!$product) {
+
+                    throw new \Exception(
+                        'Produk stok opname tidak ditemukan.'
+                    );
+
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Stok sistem berasal dari database
+                |--------------------------------------------------------------------------
+                */
+
+                $stokSistem =
+                    $product->stok;
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Stok fisik berasal dari hasil opname
+                |--------------------------------------------------------------------------
+                */
+
+                $stokFisik =
+                    $item['stok_fisik'];
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Hitung selisih
+                |--------------------------------------------------------------------------
+                */
+
+                $selisih =
+                    $stokFisik -
+                    $stokSistem;
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Simpan detail
+                |--------------------------------------------------------------------------
+                */
+
+                StockOpnameDetail::create([
+
+                    'stock_opname_id'
+                        => $opname->id,
+
+                    'product_id'
+                        => $product->id,
+
+                    'stok_sistem'
+                        => $stokSistem,
+
+                    'stok_fisik'
+                        => $stokFisik,
+
+                    'selisih'
+                        => $selisih
+
+                ]);
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | PENTING
+                |--------------------------------------------------------------------------
+                |
+                | Draft tidak mengubah stok produk.
+                |
+                | Tidak ada Product::update()
+                | Tidak ada StockMovement::create()
+                |
+                */
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 6. Commit
+            |--------------------------------------------------------------------------
+            */
+
+            DB::commit();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 7. Kembali ke detail
+            |--------------------------------------------------------------------------
+            */
+
+            return redirect()
+                ->route(
+                    'admin.stok-opname.show',
+                    $opname->id
+                )
+                ->with(
+                    'success',
+                    'Stock Opname berhasil dibuat sebagai Draft.'
+                );
+
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Stock Opname gagal dibuat: ' .
+                    $e->getMessage()
+                );
+        }
     }
 
     public function update(Request $request, $id)
@@ -419,49 +532,6 @@ class StockOpnameController extends Controller
             | Maka kita kembalikan stok menjadi 30 terlebih dahulu.
             |
             */
-
-            foreach ($opname->details as $oldDetail) {
-
-        $product = Product::find(
-            $oldDetail->product_id
-        );
-
-        if (!$product) {
-
-            throw new \Exception(
-                'Produk Stock Opname lama tidak ditemukan.'
-            );
-        }
-
-        /*
-        |--------------------------------------------------------------------------
-        | Kembalikan efek Stock Opname lama
-        |--------------------------------------------------------------------------
-        |
-        | Stok sekarang - selisih opname lama
-        |
-        | Contoh:
-        |
-        | Stok sekarang = 35
-        | Selisih lama  = +5
-        |
-        | 35 - 5 = 30
-        |
-        */
-
-        $stokSebelumOpname =
-            $product->stok
-            -
-            $oldDetail->selisih;
-
-
-        $product->update([
-
-            'stok' => $stokSebelumOpname
-
-        ]);
-    }
-
 
         /*
         |--------------------------------------------------------------------------
@@ -587,56 +657,6 @@ class StockOpnameController extends Controller
                     => $selisih
 
             ]);
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Simpan stok produk
-            |--------------------------------------------------------------------------
-            */
-
-            $product->update([
-
-                'stok'
-                    => $stokFisik
-
-            ]);
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Buat Stock Movement baru
-            |--------------------------------------------------------------------------
-            */
-
-            StockMovement::create([
-
-                'stock_opname_id'
-                    => $opname->id,
-
-                'product_id'
-                    => $product->id,
-
-                'tanggal'
-                    => now(),
-
-                'jenis'
-                    => 'Opname',
-
-                'qty'
-                    => $selisih,
-
-                'stok_awal'
-                    => $stokSistem,
-
-                'stok_akhir'
-                    => $stokFisik,
-
-                'keterangan'
-                    => 'Stok Opname ' .
-                       $opname->nomor_opname
-
-            ]);
         }
 
 
@@ -700,22 +720,42 @@ class StockOpnameController extends Controller
         );
     }
 
+    /**
+     * Hapus Stock Opname yang dipilih.
+     *
+     * Satu data maupun beberapa data dapat dihapus.
+     * Data Draft dapat dihapus.
+     */
     public function bulkDelete(Request $request)
     {
         /*
         |--------------------------------------------------------------------------
-        | 1. Ambil ID Stock Opname yang dipilih
+        | Ambil ID yang dikirim dari JavaScript
         |--------------------------------------------------------------------------
         */
 
-        $ids = array_filter(
-            explode(',', $request->ids)
-        );
-
+        $ids = $request->input('ids', []);
 
         /*
         |--------------------------------------------------------------------------
-        | 2. Pastikan ada data yang dipilih
+        | Pastikan selalu berbentuk array
+        |--------------------------------------------------------------------------
+        */
+
+        if (!is_array($ids)) {
+            $ids = [$ids];
+        }
+
+        $ids = array_values(
+            array_filter(
+                $ids,
+                fn ($id) => is_numeric($id)
+            )
+        );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Tidak ada data yang dipilih
         |--------------------------------------------------------------------------
         */
 
@@ -723,114 +763,56 @@ class StockOpnameController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Tidak ada data stok opname yang dipilih.'
-            ]);
+                'message' => 'Pilih data Stock Opname yang ingin dihapus.'
+            ], 422);
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | 3. Mulai database transaction
-        |--------------------------------------------------------------------------
-        */
-
         DB::beginTransaction();
-
 
         try {
 
             /*
             |--------------------------------------------------------------------------
-            | 4. Ambil semua detail Stock Opname
+            | Ambil data berdasarkan ID yang BENAR-BENAR dipilih
             |--------------------------------------------------------------------------
-            |
-            | Kita harus mengambil detail TERLEBIH DAHULU
-            | sebelum data detail dihapus.
-            |
             */
 
-            $details = StockOpnameDetail::whereIn(
-                'stock_opname_id',
-                $ids
-            )->get();
-
+            $opnames = StockOpname::whereIn('id', $ids)
+                ->get();
 
             /*
             |--------------------------------------------------------------------------
-            | 5. Kembalikan stok setiap produk
+            | Pastikan semua ID ditemukan
             |--------------------------------------------------------------------------
             */
 
-            foreach ($details as $detail) {
+            if ($opnames->count() !== count($ids)) {
 
-                $product = Product::find(
-                    $detail->product_id
+                throw new \Exception(
+                    'Sebagian data Stock Opname tidak ditemukan.'
                 );
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Pastikan produk masih tersedia
-                |--------------------------------------------------------------------------
-                */
-
-                if (!$product) {
-
-                    throw new \Exception(
-                        'Produk pada stok opname tidak ditemukan.'
-                    );
-                }
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Hitung stok setelah Stock Opname dibatalkan
-                |--------------------------------------------------------------------------
-                |
-                | Contoh:
-                |
-                | Stok sekarang = 31
-                | Selisih opname = +1
-                |
-                | 31 - 1 = 30
-                |
-                |
-                | Contoh selisih negatif:
-                |
-                | Stok sekarang = 251
-                | Selisih opname = -3
-                |
-                | 251 - (-3) = 254
-                |
-                */
-
-                $stokSebelumOpname =
-                    $product->stok
-                    -
-                    $detail->selisih;
-
-
-                /*
-                |--------------------------------------------------------------------------
-                | Simpan kembali stok produk
-                |--------------------------------------------------------------------------
-                */
-
-                $product->update([
-                    'stok' => $stokSebelumOpname
-                ]);
             }
 
+            /*
+            |--------------------------------------------------------------------------
+            | Hanya Draft yang boleh dihapus
+            |--------------------------------------------------------------------------
+            */
+
+            foreach ($opnames as $opname) {
+
+                if ($opname->status !== 'Draft') {
+
+                    throw new \Exception(
+                        'Hanya Stock Opname dengan status Draft yang dapat dihapus.'
+                    );
+                }
+            }
 
             /*
             |--------------------------------------------------------------------------
-            | 6. Hapus Stock Movement milik Stock Opname
+            | Hapus Stock Movement terkait
             |--------------------------------------------------------------------------
-            |
-            | Karena sekarang Stock Movement sudah mempunyai
-            | stock_opname_id, kita tidak lagi mencari berdasarkan
-            | keterangan.
-            |
             */
 
             StockMovement::whereIn(
@@ -838,10 +820,9 @@ class StockOpnameController extends Controller
                 $ids
             )->delete();
 
-
             /*
             |--------------------------------------------------------------------------
-            | 7. Hapus detail Stock Opname
+            | Hapus detail
             |--------------------------------------------------------------------------
             */
 
@@ -850,10 +831,9 @@ class StockOpnameController extends Controller
                 $ids
             )->delete();
 
-
             /*
             |--------------------------------------------------------------------------
-            | 8. Hapus header Stock Opname
+            | Hapus header Stock Opname
             |--------------------------------------------------------------------------
             */
 
@@ -862,47 +842,94 @@ class StockOpnameController extends Controller
                 $ids
             )->delete();
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | 9. Simpan seluruh perubahan
-            |--------------------------------------------------------------------------
-            */
-
             DB::commit();
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | 10. Berikan response berhasil
-            |--------------------------------------------------------------------------
-            */
 
             return response()->json([
                 'success' => true,
-                'message' =>
-                    'Data stok opname berhasil dihapus, stok produk dikembalikan, dan pergerakan stok dibersihkan.'
+                'message' => count($ids) === 1
+                    ? '1 data Stock Opname berhasil dihapus.'
+                    : count($ids) . ' data Stock Opname berhasil dihapus.'
             ]);
 
-
-        } catch (\Exception $e) {
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | 11. Batalkan seluruh perubahan jika terjadi error
-            |--------------------------------------------------------------------------
-            */
+        } catch (\Throwable $e) {
 
             DB::rollBack();
 
-
             return response()->json([
                 'success' => false,
-                'message' =>
-                    'Data stok opname gagal dihapus: ' .
+                'message' => $e->getMessage()
+            ], 422);
+        }
+    }
+
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+
+        try {
+
+            $opname = StockOpname::findOrFail($id);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Hanya Draft yang boleh dihapus
+            |--------------------------------------------------------------------------
+            */
+
+            if ($opname->status !== 'Draft') {
+
+                throw new \Exception(
+                    'Hanya Stock Opname berstatus Draft yang dapat dihapus.'
+                );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Hapus Stock Movement jika ada
+            |--------------------------------------------------------------------------
+            */
+
+            StockMovement::where(
+                'stock_opname_id',
+                $opname->id
+            )->delete();
+
+            /*
+            |--------------------------------------------------------------------------
+            | Hapus detail
+            |--------------------------------------------------------------------------
+            */
+
+            $opname->details()->delete();
+
+            /*
+            |--------------------------------------------------------------------------
+            | Hapus header
+            |--------------------------------------------------------------------------
+            */
+
+            $opname->delete();
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.stok-opname.index')
+                ->with(
+                    'success',
+                    'Stock Opname Draft berhasil dihapus.'
+                );
+
+        } catch (\Throwable $e) {
+
+            DB::rollBack();
+
+            return redirect()
+                ->route('admin.stok-opname.index')
+                ->with(
+                    'error',
+                    'Stock Opname gagal dihapus: ' .
                     $e->getMessage()
-            ], 500);
+                );
         }
     }
 
@@ -911,21 +938,42 @@ class StockOpnameController extends Controller
         $id
     )
     {
+        $request->validate([
+
+            'status' => [
+                'required',
+                'in:Draft,Disetujui,Selesai,Dibatalkan'
+            ]
+
+        ]);
+
+
         DB::beginTransaction();
+
 
         try {
 
             $opname =
-                StockOpname::findOrFail($id);
+                StockOpname::with('details')
+                    ->findOrFail($id);
 
-            $statusSebelumnya =
+
+            $statusLama =
                 $opname->status;
 
 
+            $statusBaru =
+                $request->status;
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Stock Opname yang sudah Dibatalkan tidak dapat diaktifkan kembali
+            |--------------------------------------------------------------------------
+            */
+
             if (
-                $statusSebelumnya === 'Dibatalkan'
-                &&
-                $request->status !== 'Dibatalkan'
+                $statusLama === 'Dibatalkan'
             ) {
 
                 return back()
@@ -936,19 +984,45 @@ class StockOpnameController extends Controller
             }
 
 
+            /*
+            |--------------------------------------------------------------------------
+            | Stock Opname yang sudah Selesai
+            |--------------------------------------------------------------------------
+            |
+            | Hanya boleh dibatalkan.
+            |
+            */
+
             if (
-                $request->status === 'Dibatalkan'
+                $statusLama === 'Selesai'
                 &&
-                $statusSebelumnya !== 'Dibatalkan'
+                $statusBaru !== 'Dibatalkan'
             ) {
 
-                $details = StockOpnameDetail::where(
-                    'stock_opname_id',
-                    $opname->id
-                )->get();
+                return back()
+                    ->with(
+                        'error',
+                        'Stock Opname yang sudah selesai tidak dapat diubah ke status lain.'
+                    );
+            }
 
 
-                foreach ($details as $detail) {
+            /*
+            |--------------------------------------------------------------------------
+            | Jika status menjadi Selesai
+            |--------------------------------------------------------------------------
+            |
+            | Baru pada tahap ini stok produk diubah.
+            |
+            */
+
+            if (
+                $statusBaru === 'Selesai'
+                &&
+                $statusLama !== 'Selesai'
+            ) {
+
+                foreach ($opname->details as $detail) {
 
                     $product = Product::find(
                         $detail->product_id
@@ -963,14 +1037,122 @@ class StockOpnameController extends Controller
                     }
 
 
-                    $stokSebelumOpname =
-                        $product->stok
-                        -
-                        $detail->selisih;
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Pastikan stok masih sesuai dengan stok sistem
+                    |--------------------------------------------------------------------------
+                    */
 
+                    if (
+                        $product->stok !=
+                        $detail->stok_sistem
+                    ) {
+
+                        throw new \Exception(
+
+                            'Stok produk ' .
+                            $product->nama_produk .
+                            ' telah berubah. Silakan buat opname baru.'
+
+                        );
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Update stok sesuai stok fisik
+                    |--------------------------------------------------------------------------
+                    */
 
                     $product->update([
-                        'stok' => $stokSebelumOpname
+
+                        'stok'
+                            => $detail->stok_fisik
+
+                    ]);
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Catat Stock Movement
+                    |--------------------------------------------------------------------------
+                    */
+
+                    StockMovement::create([
+
+                        'stock_opname_id'
+                            => $opname->id,
+
+                        'product_id'
+                            => $product->id,
+
+                        'tanggal'
+                            => now(),
+
+                        'jenis'
+                            => 'Opname',
+
+                        'qty'
+                            => $detail->selisih,
+
+                        'stok_awal'
+                            => $detail->stok_sistem,
+
+                        'stok_akhir'
+                            => $detail->stok_fisik,
+
+                        'keterangan'
+                            => 'Stok Opname ' .
+                            $opname->nomor_opname
+
+                    ]);
+
+                }
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Jika Selesai kemudian Dibatalkan
+            |--------------------------------------------------------------------------
+            |
+            | Kembalikan stok ke stok sistem sebelum opname.
+            |
+            */
+
+            if (
+                $statusBaru === 'Dibatalkan'
+                &&
+                $statusLama === 'Selesai'
+            ) {
+
+                foreach ($opname->details as $detail) {
+
+                    $product = Product::find(
+                        $detail->product_id
+                    );
+
+
+                    if (!$product) {
+
+                        throw new \Exception(
+                            'Produk pada stok opname tidak ditemukan.'
+                        );
+                    }
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Kembalikan ke stok sebelum opname
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $product->update([
+
+                        'stok'
+                            => $detail->stok_sistem
+
                     ]);
 
                 }
@@ -978,7 +1160,7 @@ class StockOpnameController extends Controller
 
                 /*
                 |--------------------------------------------------------------------------
-                | Hapus Stock Movement milik Stock Opname
+                | Hapus movement opname
                 |--------------------------------------------------------------------------
                 */
 
@@ -989,29 +1171,40 @@ class StockOpnameController extends Controller
 
             }
 
+
+            /*
+            |--------------------------------------------------------------------------
+            | Update status
+            |--------------------------------------------------------------------------
+            */
+
             $opname->update([
 
-                'status' =>
-                    $request->status
+                'status'
+                    => $statusBaru
 
             ]);
 
+
             DB::commit();
+
 
             return back()
                 ->with(
                     'success',
-                    'Status berhasil diperbarui'
+                    'Status Stock Opname berhasil diperbarui.'
                 );
+
 
         } catch (\Exception $e) {
 
             DB::rollBack();
 
+
             return back()
                 ->with(
                     'error',
-                    'Status gagal diperbarui: ' .
+                    'Status Stock Opname gagal diperbarui: ' .
                     $e->getMessage()
                 );
         }

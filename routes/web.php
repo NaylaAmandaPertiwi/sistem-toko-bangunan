@@ -239,17 +239,17 @@ Route::middleware('auth')->group(function () {
 
             Route::get(
                 '/stok-opname',
-                [\App\Http\Controllers\Admin\StockOpnameController::class,'index']
+                [\App\Http\Controllers\Admin\StockOpnameController::class, 'index']
             )->name('stok-opname.index');
 
             Route::get(
                 '/stok-opname/create',
-                [\App\Http\Controllers\Admin\StockOpnameController::class,'create']
+                [\App\Http\Controllers\Admin\StockOpnameController::class, 'create']
             )->name('stok-opname.create');
 
             Route::post(
                 '/stok-opname',
-                [\App\Http\Controllers\Admin\StockOpnameController::class,'store']
+                [\App\Http\Controllers\Admin\StockOpnameController::class, 'store']
             )->name('stok-opname.store');
 
             Route::get(
@@ -262,31 +262,35 @@ Route::middleware('auth')->group(function () {
                 [\App\Http\Controllers\Admin\StockOpnameController::class, 'update']
             )->name('stok-opname.update');
 
-            Route::get(
-                '/stok-opname/{id}',
-                [\App\Http\Controllers\Admin\StockOpnameController::class,'show']
-            )->name('stok-opname.show');
-
             Route::put(
                 '/stok-opname/{id}/status',
-                [\App\Http\Controllers\Admin\StockOpnameController::class,'updateStatus']
+                [\App\Http\Controllers\Admin\StockOpnameController::class, 'updateStatus']
             )->name('stok-opname.update-status');
 
             Route::delete(
                 '/stok-opname/bulk-delete',
-                [\App\Http\Controllers\Admin\StockOpnameController::class,'bulkDelete']
+                [\App\Http\Controllers\Admin\StockOpnameController::class, 'bulkDelete']
             )->name('stok-opname.bulk-delete');
+
+            Route::delete(
+                '/stok-opname/{id}',
+                [\App\Http\Controllers\Admin\StockOpnameController::class, 'destroy']
+            )->name('stok-opname.destroy');
 
             Route::get(
                 '/stok-opname/{id}/print',
-                [\App\Http\Controllers\Admin\StockOpnameController::class,'print']
+                [\App\Http\Controllers\Admin\StockOpnameController::class, 'print']
             )->name('stok-opname.print');
 
             Route::get(
                 '/stok-opname/{id}/pdf',
-                [\App\Http\Controllers\Admin\StockOpnameController::class,'pdf']
+                [\App\Http\Controllers\Admin\StockOpnameController::class, 'pdf']
             )->name('stok-opname.pdf');
 
+            Route::get(
+                '/stok-opname/{id}',
+                [\App\Http\Controllers\Admin\StockOpnameController::class, 'show']
+            )->name('stok-opname.show');
                 /*
                 |--------------------------------------------------------------------------
                 | PERGERAKAN STOK
