@@ -20,8 +20,6 @@ return new class extends Migration
             $table->string('telepon')->nullable();
             $table->text('catatan')->nullable();
 
-            $table->string('foto')->nullable();
-
             $table->string('negara')->nullable();
             $table->string('provinsi')->nullable();
             $table->string('kota')->nullable();
