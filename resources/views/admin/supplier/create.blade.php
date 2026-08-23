@@ -85,6 +85,12 @@ textarea.form-control{
     height:100px;
 }
 
+.form-error {
+    margin-top: 7px;
+    color: #dc2626;
+    font-size: 13px;
+}
+
 </style>
 
 <div class="page-card">
@@ -141,18 +147,21 @@ textarea.form-control{
                         Rincian Supplier
                     </h3>
 
-                    <div class="form-group">
+                    <label>Nama Supplier *</label>
 
-                        <label>Nama Supplier *</label>
+                    <input
+                        type="text"
+                        name="nama_supplier"
+                        class="form-control"
+                        value="{{ old('nama_supplier') }}"
+                        required
+                    >
 
-                        <input
-                            type="text"
-                            name="nama_supplier"
-                            class="form-control"
-                            value="{{ old('nama_supplier') }}"
-                            required>
-
-                    </div>
+                    @error('nama_supplier')
+                        <div class="form-error">
+                            {{ $message }}
+                        </div>
+                    @enderror
 
                     <div class="form-group">
 

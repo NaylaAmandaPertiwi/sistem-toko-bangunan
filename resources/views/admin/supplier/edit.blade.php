@@ -86,6 +86,12 @@ textarea.form-control{
     height:100px;
 }
 
+.form-error {
+    margin-top: 7px;
+    color: #dc2626;
+    font-size: 13px;
+}
+
 </style>
 
 
@@ -161,16 +167,24 @@ textarea.form-control{
 
                     <div class="form-group">
 
-                        <label>
+                        <label for="nama_supplier">
                             Nama Supplier *
                         </label>
 
                         <input
                             type="text"
                             name="nama_supplier"
+                            id="nama_supplier"
                             class="form-control"
                             value="{{ old('nama_supplier', $supplier->nama_supplier) }}"
-                            required>
+                            required
+                        >
+
+                        @error('nama_supplier')
+                            <div class="form-error">
+                                {{ $message }}
+                            </div>
+                        @enderror
 
                     </div>
 

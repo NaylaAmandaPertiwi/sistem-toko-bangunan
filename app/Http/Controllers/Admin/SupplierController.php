@@ -1,9 +1,11 @@
 <?php
 
+
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\Supplier;
 
 class SupplierController extends Controller
@@ -49,29 +51,34 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-
-            'nama_supplier' => 'required',
+            'nama_supplier' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:suppliers,nama_supplier',
+            ],
 
             'kontak_person' => 'nullable',
-
-            'email' => 'nullable',
-
+            'email' => 'nullable|email',
             'telepon' => 'nullable',
-
             'catatan' => 'nullable',
-
             'negara' => 'nullable',
-
             'provinsi' => 'nullable',
-
             'kota' => 'nullable',
-
             'kode_pos' => 'nullable',
-
             'alamat' => 'nullable',
-
             'status' => 'required|in:Aktif,Nonaktif',
 
+        ], [
+
+            'nama_supplier.required' =>
+                'Nama supplier wajib diisi.',
+
+            'nama_supplier.unique' =>
+                'Nama supplier sudah terdaftar.',
+
+            'email.email' =>
+                'Format email tidak valid.',
         ]);
 
         Supplier::create($data);
@@ -102,14 +109,22 @@ class SupplierController extends Controller
         Request $request,
         Supplier $supplier
     ) {
-
         $data = $request->validate([
 
-            'nama_supplier' => 'required',
+            'nama_supplier' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('suppliers', 'nama_supplier')
+                    ->ignore($supplier->id),
+            ],
 
             'kontak_person' => 'nullable',
 
-            'email' => 'nullable',
+            'email' => [
+                'nullable',
+                'email',
+            ],
 
             'telepon' => 'nullable',
 
@@ -126,6 +141,17 @@ class SupplierController extends Controller
             'alamat' => 'nullable',
 
             'status' => 'required|in:Aktif,Nonaktif',
+
+        ], [
+
+            'nama_supplier.required' =>
+                'Nama supplier wajib diisi.',
+
+            'nama_supplier.unique' =>
+                'Nama supplier sudah terdaftar.',
+
+            'email.email' =>
+                'Format email tidak valid.',
 
         ]);
 
