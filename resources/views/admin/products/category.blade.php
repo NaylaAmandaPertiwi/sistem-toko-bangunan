@@ -93,6 +93,26 @@
     background:#1478ca;
 }
 
+.success-message{
+    margin:0 25px 20px;
+    padding:12px 15px;
+    background:#ecfdf3;
+    border:1px solid #abefc6;
+    color:#067647;
+    border-radius:10px;
+    font-size:14px;
+}
+
+.error-message{
+    margin:0 25px 20px;
+    padding:12px 15px;
+    background:#fef3f2;
+    border:1px solid #fecdca;
+    color:#b42318;
+    border-radius:10px;
+    font-size:14px;
+}
+
 /* TABLE */
 .table-section{
     padding:25px;
@@ -197,6 +217,34 @@ table td{
     </div>
 
 </div>
+
+{{-- PESAN SUCCESS --}}
+@if(session('success'))
+
+    <div class="success-message">
+
+        <i class="fa-solid fa-circle-check"></i>
+
+        {{ session('success') }}
+
+    </div>
+
+@endif
+
+
+{{-- PESAN ERROR --}}
+@if(session('error'))
+
+    <div class="error-message">
+
+        <i class="fa-solid fa-circle-exclamation"></i>
+
+        {{ session('error') }}
+
+    </div>
+
+@endif
+
 
 <!-- TABLE -->
 <div class="table-section">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Models\Category;
 
 class CategoryController extends Controller
@@ -12,22 +13,26 @@ class CategoryController extends Controller
     {
         $categories = Category::withCount('products');
 
-        if($request->filled('search'))
-        {
+        if ($request->filled('search')) {
+
             $categories->where(
                 'nama_kategori',
                 'like',
-                '%'.$request->search.'%'
+                '%' . $request->search . '%'
             );
+
         }
 
-        $categories = $categories->latest()->get();
+        $categories = $categories
+            ->latest()
+            ->get();
 
         return view(
             'admin.products.category',
             compact('categories')
         );
     }
+
 
     public function create()
     {
@@ -36,20 +41,61 @@ class CategoryController extends Controller
         );
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | TAMBAH KATEGORI
+    |--------------------------------------------------------------------------
+    */
+
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nama_kategori' => 'required',
-            'deskripsi' => 'nullable',
-            'status' => 'required'
+
+            'nama_kategori' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:categories,nama_kategori',
+            ],
+
+            'deskripsi' => [
+                'nullable',
+                'string',
+            ],
+
+            'status' => [
+                'required',
+                'in:Aktif,Nonaktif',
+            ],
+
+        ], [
+
+            'nama_kategori.required' =>
+                'Nama kategori wajib diisi.',
+
+            'nama_kategori.unique' =>
+                'Nama kategori sudah terdaftar.',
+
         ]);
+
 
         Category::create($data);
 
         return redirect()
             ->route('admin.kategori-produk.index')
-            ->with('success','Kategori berhasil ditambahkan');
+            ->with(
+                'success',
+                'Kategori berhasil ditambahkan'
+            );
     }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | EDIT KATEGORI
+    |--------------------------------------------------------------------------
+    */
 
     public function edit(Category $kategori_produk)
     {
@@ -59,6 +105,13 @@ class CategoryController extends Controller
         );
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | UPDATE KATEGORI
+    |--------------------------------------------------------------------------
+    */
+
     public function update(
         Request $request,
         Category $kategori_produk
@@ -66,13 +119,37 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
 
-            'nama_kategori' => 'required',
+            'nama_kategori' => [
+                'required',
+                'string',
+                'max:255',
 
-            'deskripsi' => 'nullable',
+                Rule::unique(
+                    'categories',
+                    'nama_kategori'
+                )->ignore($kategori_produk->id),
+            ],
 
-            'status' => 'required'
+            'deskripsi' => [
+                'nullable',
+                'string',
+            ],
+
+            'status' => [
+                'required',
+                'in:Aktif,Nonaktif',
+            ],
+
+        ], [
+
+            'nama_kategori.required' =>
+                'Nama kategori wajib diisi.',
+
+            'nama_kategori.unique' =>
+                'Nama kategori sudah terdaftar.',
 
         ]);
+
 
         $kategori_produk->update($data);
 
@@ -84,8 +161,38 @@ class CategoryController extends Controller
             );
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | HAPUS KATEGORI
+    |--------------------------------------------------------------------------
+    */
+
     public function destroy(Category $kategori_produk)
     {
+        /*
+        |--------------------------------------------------------------------------
+        | CEK RELASI PRODUK
+        |--------------------------------------------------------------------------
+        */
+
+        if ($kategori_produk->products()->exists()) {
+
+            return redirect()
+                ->route('admin.kategori-produk.index')
+                ->with(
+                    'error',
+                    'Kategori tidak dapat dihapus karena masih digunakan oleh produk.'
+                );
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | HAPUS KATEGORI
+        |--------------------------------------------------------------------------
+        */
+
         $kategori_produk->delete();
 
         return redirect()

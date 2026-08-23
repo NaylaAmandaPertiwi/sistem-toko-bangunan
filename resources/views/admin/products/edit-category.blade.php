@@ -58,6 +58,12 @@
     border-radius:8px;
 }
 
+.form-error{
+    margin-top:7px;
+    color:#dc2626;
+    font-size:13px;
+}
+
 </style>
 
 <div class="page-card">
@@ -102,13 +108,26 @@
 
             <div class="form-group">
 
-                <label>Nama Kategori *</label>
+                <label for="nama_kategori">
+                    Nama Kategori *
+                </label>
 
-                <input type="text"
-                       name="nama_kategori"
-                       class="form-control"
-                       value="{{ $kategori_produk->nama_kategori }}"
-                       required>
+                <input
+                    type="text"
+                    name="nama_kategori"
+                    id="nama_kategori"
+                    class="form-control"
+                    value="{{ old('nama_kategori', $kategori_produk->nama_kategori) }}"
+                    required
+                >
+
+                @error('nama_kategori')
+
+                    <div class="form-error">
+                        {{ $message }}
+                    </div>
+
+                @enderror
 
             </div>
 
@@ -119,7 +138,7 @@
                 <textarea
                     name="deskripsi"
                     class="form-control"
-                    rows="5">{{ $kategori_produk->deskripsi }}</textarea>
+                    rows="5">{{ old('deskripsi', $kategori_produk->deskripsi) }}</textarea>
 
             </div>
 
@@ -129,15 +148,18 @@
 
                 <select
                     name="status"
-                    class="form-control">
+                    class="form-control"
+                    required>
 
-                    <option value="Aktif"
-                        {{ $kategori_produk->status == 'Aktif' ? 'selected' : '' }}>
+                    <option
+                        value="Aktif"
+                        {{ old('status', $kategori_produk->status) == 'Aktif' ? 'selected' : '' }}>
                         Aktif
                     </option>
 
-                    <option value="Nonaktif"
-                        {{ $kategori_produk->status == 'Nonaktif' ? 'selected' : '' }}>
+                    <option
+                        value="Nonaktif"
+                        {{ old('status', $kategori_produk->status) == 'Nonaktif' ? 'selected' : '' }}>
                         Nonaktif
                     </option>
 

@@ -53,6 +53,12 @@
     border-radius:8px;
 }
 
+.form-error {
+    margin-top: 7px;
+    color: #dc2626;
+    font-size: 13px;
+}
+
 </style>
 
 <div class="page-card">
@@ -96,12 +102,26 @@
 
             <div class="form-group">
 
-                <label>Nama Kategori *</label>
+                <label for="nama_kategori">
+                    Nama Kategori
+                </label>
 
-                <input type="text"
-                       name="nama_kategori"
-                       class="form-control"
-                       required>
+                <input
+                    type="text"
+                    name="nama_kategori"
+                    id="nama_kategori"
+                    class="form-control"
+                    value="{{ old('nama_kategori') }}"
+                    required
+                >
+
+                @error('nama_kategori')
+
+                    <div class="form-error">
+                        {{ $message }}
+                    </div>
+
+                @enderror
 
             </div>
 
@@ -112,7 +132,7 @@
                 <textarea
                     name="deskripsi"
                     class="form-control"
-                    rows="5"></textarea>
+                    rows="5">{{ old('deskripsi') }}</textarea>
 
             </div>
 
@@ -124,11 +144,15 @@
                     name="status"
                     class="form-control">
 
-                    <option value="Aktif">
+                    <option
+                        value="Aktif"
+                        {{ old('status', 'Aktif') === 'Aktif' ? 'selected' : '' }}>
                         Aktif
                     </option>
 
-                    <option value="Nonaktif">
+                    <option
+                        value="Nonaktif"
+                        {{ old('status') === 'Nonaktif' ? 'selected' : '' }}>
                         Nonaktif
                     </option>
 
