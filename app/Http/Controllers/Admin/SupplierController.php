@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Supplier;
+use App\Models\StockIn;
 
 class SupplierController extends Controller
 {
@@ -170,6 +171,23 @@ class SupplierController extends Controller
     // ==========================
     public function destroy(Supplier $supplier)
     {
+        // Cek apakah supplier masih digunakan pada data stok masuk
+        $digunakan = StockIn::where(
+            'supplier_id',
+            $supplier->id
+        )->exists();
+
+        // Jika masih digunakan, batalkan penghapusan
+        if ($digunakan) {
+            return redirect()
+                ->route('admin.supplier.index')
+                ->with(
+                    'error',
+                    'Supplier tidak dapat dihapus karena masih digunakan pada data stok masuk.'
+                );
+        }
+
+        // Jika tidak digunakan, supplier boleh dihapus
         $supplier->delete();
 
         return redirect()

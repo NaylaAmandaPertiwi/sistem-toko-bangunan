@@ -2,6 +2,18 @@
 
 @section('title', 'Supplier')
 
+@if(session('error'))
+    <div class="alert-error">
+        {{ session('error') }}
+    </div>
+@endif
+
+@if(session('success'))
+    <div class="alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
 @section('content')
 
 <style>
@@ -206,6 +218,22 @@ table td{
 
 .delete-btn{
     color:#dc3545;
+}
+
+.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.alert-success {
+    background: #d1fae5;
+    color: #065f46;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
 }
 
 </style>
