@@ -2,6 +2,12 @@
 
 @section('title','Tambah Stok Masuk')
 
+@error('jumlah_masuk')
+    <div class="form-error">
+        {{ $message }}
+    </div>
+@enderror
+
 @section('content')
 
 <style>
@@ -74,6 +80,12 @@
 .section-title{
     color:#57c13b;
     margin-bottom:20px;
+}
+
+.form-error {
+    margin-top: 7px;
+    color: #dc2626;
+    font-size: 13px;
 }
 
 </style>
@@ -266,8 +278,11 @@
                             type="number"
                             name="jumlah_masuk"
                             class="form-control"
+                            min="1"
+                            step="1"
+                            value="{{ old('jumlah_masuk') }}"
                             required
-                            value="{{ old('jumlah_masuk', $stockIn->jumlah_masuk ?? '') }}">
+                        >
 
                     </div>
 

@@ -104,32 +104,91 @@ class StockInController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
 
-            'nomor_transaksi' => 'required',
+            'nomor_transaksi' => [
+                'required',
+            ],
 
-            'tanggal_masuk' => 'required',
+            'tanggal_masuk' => [
+                'required',
+                'date',
+            ],
 
             'supplier_id' => [
                 'required',
                 'exists:suppliers,id',
+
                 function ($attribute, $value, $fail) {
+
                     $supplier = Supplier::find($value);
 
                     if (!$supplier || $supplier->status !== 'Aktif') {
                         $fail('Supplier yang dipilih sudah tidak aktif.');
                     }
+
                 },
             ],
 
-            'product_id' => 'required',
+            'product_id' => [
+                'required',
+                'exists:products,id',
+            ],
 
-            'jumlah_masuk' => 'required|numeric',
+            'jumlah_masuk' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
 
-            'harga_beli' => 'required|numeric'
+            'harga_beli' => [
+                'required',
+                'integer',
+                'min:0',
+            ],
+
+        ], [
+
+            'nomor_transaksi.required' =>
+                'Nomor transaksi wajib diisi.',
+
+            'tanggal_masuk.required' =>
+                'Tanggal masuk wajib diisi.',
+
+            'tanggal_masuk.date' =>
+                'Format tanggal masuk tidak valid.',
+
+            'supplier_id.required' =>
+                'Supplier wajib dipilih.',
+
+            'supplier_id.exists' =>
+                'Supplier yang dipilih tidak ditemukan.',
+
+            'product_id.required' =>
+                'Produk wajib dipilih.',
+
+            'product_id.exists' =>
+                'Produk yang dipilih tidak ditemukan.',
+
+            'jumlah_masuk.required' =>
+                'Jumlah stok masuk wajib diisi.',
+
+            'jumlah_masuk.integer' =>
+                'Jumlah stok masuk harus berupa bilangan bulat.',
+
+            'jumlah_masuk.min' =>
+                'Jumlah stok masuk minimal 1.',
+
+            'harga_beli.required' =>
+                'Harga beli wajib diisi.',
+
+            'harga_beli.integer' =>
+                'Harga beli harus berupa bilangan bulat.',
+
+            'harga_beli.min' =>
+                'Harga beli tidak boleh negatif.',
 
         ]);
-
 
         /*
         |--------------------------------------------------------------------------
@@ -139,22 +198,21 @@ class StockInController extends Controller
 
         $stockIn = StockIn::create([
 
-            'nomor_transaksi' => $request->nomor_transaksi,
+            'nomor_transaksi' => $data['nomor_transaksi'],
 
-            'tanggal_masuk' => $request->tanggal_masuk,
+            'tanggal_masuk' => $data['tanggal_masuk'],
 
-            'supplier_id' => $request->supplier_id,
+            'supplier_id' => $data['supplier_id'],
 
-            'product_id' => $request->product_id,
+            'product_id' => $data['product_id'],
 
-            'jumlah_masuk' => $request->jumlah_masuk,
+            'jumlah_masuk' => $data['jumlah_masuk'],
 
-            'harga_beli' => $request->harga_beli,
+            'harga_beli' => $data['harga_beli'],
 
-            'keterangan' => $request->keterangan
+            'keterangan' => $request->keterangan,
 
         ]);
-
 
         /*
         |--------------------------------------------------------------------------
@@ -162,11 +220,9 @@ class StockInController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $product =
-            Product::findOrFail(
-                $request->product_id
-            );
-
+        $product = Product::findOrFail(
+            $data['product_id']
+        );
 
         /*
         |--------------------------------------------------------------------------
@@ -174,13 +230,11 @@ class StockInController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $stokAwal =
-            $product->stok;
+        $stokAwal = $product->stok;
 
         $stokAkhir =
             $stokAwal +
-            $request->jumlah_masuk;
-
+            $data['jumlah_masuk'];
 
         /*
         |--------------------------------------------------------------------------
@@ -190,10 +244,9 @@ class StockInController extends Controller
 
         $product->update([
 
-            'stok' => $stokAkhir
+            'stok' => $stokAkhir,
 
         ]);
-
 
         /*
         |--------------------------------------------------------------------------
@@ -203,33 +256,25 @@ class StockInController extends Controller
 
         StockMovement::create([
 
-            'stock_in_id'
-                => $stockIn->id,
+            'stock_in_id' => $stockIn->id,
 
-            'product_id'
-                => $product->id,
+            'product_id' => $product->id,
 
-            'tanggal'
-                => $request->tanggal_masuk,
+            'tanggal' => $data['tanggal_masuk'],
 
-            'jenis'
-                => 'Masuk',
+            'jenis' => 'Masuk',
 
-            'qty'
-                => $request->jumlah_masuk,
+            'qty' => $data['jumlah_masuk'],
 
-            'stok_awal'
-                => $stokAwal,
+            'stok_awal' => $stokAwal,
 
-            'stok_akhir'
-                => $stokAkhir,
+            'stok_akhir' => $stokAkhir,
 
-            'keterangan'
-                => 'Stok Masuk Supplier ' .
-                $request->nomor_transaksi
+            'keterangan' =>
+                'Stok Masuk Supplier ' .
+                $data['nomor_transaksi'],
 
         ]);
-
 
         /*
         |--------------------------------------------------------------------------
@@ -272,28 +317,26 @@ class StockInController extends Controller
 
         $request->validate([
 
-            'tanggal_masuk' => 'required|date',
+            'tanggal_masuk' => [
+                'required',
+                'date',
+            ],
 
             'supplier_id' => [
                 'required',
                 'exists:suppliers,id',
+
                 function ($attribute, $value, $fail) use ($stockIn) {
 
                     $supplier = Supplier::find($value);
 
-                    /*
-                    * Supplier Aktif selalu boleh dipilih.
-                    */
-
+                    // Supplier aktif boleh digunakan
                     if ($supplier && $supplier->status === 'Aktif') {
                         return;
                     }
 
-                    /*
-                    * Supplier Nonaktif hanya boleh digunakan
-                    * jika merupakan supplier lama transaksi ini.
-                    */
-
+                    // Supplier nonaktif hanya boleh digunakan
+                    // jika merupakan supplier lama
                     if (
                         $supplier &&
                         $supplier->id == $stockIn->supplier_id
@@ -307,11 +350,57 @@ class StockInController extends Controller
                 },
             ],
 
-            'product_id' => 'required',
+            'product_id' => [
+                'required',
+                'exists:products,id',
+            ],
 
-            'jumlah_masuk' => 'required|numeric|min:1',
+            'jumlah_masuk' => [
+                'required',
+                'integer',
+                'min:1',
+            ],
 
-            'harga_beli' => 'required|numeric|min:0',
+            'harga_beli' => [
+                'required',
+                'numeric',
+                'min:0',
+            ],
+
+        ], [
+
+            'tanggal_masuk.required' =>
+                'Tanggal masuk wajib diisi.',
+
+            'tanggal_masuk.date' =>
+                'Format tanggal masuk tidak valid.',
+
+            'supplier_id.required' =>
+                'Supplier wajib dipilih.',
+
+            'supplier_id.exists' =>
+                'Supplier yang dipilih tidak ditemukan.',
+
+            'product_id.required' =>
+                'Produk wajib dipilih.',
+
+            'product_id.exists' =>
+                'Produk yang dipilih tidak ditemukan.',
+
+            'jumlah_masuk.required' =>
+                'Jumlah stok masuk wajib diisi.',
+
+            'jumlah_masuk.integer' =>
+                'Jumlah stok masuk harus berupa bilangan bulat.',
+
+            'jumlah_masuk.min' =>
+                'Jumlah stok masuk minimal 1.',
+
+            'harga_beli.required' =>
+                'Harga beli wajib diisi.',
+
+            'harga_beli.min' =>
+                'Harga beli tidak boleh negatif.',
 
         ]);
 
