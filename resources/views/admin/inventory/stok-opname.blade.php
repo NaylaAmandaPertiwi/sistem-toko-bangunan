@@ -457,15 +457,6 @@
     gap:15px;
 }
 
-.delete-btn{
-    border:none;
-    background:none;
-    cursor:pointer;
-    color:#a0a0a0;
-    font-size:20px;
-    padding:0;
-}
-
 .delete-btn:hover{
     color:#ff4d4f;
 }
@@ -625,6 +616,20 @@
 
     color:#fff;
 
+}
+
+.action-delete-btn{
+    border:none;
+    background:none;
+    padding:0;
+    margin:0;
+    cursor:pointer;
+    color:#dc3545;
+    font-size:15px;
+}
+
+.action-delete-btn:hover{
+    color:#b02a37;
 }
 
 </style>
@@ -910,10 +915,6 @@
 
                     <tr>
 
-                        <th width="40">
-                            <input type="checkbox" id="checkAll">
-                        </th>
-
                         <th>No Opname</th>
 
                         <th>Tanggal</th>
@@ -938,14 +939,6 @@
                     class="opname-row"
                     data-date="{{ $opname->tanggal_opname }}"
                     data-status="{{ $opname->status }}">
-
-                    <td>
-                        <input
-                            type="checkbox"
-                            class="row-checkbox"
-                            value="{{ $opname->id }}"
-                        >
-                    </td>
 
                     <td class="opname-number">
                         {{ $opname->nomor_opname }}
@@ -1020,6 +1013,26 @@
 
                         </a>
 
+                        <form
+                            action="{{ route('admin.stok-opname.destroy', $opname->id) }}"
+                            method="POST"
+                            style="display:inline;"
+                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus data stok opname ini?');">
+
+                            @csrf
+                            @method('DELETE')
+
+                            <button
+                                type="submit"
+                                class="action-delete-btn"
+                                title="Hapus">
+
+                                <i class="fa-solid fa-trash"></i>
+
+                            </button>
+
+                        </form>
+
                     </td>
 
                 </tr>
@@ -1043,15 +1056,6 @@
         <div class="table-footer">
 
             <div class="footer-left">
-
-                <button
-                    id="deleteSelected"
-                    class="delete-btn"
-                    type="button">
-
-                    <i class="fa-regular fa-trash-can"></i>
-
-                </button>
 
                 <select class="filter-box">
 
@@ -1133,228 +1137,6 @@
 </div>
 
 <script>
-
-/* =========================================================
-   CHECK ALL
-   Semua data Stock Opname dapat dipilih
-========================================================= */
-
-const checkAll =
-    document.getElementById('checkAll');
-
-if (checkAll) {
-
-    checkAll.addEventListener(
-        'change',
-        function () {
-
-            document
-                .querySelectorAll('.row-checkbox')
-                .forEach(function (checkbox) {
-
-                    checkbox.checked =
-                        checkAll.checked;
-
-                });
-
-        }
-    );
-
-}
-
-
-/* =========================================================
-   SINKRONISASI CHECK ALL
-========================================================= */
-
-document
-    .querySelectorAll('.row-checkbox')
-    .forEach(function (checkbox) {
-
-        checkbox.addEventListener(
-            'change',
-            function () {
-
-                const checkboxes =
-                    document.querySelectorAll(
-                        '.row-checkbox'
-                    );
-
-                const checked =
-                    document.querySelectorAll(
-                        '.row-checkbox:checked'
-                    );
-
-                checkAll.checked =
-                    checkboxes.length > 0 &&
-                    checked.length === checkboxes.length;
-
-            }
-        );
-
-    });
-
-
-/* =========================================================
-   BULK DELETE
-========================================================= */
-
-const deleteSelected =
-    document.getElementById('deleteSelected');
-
-if (deleteSelected) {
-
-    deleteSelected.addEventListener(
-        'click',
-        function () {
-
-            /*
-            |--------------------------------------------------------------------------
-            | Ambil HANYA checkbox yang dicentang
-            |--------------------------------------------------------------------------
-            */
-
-            const checked =
-                document.querySelectorAll(
-                    '.row-checkbox:checked'
-                );
-
-            const ids = Array.from(
-                checked
-            ).map(function (checkbox) {
-
-                return checkbox.value;
-
-            });
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Tidak ada data dipilih
-            |--------------------------------------------------------------------------
-            */
-
-            if (ids.length === 0) {
-
-                alert(
-                    'Pilih data Stock Opname yang ingin dihapus.'
-                );
-
-                return;
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Tampilkan ID yang dipilih untuk pengecekan
-            |--------------------------------------------------------------------------
-            */
-
-            console.log(
-                'ID yang akan dihapus:',
-                ids
-            );
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Konfirmasi
-            |--------------------------------------------------------------------------
-            */
-
-            if (!confirm(
-                'Yakin ingin menghapus ' +
-                ids.length +
-                ' data Stock Opname yang dipilih?'
-            )) {
-
-                return;
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Kirim ke Controller
-            |--------------------------------------------------------------------------
-            */
-
-            fetch(
-                "{{ route('admin.stok-opname.bulk-delete') }}",
-                {
-                    method: 'DELETE',
-
-                    headers: {
-
-                        'Content-Type':
-                            'application/json',
-
-                        'Accept':
-                            'application/json',
-
-                        'X-CSRF-TOKEN':
-                            '{{ csrf_token() }}'
-
-                    },
-
-                    body: JSON.stringify({
-
-                        ids: ids
-
-                    })
-
-                }
-            )
-
-            .then(function (response) {
-
-                return response.json();
-
-            })
-
-            .then(function (data) {
-
-                console.log(
-                    'Response:',
-                    data
-                );
-
-
-                if (data.success) {
-
-                    alert(
-                        data.message
-                    );
-
-                    window.location.reload();
-
-                } else {
-
-                    alert(
-                        data.message ||
-                        'Data Stock Opname gagal dihapus.'
-                    );
-
-                }
-
-            })
-
-            .catch(function (error) {
-
-                console.error(
-                    'Error:',
-                    error
-                );
-
-                alert(
-                    'Terjadi kesalahan saat menghapus data.'
-                );
-
-            });
-
-        }
-    );
-
-}
 
 /* =========================================================
    FILTER OPNAME

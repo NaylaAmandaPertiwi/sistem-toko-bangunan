@@ -268,11 +268,6 @@ Route::middleware('auth')->group(function () {
             )->name('stok-opname.update-status');
 
             Route::delete(
-                '/stok-opname/bulk-delete',
-                [\App\Http\Controllers\Admin\StockOpnameController::class, 'bulkDelete']
-            )->name('stok-opname.bulk-delete');
-
-            Route::delete(
                 '/stok-opname/{id}',
                 [\App\Http\Controllers\Admin\StockOpnameController::class, 'destroy']
             )->name('stok-opname.destroy');

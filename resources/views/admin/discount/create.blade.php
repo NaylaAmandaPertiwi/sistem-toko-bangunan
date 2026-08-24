@@ -78,6 +78,31 @@
     margin-bottom:20px;
 }
 
+.alert-error{
+    background:#fde2e2;
+    color:#b42318;
+    border:1px solid #f5b5b5;
+    padding:15px 18px;
+    border-radius:8px;
+    margin-bottom:25px;
+}
+
+.alert-error strong{
+    display:block;
+    margin-bottom:8px;
+}
+
+.alert-error ul{
+    margin:0;
+    padding-left:20px;
+}
+
+.field-error{
+    color:#d93025;
+    font-size:13px;
+    margin-top:6px;
+}
+
 </style>
 
 <div class="page-card">
@@ -115,6 +140,22 @@
 
     <div class="form-body">
 
+        @if($errors->any())
+
+            <div class="alert-error">
+
+                <strong>Data tidak dapat disimpan.</strong>
+
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+
+            </div>
+
+        @endif
+
         <form
             id="discountForm"
             action="{{ route('admin.discount.store') }}"
@@ -138,6 +179,12 @@
                     placeholder="Contoh: Promo Reguler"
                     value="{{ old('nama_diskon') }}"
                     required>
+
+                @error('nama_diskon')
+                    <div class="field-error">
+                        {{ $message }}
+                    </div>
+                @enderror
 
             </div>
 

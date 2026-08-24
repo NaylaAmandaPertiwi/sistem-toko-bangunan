@@ -438,427 +438,272 @@ class StockOpnameController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        /*
-        |--------------------------------------------------------------------------
-        | 1. Validasi data
-        |--------------------------------------------------------------------------
-        */
-
-        $request->validate([
-
-            'tanggal_opname'
-                => 'required|date',
-
-            'keterangan'
-                => 'nullable|string',
-
-            'products'
-                => 'required|array|min:1',
-
-            'products.*.product_id'
-                => 'required|exists:products,id',
-
-            'products.*.stok_sistem'
-                => 'required|numeric|min:0',
-
-            'products.*.stok_fisik'
-                => 'required|numeric|min:0',
-
-        ]);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | 2. Gunakan database transaction
-        |--------------------------------------------------------------------------
-        |
-        | Semua perubahan harus berhasil.
-        | Jika salah satu gagal, semuanya dibatalkan.
-        |
-        */
-
-        DB::beginTransaction();
-
-
-        try {
-
+        {
             /*
             |--------------------------------------------------------------------------
-            | 3. Ambil Stock Opname beserta detail dan produk
+            | 1. Validasi data
             |--------------------------------------------------------------------------
             */
 
-            $opname = StockOpname::with(
-                'details.product'
-            )->findOrFail($id);
+            $request->validate([
 
+                'tanggal_opname'
+                    => 'required|date',
 
-            /*
-            |--------------------------------------------------------------------------
-            | 4. Pastikan hanya Draft yang boleh diubah
-            |--------------------------------------------------------------------------
-            */
+                'keterangan'
+                    => 'nullable|string',
 
-            if ($opname->status !== 'Draft') {
+                'products'
+                    => 'required|array|min:1',
 
-                throw new \Exception(
-                    'Stock Opname hanya dapat diedit ketika status masih Draft.'
-                );
-            }
+                'products.*.product_id'
+                    => 'required|exists:products,id',
 
+                'products.*.stok_sistem'
+                    => 'required|numeric|min:0',
 
-            /*
-            |--------------------------------------------------------------------------
-            | 5. Simpan ID Stock Opname
-            |--------------------------------------------------------------------------
-            */
-
-            $opnameId = $opname->id;
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | 6. Kembalikan efek Stock Opname lama
-            |--------------------------------------------------------------------------
-            |
-            | Misalnya:
-            |
-            | stok sekarang = 35
-            | stok sistem   = 30
-            | stok fisik    = 35
-            | selisih       = +5
-            |
-            | Maka kita kembalikan stok menjadi 30 terlebih dahulu.
-            |
-            */
-
-        /*
-        |--------------------------------------------------------------------------
-        | 7. Hapus Stock Movement Opname lama
-        |--------------------------------------------------------------------------
-        |
-        | Karena nanti kita membuat movement baru berdasarkan
-        | data Draft yang sudah diedit.
-        |
-        */
-
-        StockMovement::where(
-            'stock_opname_id',
-            $opnameId
-        )->delete();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | 8. Hapus detail Stock Opname lama
-        |--------------------------------------------------------------------------
-        */
-
-        $opname->details()->delete();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | 9. Update informasi Header Stock Opname
-        |--------------------------------------------------------------------------
-        */
-
-        $opname->update([
-
-            'tanggal_opname'
-                => $request->tanggal_opname,
-
-            'keterangan'
-                => $request->keterangan,
-
-            /*
-            | Status tetap Draft.
-            */
-
-            'status'
-                => 'Draft'
-
-        ]);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | 10. Buat detail dan Stock Movement baru
-        |--------------------------------------------------------------------------
-        */
-
-        foreach ($request->products as $item) {
-
-            $product = Product::find(
-                $item['product_id']
-            );
-
-
-            if (!$product) {
-
-                throw new \Exception(
-                    'Produk Stock Opname tidak ditemukan.'
-                );
-            }
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Pastikan stok sistem berasal dari stok produk
-            |--------------------------------------------------------------------------
-            |
-            | Kita tidak menggunakan nilai stok sistem yang dikirim
-            | browser sebagai sumber kebenaran.
-            |
-            */
-
-            $stokSistem =
-                $product->stok;
-
-
-            $stokFisik =
-                $item['stok_fisik'];
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Hitung selisih
-            |--------------------------------------------------------------------------
-            */
-
-            $selisih =
-                $stokFisik
-                -
-                $stokSistem;
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | Simpan detail Stock Opname
-            |--------------------------------------------------------------------------
-            */
-
-            StockOpnameDetail::create([
-
-                'stock_opname_id'
-                    => $opname->id,
-
-                'product_id'
-                    => $product->id,
-
-                'stok_sistem'
-                    => $stokSistem,
-
-                'stok_fisik'
-                    => $stokFisik,
-
-                'selisih'
-                    => $selisih
+                'products.*.stok_fisik'
+                    => 'required|numeric|min:0',
 
             ]);
-        }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | 11. Commit
-        |--------------------------------------------------------------------------
-        */
-
-        DB::commit();
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | 12. Kembali ke halaman detail
-        |--------------------------------------------------------------------------
-        */
-
-        return redirect()
-            ->route(
-                'admin.stok-opname.show',
-                $opname->id
-            )
-            ->with(
-                'success',
-                'Draft Stock Opname berhasil diperbarui.'
-            );
-
-
-    } catch (\Exception $e) {
-
-        /*
-        |--------------------------------------------------------------------------
-        | Jika terjadi error, batalkan SEMUA perubahan
-        |--------------------------------------------------------------------------
-        */
-
-        DB::rollBack();
-
-
-        return back()
-            ->withInput()
-            ->with(
-                'error',
-                'Draft Stock Opname gagal diperbarui: ' .
-                $e->getMessage()
-            );
-    }
-}
-
-    // Detail stok opname
-    public function show($id)
-    {
-        $opname = StockOpname::with(
-            'details.product'
-        )->findOrFail($id);
-
-        return view(
-            'admin.inventory.show-stock-opname',
-            compact('opname')
-        );
-    }
-
-    /**
-     * Hapus Stock Opname yang dipilih.
-     *
-     * Satu data maupun beberapa data dapat dihapus.
-     * Data Draft dapat dihapus.
-     */
-    public function bulkDelete(Request $request)
-    {
-        /*
-        |--------------------------------------------------------------------------
-        | Ambil ID yang dikirim dari JavaScript
-        |--------------------------------------------------------------------------
-        */
-
-        $ids = $request->input('ids', []);
-
-        /*
-        |--------------------------------------------------------------------------
-        | Pastikan selalu berbentuk array
-        |--------------------------------------------------------------------------
-        */
-
-        if (!is_array($ids)) {
-            $ids = [$ids];
-        }
-
-        $ids = array_values(
-            array_filter(
-                $ids,
-                fn ($id) => is_numeric($id)
-            )
-        );
-
-        /*
-        |--------------------------------------------------------------------------
-        | Tidak ada data yang dipilih
-        |--------------------------------------------------------------------------
-        */
-
-        if (empty($ids)) {
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Pilih data Stock Opname yang ingin dihapus.'
-            ], 422);
-        }
-
-        DB::beginTransaction();
-
-        try {
 
             /*
             |--------------------------------------------------------------------------
-            | Ambil data berdasarkan ID yang BENAR-BENAR dipilih
+            | 2. Gunakan database transaction
             |--------------------------------------------------------------------------
+            |
+            | Semua perubahan harus berhasil.
+            | Jika salah satu gagal, semuanya dibatalkan.
+            |
             */
 
-            $opnames = StockOpname::whereIn('id', $ids)
-                ->get();
+            DB::beginTransaction();
 
-            /*
-            |--------------------------------------------------------------------------
-            | Pastikan semua ID ditemukan
-            |--------------------------------------------------------------------------
-            */
 
-            if ($opnames->count() !== count($ids)) {
+            try {
 
-                throw new \Exception(
-                    'Sebagian data Stock Opname tidak ditemukan.'
-                );
-            }
+                /*
+                |--------------------------------------------------------------------------
+                | 3. Ambil Stock Opname beserta detail dan produk
+                |--------------------------------------------------------------------------
+                */
 
-            /*
-            |--------------------------------------------------------------------------
-            | Hanya Draft yang boleh dihapus
-            |--------------------------------------------------------------------------
-            */
+                $opname = StockOpname::with(
+                    'details.product'
+                )->findOrFail($id);
 
-            foreach ($opnames as $opname) {
+
+                /*
+                |--------------------------------------------------------------------------
+                | 4. Pastikan hanya Draft yang boleh diubah
+                |--------------------------------------------------------------------------
+                */
 
                 if ($opname->status !== 'Draft') {
 
                     throw new \Exception(
-                        'Hanya Stock Opname dengan status Draft yang dapat dihapus.'
+                        'Stock Opname hanya dapat diedit ketika status masih Draft.'
                     );
                 }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | 5. Simpan ID Stock Opname
+                |--------------------------------------------------------------------------
+                */
+
+                $opnameId = $opname->id;
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | 6. Kembalikan efek Stock Opname lama
+                |--------------------------------------------------------------------------
+                |
+                | Misalnya:
+                |
+                | stok sekarang = 35
+                | stok sistem   = 30
+                | stok fisik    = 35
+                | selisih       = +5
+                |
+                | Maka kita kembalikan stok menjadi 30 terlebih dahulu.
+                |
+                */
+
+            /*
+            |--------------------------------------------------------------------------
+            | 7. Hapus Stock Movement Opname lama
+            |--------------------------------------------------------------------------
+            |
+            | Karena nanti kita membuat movement baru berdasarkan
+            | data Draft yang sudah diedit.
+            |
+            */
+
+            StockMovement::where(
+                'stock_opname_id',
+                $opnameId
+            )->delete();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 8. Hapus detail Stock Opname lama
+            |--------------------------------------------------------------------------
+            */
+
+            $opname->details()->delete();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 9. Update informasi Header Stock Opname
+            |--------------------------------------------------------------------------
+            */
+
+            $opname->update([
+
+                'tanggal_opname'
+                    => $request->tanggal_opname,
+
+                'keterangan'
+                    => $request->keterangan,
+
+                /*
+                | Status tetap Draft.
+                */
+
+                'status'
+                    => 'Draft'
+
+            ]);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 10. Buat detail dan Stock Movement baru
+            |--------------------------------------------------------------------------
+            */
+
+            foreach ($request->products as $item) {
+
+                $product = Product::find(
+                    $item['product_id']
+                );
+
+
+                if (!$product) {
+
+                    throw new \Exception(
+                        'Produk Stock Opname tidak ditemukan.'
+                    );
+                }
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Pastikan stok sistem berasal dari stok produk
+                |--------------------------------------------------------------------------
+                |
+                | Kita tidak menggunakan nilai stok sistem yang dikirim
+                | browser sebagai sumber kebenaran.
+                |
+                */
+
+                $stokSistem =
+                    $product->stok;
+
+
+                $stokFisik =
+                    $item['stok_fisik'];
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Hitung selisih
+                |--------------------------------------------------------------------------
+                */
+
+                $selisih =
+                    $stokFisik
+                    -
+                    $stokSistem;
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Simpan detail Stock Opname
+                |--------------------------------------------------------------------------
+                */
+
+                StockOpnameDetail::create([
+
+                    'stock_opname_id'
+                        => $opname->id,
+
+                    'product_id'
+                        => $product->id,
+
+                    'stok_sistem'
+                        => $stokSistem,
+
+                    'stok_fisik'
+                        => $stokFisik,
+
+                    'selisih'
+                        => $selisih
+
+                ]);
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | Hapus Stock Movement terkait
-            |--------------------------------------------------------------------------
-            */
-
-            StockMovement::whereIn(
-                'stock_opname_id',
-                $ids
-            )->delete();
 
             /*
             |--------------------------------------------------------------------------
-            | Hapus detail
+            | 11. Commit
             |--------------------------------------------------------------------------
             */
-
-            StockOpnameDetail::whereIn(
-                'stock_opname_id',
-                $ids
-            )->delete();
-
-            /*
-            |--------------------------------------------------------------------------
-            | Hapus header Stock Opname
-            |--------------------------------------------------------------------------
-            */
-
-            StockOpname::whereIn(
-                'id',
-                $ids
-            )->delete();
 
             DB::commit();
 
-            return response()->json([
-                'success' => true,
-                'message' => count($ids) === 1
-                    ? '1 data Stock Opname berhasil dihapus.'
-                    : count($ids) . ' data Stock Opname berhasil dihapus.'
-            ]);
 
-        } catch (\Throwable $e) {
+            /*
+            |--------------------------------------------------------------------------
+            | 12. Kembali ke halaman detail
+            |--------------------------------------------------------------------------
+            */
+
+            return redirect()
+                ->route(
+                    'admin.stok-opname.show',
+                    $opname->id
+                )
+                ->with(
+                    'success',
+                    'Draft Stock Opname berhasil diperbarui.'
+                );
+
+
+        } catch (\Exception $e) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | Jika terjadi error, batalkan SEMUA perubahan
+            |--------------------------------------------------------------------------
+            */
 
             DB::rollBack();
 
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 422);
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Draft Stock Opname gagal diperbarui: ' .
+                    $e->getMessage()
+                );
         }
     }
 
@@ -931,6 +776,19 @@ class StockOpnameController extends Controller
                     $e->getMessage()
                 );
         }
+    }            
+
+    // Detail stok opname
+    public function show($id)
+    {
+        $opname = StockOpname::with(
+            'details.product'
+        )->findOrFail($id);
+
+        return view(
+            'admin.inventory.show-stock-opname',
+            compact('opname')
+        );
     }
 
     public function updateStatus(

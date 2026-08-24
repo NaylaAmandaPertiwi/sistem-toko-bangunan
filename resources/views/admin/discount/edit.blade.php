@@ -115,6 +115,22 @@
 
     <div class="form-body">
 
+        @if($errors->any())
+
+            <div class="alert-error">
+
+                <strong>Data tidak dapat disimpan.</strong>
+
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+
+            </div>
+
+        @endif
+
         <form
             id="discountForm"
             action="{{ route('admin.discount.update', $diskon) }}"
@@ -134,7 +150,7 @@
                 <input
                     type="text"
                     name="nama_diskon"
-                    value="{{ $diskon->nama_diskon }}"
+                    value="{{ old('nama_diskon', $diskon->nama_diskon) }}"
                     class="form-control">
 
             </div>
@@ -146,7 +162,7 @@
                 <input
                     type="number"
                     name="minimal_belanja"
-                    value="{{ $diskon->minimal_belanja }}"
+                    value="{{ old('minimal_belanja', $diskon->minimal_belanja) }}"
                     class="form-control">
 
             </div>
@@ -231,7 +247,7 @@
 
 @endsection
 
-@section('script')
+@section('scripts')
 
 <script>
 
