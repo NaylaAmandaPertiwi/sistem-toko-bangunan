@@ -935,10 +935,7 @@
 
                 @forelse($stockOpnames as $opname)
 
-                <tr
-                    class="opname-row"
-                    data-date="{{ $opname->tanggal_opname }}"
-                    data-status="{{ $opname->status }}">
+                <tr class="opname-row">
 
                     <td class="opname-number">
                         {{ $opname->nomor_opname }}
@@ -1201,9 +1198,14 @@ document.addEventListener(
            PILIH STATUS
         ================================================== */
 
+        /*
+         * Hanya opsi di dalam dropdown status,
+         * BUKAN baris tabel (yang juga punya atribut data-status).
+         */
+
         document
             .querySelectorAll(
-                '[data-status]'
+                '#opnameStatusDropdown [data-status]'
             )
             .forEach(
                 function(option){
