@@ -1480,6 +1480,62 @@
 
 }
 
+.return-history{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    gap:4px;
+
+}
+
+
+.return-history-badge{
+
+    display:inline-block;
+
+    padding:4px 8px;
+
+    border-radius:6px;
+
+    font-size:11px;
+
+    font-weight:600;
+
+    white-space:nowrap;
+
+}
+
+
+.return-money{
+
+    background:#e8f5e9;
+
+    color:#2e7d32;
+
+}
+
+
+.return-exchange{
+
+    background:#e3f2fd;
+
+    color:#1565c0;
+
+}
+
+
+.return-history-none{
+
+    color:#98a2b3;
+
+    font-size:11px;
+
+}
+
 </style>
 
 @endsection
@@ -1655,6 +1711,8 @@
                                     <th>Kasir</th>
 
                                     <th>Total</th>
+
+                                    <th>Riwayat Retur</th>
 
                                     <th>Aksi</th>
 
@@ -2287,6 +2345,12 @@
 
                         ✓ Qty retur tidak boleh melebihi
                         Qty pembelian.
+
+                    </div>
+
+                    <div>
+
+                        ✓ Untuk retur uang, barang yang boleh diretur hanya barang dalam keadaan rusak atau tidak sesuai.
 
                     </div>
 
@@ -3441,6 +3505,81 @@ function formatDate(dateString){
 
 function buildTransactionRow(sale){
 
+    /*
+    |--------------------------------------------------------------------------
+    | RIWAYAT RETUR
+    |--------------------------------------------------------------------------
+    */
+
+    const returnHistory =
+        sale.return_sales ||
+        sale.returnSales ||
+        [];
+
+    let riwayatRetur = "";
+
+    if(returnHistory.length === 0){
+
+        riwayatRetur = `
+
+            <span
+                class="return-history-none">
+
+                Belum Ada Retur
+
+            </span>
+
+        `;
+
+    } else {
+
+        const jenisRetur = [
+            ...new Set(
+                returnHistory.map(function(retur){
+
+                    return retur.return_type;
+
+                })
+            )
+        ];
+
+        jenisRetur.forEach(function(jenis){
+
+            if(jenis === "uang"){
+
+                riwayatRetur += `
+
+                    <span
+                        class="return-history-badge return-money">
+
+                        Retur Uang
+
+                    </span>
+
+                `;
+
+            }
+
+            else if(jenis === "tukar"){
+
+                riwayatRetur += `
+
+                    <span
+                        class="return-history-badge return-exchange">
+
+                        Tukar Barang
+
+                    </span>
+
+                `;
+
+            }
+
+        });
+
+    }
+
+
     return `
 
     <tr>
@@ -3459,13 +3598,26 @@ function buildTransactionRow(sale){
 
         <td>
 
-            ${sale.user.name}
+            ${sale.user?.name ?? "-"}
 
         </td>
 
         <td>
 
-            Rp ${Number(sale.total_bayar).toLocaleString("id-ID")}
+            Rp ${Number(
+                sale.total_bayar
+            ).toLocaleString("id-ID")}
+
+        </td>
+
+        <td>
+
+            <div
+                class="return-history">
+
+                ${riwayatRetur}
+
+            </div>
 
         </td>
 
@@ -3506,7 +3658,7 @@ function renderTransactionTable(data, append = false){
 
                 <tr>
 
-                    <td colspan="5" class="text-center">
+                    <td colspan="6" class="text-center">
 
                         Data tidak ditemukan.
 

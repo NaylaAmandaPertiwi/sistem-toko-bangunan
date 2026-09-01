@@ -44,7 +44,10 @@ class ReturnController extends Controller
 
     public function transactionData(Request $request)
     {
-        $query = Sale::with('user');
+        $query = Sale::with([
+            'user',
+            'returnSales'
+        ]);
 
         /*
         |--------------------------------------------------------------------------

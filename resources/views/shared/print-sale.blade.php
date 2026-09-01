@@ -17,27 +17,227 @@
 
 <style>
 
+*{
+    box-sizing:border-box;
+}
+
+html,
+body{
+    margin:0;
+    padding:0;
+    width:80mm;
+    background:#fff;
+}
+
 .print-receipt{
 
-    width:76mm;
+    width:80mm;
+    max-width:80mm;
 
-    max-width:76mm;
-
-    margin:auto;
-
-    padding:4mm;
+    margin:0;
+    padding:3mm 4mm;
 
     background:#fff;
-
     color:#000;
 
     font-family:"Courier New", monospace;
 
     font-size:11px;
-
     line-height:1.4;
 
 }
+
+
+/* Header */
+
+.receipt-header{
+
+    text-align:center;
+
+    margin-bottom:5px;
+
+}
+
+.receipt-header h2{
+
+    font-size:22px;
+    font-weight:700;
+
+    letter-spacing:2px;
+
+    margin:0 0 6px;
+
+}
+
+.receipt-header p{
+
+    font-size:11px;
+
+    margin:2px 0;
+
+}
+
+
+/* Garis */
+
+.receipt-divider{
+
+    border-top:1px dashed #000;
+
+    margin:8px 0;
+
+    height:0;
+
+}
+
+
+/* Judul */
+
+.receipt-title{
+
+    text-align:center;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
+    margin:5px 0;
+
+}
+
+
+/* Informasi transaksi */
+
+.receipt-info{
+
+    margin:6px 0;
+
+}
+
+.receipt-info div{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:8px;
+
+    margin:2px 0;
+
+}
+
+.receipt-info div span:first-child{
+
+    flex:0 0 78px;
+
+}
+
+.receipt-info div span:last-child{
+
+    flex:1;
+
+    text-align:right;
+
+    word-break:break-word;
+
+}
+
+
+/* Barang */
+
+.receipt-items{
+
+    margin:5px 0;
+
+}
+
+.receipt-item{
+
+    margin-bottom:7px;
+
+}
+
+.receipt-product{
+
+    font-weight:700;
+
+    font-size:11px;
+
+    margin-bottom:3px;
+
+    word-break:break-word;
+
+}
+
+.receipt-item-detail{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    padding-left:8px;
+
+    font-size:10px;
+
+}
+
+
+/* Ringkasan */
+
+.receipt-summary div{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    gap:10px;
+
+    margin:3px 0;
+
+}
+
+
+/* Total */
+
+.receipt-total{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    padding:4px 0;
+
+}
+
+
+/* Footer */
+
+.receipt-footer{
+
+    text-align:center;
+
+    font-size:10px;
+
+    margin-top:12px;
+
+}
+
+.receipt-footer p{
+
+    margin:2px 0;
+
+}
+
+
+/* PRINT THERMAL 80 MM */
 
 @media print{
 
@@ -45,201 +245,30 @@
 
         size:80mm auto;
 
-        margin:4mm;
+        margin:0;
 
     }
 
+    html,
+    body{
 
-    /* Header */
+        width:80mm;
 
-    .receipt-header{
+        margin:0;
 
-        text-align:center;
-
-        margin-bottom:5px;
-
-    }
-
-    .receipt-header h2{
-
-        font-size:22px;
-
-        font-weight:700;
-
-        letter-spacing:2px;
-
-        margin-bottom:6px;
+        padding:0;
 
     }
 
-    .receipt-header p{
+    .print-receipt{
 
-        font-size:11px;
+        width:80mm;
 
-        margin:2px 0;
+        max-width:80mm;
 
-    }
+        margin:0;
 
-
-    /* Garis */
-
-    .receipt-divider{
-        border-top:1px dashed #000;
-        margin:8px 0;
-        height:0;
-    }
-
-
-    /* Judul */
-
-    .receipt-title{
-
-        text-align:center;
-
-        font-size:15px;
-
-        font-weight:700;
-
-        letter-spacing:1px;
-
-        margin:5px 0;
-
-    }
-
-
-    /* Informasi transaksi */
-
-    .receipt-info{
-
-        margin:6px 0;
-
-    }
-
-    .receipt-info div{
-
-        display:flex;
-
-        justify-content:space-between;
-
-        gap:8px;
-
-        margin:2px 0;
-
-    }
-
-    .receipt-info div span:first-child{
-
-        flex:0 0 78px;
-
-    }
-
-    .receipt-info div span:last-child{
-
-        flex:1;
-
-        text-align:right;
-
-        word-break:break-word;
-
-    }
-
-
-    /* Barang */
-
-    .receipt-items{
-
-        margin:5px 0;
-
-    }
-
-    .receipt-item{
-
-        margin-bottom:7px;
-
-    }
-
-    .receipt-product{
-
-        font-weight:700;
-
-        font-size:11px;
-
-        margin-bottom:3px;
-
-    }
-
-    .receipt-item-detail{
-
-        display:flex;
-
-        justify-content:space-between;
-
-        gap:10px;
-
-        padding-left:8px;
-
-        font-size:10px;
-
-    }
-
-
-    /* Ringkasan */
-
-    .receipt-summary div{
-
-        display:flex;
-
-        justify-content:space-between;
-
-        gap:10px;
-
-        margin:3px 0;
-
-    }
-
-
-    /* Total */
-
-    .receipt-total{
-
-        display:flex;
-
-        justify-content:space-between;
-
-        font-size:15px;
-
-        font-weight:700;
-
-        padding:4px 0;
-
-    }
-
-
-    /* Footer */
-
-    .receipt-footer{
-
-        text-align:center;
-
-        font-size:10px;
-
-        margin-top:12px;
-
-    }
-
-    .receipt-footer p{
-
-        margin:2px 0;
-
-    }
-
-    .receipt-footer strong{
-
-        display:block;
-
-        margin:3px 0 7px;
-
-        font-size:12px;
+        padding:3mm 4mm;
 
     }
 

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 use App\Models\User;
 use App\Models\SaleDetail;
+use App\Models\ReturnSale;
 
 class Sale extends Model
 {
@@ -57,6 +58,20 @@ class Sale extends Model
 
             'sale_id'
 
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Relasi ke Retur
+    |--------------------------------------------------------------------------
+    */
+
+    public function returnSales()
+    {
+        return $this->hasMany(
+            ReturnSale::class,
+            'sale_id'
         );
     }
 }
