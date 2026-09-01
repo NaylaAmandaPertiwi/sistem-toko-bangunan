@@ -1263,6 +1263,76 @@
 
 }
 
+/* ==========================================================
+   TOMBOL MUAT LEBIH SEDIKIT
+========================================================== */
+
+.btn-load-less{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:7px;
+
+    padding:8px 14px;
+
+    margin-left:8px;
+
+    border:1px solid #d9e0ea;
+
+    border-radius:8px;
+
+    background:#ffffff;
+
+    color:#667085;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:all .2s ease;
+
+}
+
+.btn-load-less i{
+
+    font-size:11px;
+
+}
+
+.btn-load-less:hover{
+
+    background:#f8fafc;
+
+    color:#355cc9;
+
+    border-color:#355cc9;
+
+    box-shadow:0 4px 10px rgba(53,92,201,.10);
+
+}
+
+.btn-load-less:active{
+
+    transform:scale(.98);
+
+}
+
+.btn-load-less:disabled{
+
+    opacity:.65;
+
+    cursor:not-allowed;
+
+    transform:none;
+
+}
+
 .btn-load-more i{
 
     font-size:11px;
@@ -1725,7 +1795,7 @@
                                 <tr>
 
                                     <td
-                                        colspan="5"
+                                        colspan="6"
                                         style="text-align:center;">
 
                                         Memuat data transaksi...
@@ -1751,6 +1821,18 @@
                             <i class="fa-solid fa-plus"></i>
 
                             Muat Lebih Banyak
+
+                        </button>
+
+                        <button
+                            type="button"
+                            id="loadLessBtn"
+                            class="btn-load-less"
+                            style="display:none;">
+
+                            <i class="fa-solid fa-minus"></i>
+
+                            Muat Lebih Sedikit
 
                         </button>
 
@@ -2403,7 +2485,7 @@ let returnType = "uang";
 
 let transactionOffset = 0;
 
-const transactionLimit = 10;
+let transactionLimit = 10;
 
 let hasMoreTransaction = true;
 
@@ -3349,65 +3431,150 @@ async function searchTransaction(){
 
     transactionOffset = 0;
 
+    transactionLimit = 10;
+
+    hasMoreTransaction = true;
+
+
     const keyword =
+        document
+            .getElementById("searchTransaction")
+            .value
+            .trim();
 
-        document.getElementById(
-
-            "searchTransaction"
-
-        ).value;
 
     const tanggal =
+        document
+            .getElementById("searchDate")
+            .value;
 
-        document.getElementById(
 
-            "searchDate"
+    const tbody =
+        document.getElementById("transactionTable");
 
-        ).value;
+
+    /*
+    |--------------------------------------------------------------------------
+    | TAMPILKAN LOADING
+    |--------------------------------------------------------------------------
+    */
+
+    tbody.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="6"
+                style="
+                    text-align:center;
+                    padding:25px;
+                    color:#98a2b3;
+                ">
+
+                <i
+                    class="fa-solid fa-spinner fa-spin"
+                    style="
+                        margin-right:6px;
+                    ">
+                </i>
+
+                Memuat data transaksi...
+
+            </td>
+
+        </tr>
+
+    `;
+
 
     try{
 
         const result =
-
             await fetchTransactions(
-
                 keyword,
-
                 tanggal,
-
-                transactionOffset
-
+                0
             );
 
-        hasMoreTransaction =
 
+        /*
+        |--------------------------------------------------------------------------
+        | SIMPAN STATUS PAGINATION
+        |--------------------------------------------------------------------------
+        */
+
+        hasMoreTransaction =
             result.hasMore;
 
         transactionOffset =
-
             result.nextOffset;
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | TAMPILKAN DATA
+        |--------------------------------------------------------------------------
+        */
+
         renderTransactionTable(
-
             result.data
-
         );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | UPDATE TOMBOL
+        |--------------------------------------------------------------------------
+        */
 
         toggleLoadMoreButton();
 
-    }
+        toggleLoadLessButton();
 
+    }
     catch(error){
 
-        console.error(error);
+        console.error(
+            "Gagal mencari transaksi:",
+            error
+        );
+
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    style="
+                        text-align:center;
+                        padding:25px;
+                        color:#dc2626;
+                    ">
+
+                    Gagal memuat data transaksi.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        alert(
+            "Gagal memuat transaksi."
+        );
 
     }
 
 }
 
+
 async function loadMoreTransactions(){
 
-    if(!hasMoreTransaction || isLoadingTransaction){
+    if(
+        !hasMoreTransaction ||
+        isLoadingTransaction
+    ){
 
         return;
 
@@ -3415,7 +3582,10 @@ async function loadMoreTransactions(){
 
     isLoadingTransaction = true;
 
-    const button = document.getElementById("loadMoreSales");
+    const button =
+        document.getElementById(
+            "loadMoreSales"
+        );
 
     button.disabled = true;
 
@@ -3424,57 +3594,130 @@ async function loadMoreTransactions(){
         Memuat...
     `;
 
-    const keyword = document
-        .getElementById("searchTransaction")
-        .value;
 
-    const tanggal = document
-        .getElementById("searchDate")
-        .value;
+    const keyword =
+        document
+            .getElementById(
+                "searchTransaction"
+            )
+            .value;
+
+    const tanggal =
+        document
+            .getElementById(
+                "searchDate"
+            )
+            .value;
+
 
     try{
 
-        const result = await fetchTransactions(
+        const result =
+            await fetchTransactions(
+                keyword,
+                tanggal,
+                transactionOffset
+            );
 
-            keyword,
-
-            tanggal,
-
-            transactionOffset
-
-        );
 
         renderTransactionTable(
-
             result.data,
-
             true
-
         );
 
-        hasMoreTransaction = result.hasMore;
 
-        transactionOffset = result.nextOffset;
+        hasMoreTransaction =
+            result.hasMore;
+
+        transactionOffset =
+            result.nextOffset;
+
 
         toggleLoadMoreButton();
 
-    }
+        toggleLoadLessButton();
 
+    }
     catch(error){
 
         console.error(error);
 
-        alert("Gagal memuat transaksi.");
+        alert(
+            "Gagal memuat transaksi."
+        );
 
     }
-
     finally{
 
         isLoadingTransaction = false;
 
         button.disabled = false;
 
-        button.innerHTML = "Muat Lebih Banyak";
+        button.innerHTML = `
+            <i class="fa-solid fa-plus"></i>
+            Muat Lebih Banyak
+        `;
+
+    }
+
+}
+
+async function loadLessTransactions(){
+
+    transactionOffset = 0;
+
+    transactionLimit = 10;
+
+
+    const keyword =
+        document
+            .getElementById(
+                "searchTransaction"
+            )
+            .value;
+
+    const tanggal =
+        document
+            .getElementById(
+                "searchDate"
+            )
+            .value;
+
+
+    try{
+
+        const result =
+            await fetchTransactions(
+                keyword,
+                tanggal,
+                0
+            );
+
+
+        renderTransactionTable(
+            result.data
+        );
+
+
+        hasMoreTransaction =
+            result.hasMore;
+
+        transactionOffset =
+            result.nextOffset;
+
+
+        toggleLoadMoreButton();
+
+        toggleLoadLessButton();
+
+    }
+    catch(error){
+
+        console.error(error);
+
+        alert(
+            "Gagal memuat transaksi."
+        );
 
     }
 
@@ -3708,13 +3951,48 @@ function toggleLoadMoreButton(){
 
 }
 
+function toggleLoadLessButton(){
+
+    const button =
+        document.getElementById(
+            "loadLessBtn"
+        );
+
+    if(!button){
+
+        return;
+
+    }
+
+    button.style.display =
+        transactionOffset > 10
+            ? "inline-flex"
+            : "none";
+
+}
+
 document
     .getElementById("loadMoreSales")
-    .addEventListener("click", function(){
+    .addEventListener(
+        "click",
+        function(){
 
-        loadMoreTransactions();
+            loadMoreTransactions();
 
-    });
+        }
+    );
+
+
+document
+    .getElementById("loadLessBtn")
+    .addEventListener(
+        "click",
+        function(){
+
+            loadLessTransactions();
+
+        }
+    );
 
 document.addEventListener("DOMContentLoaded", function(){
 
