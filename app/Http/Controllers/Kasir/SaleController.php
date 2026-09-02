@@ -158,6 +158,8 @@ class SaleController extends Controller
 
                     'harga'      => $item['harga'],
 
+                    'harga_beli' => $product->harga_beli,
+
                     'subtotal'   => $item['qty'] * $item['harga']
 
                 ]);

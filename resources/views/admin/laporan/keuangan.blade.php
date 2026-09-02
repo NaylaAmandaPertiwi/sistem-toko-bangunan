@@ -838,7 +838,6 @@
 
         </div>
 
-
         {{-- TOTAL RETUR --}}
 
         <div class="finance-top-card">
@@ -856,7 +855,7 @@
                 <div class="finance-top-value">
 
                     Rp {{ number_format(
-                        $totalRetur,
+                        $totalReturUang + $nilaiBarangDikembalikan,
                         0,
                         ',',
                         '.'
@@ -886,7 +885,7 @@
                 <div class="finance-top-value">
 
                     Rp {{ number_format(
-                        $totalKasMasuk,
+                        $kasMasukDariTukar,
                         0,
                         ',',
                         '.'
@@ -916,7 +915,7 @@
                 <div class="finance-top-value">
 
                     Rp {{ number_format(
-                        $totalKasKeluar,
+                        $kasKeluarDariReturUang,
                         0,
                         ',',
                         '.'
@@ -1110,12 +1109,7 @@
 
                 <span class="return-value">
 
-                    Rp {{ number_format(
-                        $totalTukarBarang,
-                        0,
-                        ',',
-                        '.'
-                    ) }}
+                    {{ $jumlahTukarBarang }} transaksi
 
                 </span>
 
@@ -1137,7 +1131,7 @@
                 <span class="return-value">
 
                     Rp {{ number_format(
-                        $totalNilaiPengganti,
+                        $nilaiBarangPengganti,
                         0,
                         ',',
                         '.'
@@ -1156,14 +1150,14 @@
                         $
                     </span>
 
-                    Selisih Pembayaran
+                    Selisih Tukar Barang
 
                 </div>
 
                 <span class="return-value">
 
                     Rp {{ number_format(
-                        $totalSelisihPembayaran,
+                        $selisihTukarBarang,
                         0,
                         ',',
                         '.'
@@ -1202,7 +1196,7 @@
                     <div class="cash-value cash-in">
 
                         Rp {{ number_format(
-                            $totalKasMasuk,
+                            $kasMasukDariTukar,
                             0,
                             ',',
                             '.'
@@ -1216,7 +1210,6 @@
 
                 </div>
 
-
                 <div class="cash-row">
 
                     <div class="cash-label cash-out">
@@ -1226,7 +1219,7 @@
                     <div class="cash-value cash-out">
 
                         Rp {{ number_format(
-                            $totalKasKeluar,
+                            $kasKeluarDariReturUang,
                             0,
                             ',',
                             '.'
@@ -1470,7 +1463,7 @@
                                 $hpp = $sale->saleDetails->sum(function ($detail) {
 
                                     return $detail->qty *
-                                           ($detail->product->harga_beli ?? 0);
+                                           ($detail->harga_beli ?? 0);
 
                                 });
 

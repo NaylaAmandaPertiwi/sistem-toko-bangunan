@@ -146,153 +146,8 @@
 
 
     {{-- =========================================================
-        RINGKASAN UTAMA
-    ========================================================== --}}
-
-    <tr>
-
-        <td
-            colspan="2"
-            style="
-                background-color:#eef4ff;
-                border:1px solid #d9dee8;
-                padding:10px;
-                font-weight:bold;
-            "
-        >
-            Total Penjualan
-        </td>
-
-        <td
-            colspan="2"
-            style="
-                background-color:#eef4ff;
-                border:1px solid #d9dee8;
-                padding:10px;
-                font-weight:bold;
-                text-align:right;
-            "
-        >
-            Rp {{ number_format(
-                $totalPenjualan,
-                0,
-                ',',
-                '.'
-            ) }}
-        </td>
-
-
-        <td
-            colspan="2"
-            style="
-                background-color:#fff0f0;
-                border:1px solid #d9dee8;
-                padding:10px;
-                font-weight:bold;
-            "
-        >
-            Total Retur
-        </td>
-
-        <td
-            colspan="3"
-            style="
-                background-color:#fff0f0;
-                border:1px solid #d9dee8;
-                padding:10px;
-                font-weight:bold;
-                text-align:right;
-            "
-        >
-            Rp {{ number_format(
-                $totalRetur,
-                0,
-                ',',
-                '.'
-            ) }}
-        </td>
-
-    </tr>
-
-
-    <tr>
-
-        <td
-            colspan="2"
-            style="
-                background-color:#eaf8ef;
-                border:1px solid #d9dee8;
-                padding:10px;
-                font-weight:bold;
-                color:#168a45;
-            "
-        >
-            Kas Masuk
-        </td>
-
-        <td
-            colspan="2"
-            style="
-                background-color:#eaf8ef;
-                border:1px solid #d9dee8;
-                padding:10px;
-                font-weight:bold;
-                color:#168a45;
-                text-align:right;
-            "
-        >
-            Rp {{ number_format(
-                $totalKasMasuk,
-                0,
-                ',',
-                '.'
-            ) }}
-        </td>
-
-
-        <td
-            colspan="2"
-            style="
-                background-color:#fff5e5;
-                border:1px solid #d9dee8;
-                padding:10px;
-                font-weight:bold;
-                color:#e33434;
-            "
-        >
-            Kas Keluar
-        </td>
-
-        <td
-            colspan="3"
-            style="
-                background-color:#fff5e5;
-                border:1px solid #d9dee8;
-                padding:10px;
-                font-weight:bold;
-                color:#e33434;
-                text-align:right;
-            "
-        >
-            Rp {{ number_format(
-                $totalKasKeluar,
-                0,
-                ',',
-                '.'
-            ) }}
-        </td>
-
-    </tr>
-
-
-    <tr>
-        <td colspan="9"></td>
-    </tr>
-
-
-    {{-- =========================================================
-         RINGKASAN KEUANGAN
-    ========================================================== --}}
+     RINGKASAN LAPORAN KEUANGAN
+========================================================== --}}
 
     <tr>
 
@@ -307,15 +162,15 @@
                 padding:8px;
             "
         >
-
             Ringkasan Keuangan
-
         </th>
 
     </tr>
 
 
-    {{-- PENJUALAN BRUTO --}}
+    {{-- =========================================================
+        TOTAL DISKON
+    ========================================================== --}}
 
     <tr>
 
@@ -326,46 +181,7 @@
                 padding:8px;
             "
         >
-
-            Penjualan Bruto
-
-        </td>
-
-        <td
-            colspan="4"
-            style="
-                border:1px solid #d9dee8;
-                text-align:right;
-                padding:8px;
-            "
-        >
-
-            Rp {{ number_format(
-                $totalPenjualanBruto,
-                0,
-                ',',
-                '.'
-            ) }}
-
-        </td>
-
-    </tr>
-
-
-    {{-- TOTAL DISKON --}}
-
-    <tr>
-
-        <td
-            colspan="5"
-            style="
-                border:1px solid #d9dee8;
-                padding:8px;
-            "
-        >
-
             Total Diskon
-
         </td>
 
         <td
@@ -377,20 +193,20 @@
                 padding:8px;
             "
         >
-
             - Rp {{ number_format(
                 $totalDiskon,
                 0,
                 ',',
                 '.'
             ) }}
-
         </td>
 
     </tr>
 
 
-    {{-- PENJUALAN BERSIH --}}
+    {{-- =========================================================
+        PENJUALAN BERSIH
+    ========================================================== --}}
 
     <tr>
 
@@ -401,9 +217,7 @@
                 padding:8px;
             "
         >
-
             Penjualan Bersih
-
         </td>
 
         <td
@@ -415,20 +229,20 @@
                 padding:8px;
             "
         >
-
             Rp {{ number_format(
                 $totalPenjualanBersih,
                 0,
                 ',',
                 '.'
             ) }}
-
         </td>
 
     </tr>
 
 
-    {{-- HPP --}}
+    {{-- =========================================================
+        UANG PENJUALAN
+    ========================================================== --}}
 
     <tr>
 
@@ -439,9 +253,7 @@
                 padding:8px;
             "
         >
-
-            HPP
-
+            Uang Penjualan
         </td>
 
         <td
@@ -452,20 +264,55 @@
                 padding:8px;
             "
         >
+            Rp {{ number_format(
+                $uangPenjualan,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
 
+    </tr>
+
+
+    {{-- =========================================================
+        HPP
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                border:1px solid #d9dee8;
+                padding:8px;
+            "
+        >
+            HPP
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                border:1px solid #d9dee8;
+                text-align:right;
+                padding:8px;
+            "
+        >
             - Rp {{ number_format(
                 $totalHpp,
                 0,
                 ',',
                 '.'
             ) }}
-
         </td>
 
     </tr>
 
 
-    {{-- LABA KOTOR --}}
+    {{-- =========================================================
+        LABA KOTOR
+    ========================================================== --}}
 
     <tr>
 
@@ -478,9 +325,7 @@
                 padding:9px;
             "
         >
-
             Laba Kotor
-
         </td>
 
         <td
@@ -494,14 +339,52 @@
                 padding:9px;
             "
         >
-
             Rp {{ number_format(
                 $labaKotor,
                 0,
                 ',',
                 '.'
             ) }}
+        </td>
 
+    </tr>
+
+
+    {{-- =========================================================
+        LABA BERSIH
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                background-color:#eaf7ee;
+                border:1px solid #d9dee8;
+                font-weight:bold;
+                padding:9px;
+            "
+        >
+            Laba Bersih
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                background-color:#eaf7ee;
+                border:1px solid #d9dee8;
+                color:#168a45;
+                font-weight:bold;
+                text-align:right;
+                padding:9px;
+            "
+        >
+            Rp {{ number_format(
+                $labaBersih,
+                0,
+                ',',
+                '.'
+            ) }}
         </td>
 
     </tr>
@@ -513,7 +396,7 @@
 
 
     {{-- =========================================================
-         RINGKASAN RETUR
+        RINGKASAN RETUR
     ========================================================== --}}
 
     <tr>
@@ -529,9 +412,7 @@
                 padding:8px;
             "
         >
-
             Ringkasan Retur
-
         </th>
 
     </tr>
@@ -548,33 +429,30 @@
                 padding:8px;
             "
         >
-
             Retur Uang
-
         </td>
 
         <td
             colspan="4"
             style="
                 border:1px solid #d9dee8;
+                color:#e33434;
                 text-align:right;
                 padding:8px;
             "
         >
-
             Rp {{ number_format(
                 $totalReturUang,
                 0,
                 ',',
                 '.'
             ) }}
-
         </td>
 
     </tr>
 
 
-    {{-- TUKAR BARANG --}}
+    {{-- JUMLAH TUKAR BARANG --}}
 
     <tr>
 
@@ -585,9 +463,7 @@
                 padding:8px;
             "
         >
-
-            Tukar Barang
-
+            Jumlah Tukar Barang
         </td>
 
         <td
@@ -598,20 +474,46 @@
                 padding:8px;
             "
         >
+            {{ $jumlahTukarBarang }}
+        </td>
 
+    </tr>
+
+
+    {{-- NILAI BARANG DIKEMBALIKAN --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                border:1px solid #d9dee8;
+                padding:8px;
+            "
+        >
+            Nilai Barang Dikembalikan
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                border:1px solid #d9dee8;
+                text-align:right;
+                padding:8px;
+            "
+        >
             Rp {{ number_format(
-                $totalTukarBarang,
+                $nilaiBarangDikembalikan,
                 0,
                 ',',
                 '.'
             ) }}
-
         </td>
 
     </tr>
 
 
-    {{-- NILAI PENGGANTI --}}
+    {{-- NILAI BARANG PENGGANTI --}}
 
     <tr>
 
@@ -622,9 +524,7 @@
                 padding:8px;
             "
         >
-
             Nilai Barang Pengganti
-
         </td>
 
         <td
@@ -635,20 +535,18 @@
                 padding:8px;
             "
         >
-
             Rp {{ number_format(
                 $totalNilaiPengganti,
                 0,
                 ',',
                 '.'
             ) }}
-
         </td>
 
     </tr>
 
 
-    {{-- SELISIH PEMBAYARAN --}}
+    {{-- SELISIH TUKAR BARANG --}}
 
     <tr>
 
@@ -659,9 +557,7 @@
                 padding:8px;
             "
         >
-
-            Selisih Pembayaran
-
+            Selisih Tukar Barang
         </td>
 
         <td
@@ -674,14 +570,12 @@
                 padding:8px;
             "
         >
-
             Rp {{ number_format(
                 $totalSelisihPembayaran,
                 0,
                 ',',
                 '.'
             ) }}
-
         </td>
 
     </tr>
@@ -693,7 +587,7 @@
 
 
     {{-- =========================================================
-         ARUS KAS
+        ARUS KAS
     ========================================================== --}}
 
     <tr>
@@ -709,18 +603,18 @@
                 padding:8px;
             "
         >
-
             Arus Kas
-
         </th>
 
     </tr>
 
 
+    {{-- KAS MASUK DARI TUKAR --}}
+
     <tr>
 
         <td
-            colspan="2"
+            colspan="5"
             style="
                 background-color:#eaf8ef;
                 border:1px solid #d9dee8;
@@ -728,14 +622,13 @@
                 padding:8px;
             "
         >
-
-            Kas Masuk
-
+            Kas Masuk dari Tukar
         </td>
 
         <td
-            colspan="2"
+            colspan="4"
             style="
+                background-color:#eaf8ef;
                 border:1px solid #d9dee8;
                 color:#168a45;
                 font-weight:bold;
@@ -743,19 +636,23 @@
                 padding:8px;
             "
         >
-
             Rp {{ number_format(
-                $totalKasMasuk,
+                $kasMasukTukar,
                 0,
                 ',',
                 '.'
             ) }}
-
         </td>
 
+    </tr>
+
+
+    {{-- KAS KELUAR DARI RETUR UANG --}}
+
+    <tr>
 
         <td
-            colspan="2"
+            colspan="5"
             style="
                 background-color:#fff0f0;
                 border:1px solid #d9dee8;
@@ -763,14 +660,13 @@
                 padding:8px;
             "
         >
-
-            Kas Keluar
-
+            Kas Keluar dari Retur Uang
         </td>
 
         <td
-            colspan="2"
+            colspan="4"
             style="
+                background-color:#fff0f0;
                 border:1px solid #d9dee8;
                 color:#e33434;
                 font-weight:bold;
@@ -778,20 +674,18 @@
                 padding:8px;
             "
         >
-
-            Rp {{ number_format(
-                $totalKasKeluar,
+            - Rp {{ number_format(
+                $kasKeluarReturUang,
                 0,
                 ',',
                 '.'
             ) }}
-
         </td>
-
-        <td></td>
 
     </tr>
 
+
+    {{-- ARUS KAS BERSIH --}}
 
     <tr>
 
@@ -801,12 +695,10 @@
                 background-color:#eef4ff;
                 border:1px solid #d9dee8;
                 font-weight:bold;
-                padding:8px;
+                padding:9px;
             "
         >
-
             Arus Kas Bersih
-
         </td>
 
         <td
@@ -817,17 +709,15 @@
                 color:#2864d7;
                 font-weight:bold;
                 text-align:right;
-                padding:8px;
+                padding:9px;
             "
         >
-
             Rp {{ number_format(
                 $arusKasBersih,
                 0,
                 ',',
                 '.'
             ) }}
-
         </td>
 
     </tr>

@@ -18,17 +18,20 @@ class FinancialReportExport implements FromView
     protected $totalPenjualanBruto;
     protected $totalPenjualanBersih;
     protected $totalDiskon;
+    protected $uangPenjualan;
     protected $totalHpp;
     protected $labaKotor;
+    protected $totalBebanOperasional;
+    protected $labaBersih;
 
-    protected $totalRetur;
     protected $totalReturUang;
-    protected $totalTukarBarang;
-    protected $totalNilaiPengganti;
-    protected $totalSelisihPembayaran;
+    protected $jumlahTukarBarang;
+    protected $nilaiBarangDikembalikan;
+    protected $nilaiBarangPengganti;
+    protected $selisihTukarBarang;
 
-    protected $totalKasMasuk;
-    protected $totalKasKeluar;
+    protected $kasMasukDariTukar;
+    protected $kasKeluarDariReturUang;
     protected $arusKasBersih;
 
 
@@ -44,80 +47,48 @@ class FinancialReportExport implements FromView
         $totalPenjualanBruto,
         $totalPenjualanBersih,
         $totalDiskon,
+        $uangPenjualan,
         $totalHpp,
         $labaKotor,
+        $totalBebanOperasional,
+        $labaBersih,
 
-        $totalRetur,
         $totalReturUang,
-        $totalTukarBarang,
-        $totalNilaiPengganti,
-        $totalSelisihPembayaran,
+        $jumlahTukarBarang,
+        $nilaiBarangDikembalikan,
+        $nilaiBarangPengganti,
+        $selisihTukarBarang,
 
-        $totalKasMasuk,
-        $totalKasKeluar,
+        $kasMasukDariTukar,
+        $kasKeluarDariReturUang,
         $arusKasBersih
     ) {
+        $this->sales = $sales;
+        $this->returns = $returns;
+        $this->cashTransactions = $cashTransactions;
 
-        $this->sales =
-            $sales;
+        $this->tanggalMulai = $tanggalMulai;
+        $this->tanggalAkhir = $tanggalAkhir;
 
-        $this->returns =
-            $returns;
+        $this->totalPenjualan = $totalPenjualan;
+        $this->totalPenjualanBruto = $totalPenjualanBruto;
+        $this->totalPenjualanBersih = $totalPenjualanBersih;
+        $this->totalDiskon = $totalDiskon;
+        $this->uangPenjualan = $uangPenjualan;
+        $this->totalHpp = $totalHpp;
+        $this->labaKotor = $labaKotor;
+        $this->totalBebanOperasional = $totalBebanOperasional;
+        $this->labaBersih = $labaBersih;
 
-        $this->cashTransactions =
-            $cashTransactions;
+        $this->totalReturUang = $totalReturUang;
+        $this->jumlahTukarBarang = $jumlahTukarBarang;
+        $this->nilaiBarangDikembalikan = $nilaiBarangDikembalikan;
+        $this->nilaiBarangPengganti = $nilaiBarangPengganti;
+        $this->selisihTukarBarang = $selisihTukarBarang;
 
-
-        $this->tanggalMulai =
-            $tanggalMulai;
-
-        $this->tanggalAkhir =
-            $tanggalAkhir;
-
-
-        $this->totalPenjualan =
-            $totalPenjualan;
-
-        $this->totalPenjualanBruto =
-            $totalPenjualanBruto;
-
-        $this->totalPenjualanBersih =
-            $totalPenjualanBersih;
-
-        $this->totalDiskon =
-            $totalDiskon;
-
-        $this->totalHpp =
-            $totalHpp;
-
-        $this->labaKotor =
-            $labaKotor;
-
-
-        $this->totalRetur =
-            $totalRetur;
-
-        $this->totalReturUang =
-            $totalReturUang;
-
-        $this->totalTukarBarang =
-            $totalTukarBarang;
-
-        $this->totalNilaiPengganti =
-            $totalNilaiPengganti;
-
-        $this->totalSelisihPembayaran =
-            $totalSelisihPembayaran;
-
-
-        $this->totalKasMasuk =
-            $totalKasMasuk;
-
-        $this->totalKasKeluar =
-            $totalKasKeluar;
-
-        $this->arusKasBersih =
-            $arusKasBersih;
+        $this->kasMasukDariTukar = $kasMasukDariTukar;
+        $this->kasKeluarDariReturUang = $kasKeluarDariReturUang;
+        $this->arusKasBersih = $arusKasBersih;
     }
 
 
@@ -126,68 +97,32 @@ class FinancialReportExport implements FromView
         return view(
             'admin.laporan.excel.keuangan',
             [
+                'sales' => $this->sales,
+                'returns' => $this->returns,
+                'cashTransactions' => $this->cashTransactions,
 
-                'sales' =>
-                    $this->sales,
+                'tanggalMulai' => $this->tanggalMulai,
+                'tanggalAkhir' => $this->tanggalAkhir,
 
-                'returns' =>
-                    $this->returns,
+                'totalPenjualan' => $this->totalPenjualan,
+                'totalPenjualanBruto' => $this->totalPenjualanBruto,
+                'totalPenjualanBersih' => $this->totalPenjualanBersih,
+                'totalDiskon' => $this->totalDiskon,
+                'uangPenjualan' => $this->uangPenjualan,
+                'totalHpp' => $this->totalHpp,
+                'labaKotor' => $this->labaKotor,
+                'totalBebanOperasional' => $this->totalBebanOperasional,
+                'labaBersih' => $this->labaBersih,
 
-                'cashTransactions' =>
-                    $this->cashTransactions,
+                'totalReturUang' => $this->totalReturUang,
+                'jumlahTukarBarang' => $this->jumlahTukarBarang,
+                'nilaiBarangDikembalikan' => $this->nilaiBarangDikembalikan,
+                'nilaiBarangPengganti' => $this->nilaiBarangPengganti,
+                'selisihTukarBarang' => $this->selisihTukarBarang,
 
-
-                'tanggalMulai' =>
-                    $this->tanggalMulai,
-
-                'tanggalAkhir' =>
-                    $this->tanggalAkhir,
-
-
-                'totalPenjualan' =>
-                    $this->totalPenjualan,
-
-                'totalPenjualanBruto' =>
-                    $this->totalPenjualanBruto,
-
-                'totalPenjualanBersih' =>
-                    $this->totalPenjualanBersih,
-
-                'totalDiskon' =>
-                    $this->totalDiskon,
-
-                'totalHpp' =>
-                    $this->totalHpp,
-
-                'labaKotor' =>
-                    $this->labaKotor,
-
-
-                'totalRetur' =>
-                    $this->totalRetur,
-
-                'totalReturUang' =>
-                    $this->totalReturUang,
-
-                'totalTukarBarang' =>
-                    $this->totalTukarBarang,
-
-                'totalNilaiPengganti' =>
-                    $this->totalNilaiPengganti,
-
-                'totalSelisihPembayaran' =>
-                    $this->totalSelisihPembayaran,
-
-
-                'totalKasMasuk' =>
-                    $this->totalKasMasuk,
-
-                'totalKasKeluar' =>
-                    $this->totalKasKeluar,
-
-                'arusKasBersih' =>
-                    $this->arusKasBersih,
-
+                'kasMasukDariTukar' => $this->kasMasukDariTukar,
+                'kasKeluarDariReturUang' => $this->kasKeluarDariReturUang,
+                'arusKasBersih' => $this->arusKasBersih,
             ]
         );
     }

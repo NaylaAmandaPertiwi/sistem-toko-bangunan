@@ -22,8 +22,21 @@ class SaleDetail extends Model
 
         'harga',
 
+        'harga_beli',
+
         'subtotal'
 
+    ];
+
+    protected $casts = [
+        'qty' => 'integer',
+
+        'harga' => 'decimal:2',
+
+        'harga_beli' => 'decimal:2',
+
+        'subtotal' => 'decimal:2',
+        
     ];
 
     /*

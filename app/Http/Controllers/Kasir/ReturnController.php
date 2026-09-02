@@ -770,46 +770,78 @@ class ReturnController extends Controller
     |--------------------------------------------------------------------------
     */
 
-    public function destroy(ReturnSale $retur)
+    public function destroy($id)
     {
         DB::beginTransaction();
 
         try {
+            $retur = ReturnSale::with([
+                'details',
+                'exchangeDetails'
+            ])->findOrFail($id);
 
+            /*
+            |--------------------------------------------------------------------------
+            | 1. Kembalikan stok barang yang sebelumnya diretur
+            |--------------------------------------------------------------------------
+            |
+            | Saat retur dibuat, barang yang diretur masuk kembali ke stok (+).
+            | Jika retur dihapus, stok tersebut harus dikurangi kembali (-).
+            |
+            */
             foreach ($retur->details as $detail) {
-
-                Product::where(
-                    'id',
-                    $detail->product_id
-                )->decrement(
-                    'stok',
-                    $detail->qty
-                );
+                Product::where('id', $detail->product_id)
+                    ->decrement('stok', $detail->qty);
             }
 
+            /*
+            |--------------------------------------------------------------------------
+            | 2. Kembalikan stok barang pengganti
+            |--------------------------------------------------------------------------
+            |
+            | Saat tukar barang dibuat, barang pengganti keluar dari stok (-).
+            | Jika retur dihapus, barang pengganti harus dikembalikan ke stok (+).
+            |
+            */
+            foreach ($retur->exchangeDetails as $detail) {
+                Product::where('id', $detail->product_id)
+                    ->increment('stok', $detail->qty);
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | 3. Hapus transaksi kas yang terkait dengan retur
+            |--------------------------------------------------------------------------
+            |
+            | Referensi pada cash_transactions menggunakan kode_retur.
+            |
+            */
+            CashTransaction::where('referensi', $retur->kode_retur)
+                ->delete();
+
+            /*
+            |--------------------------------------------------------------------------
+            | 4. Hapus data retur
+            |--------------------------------------------------------------------------
+            |
+            | return_details dan return_exchange_details akan ikut terhapus
+            | jika foreign key menggunakan onDelete('cascade').
+            |
+            */
             $retur->delete();
 
             DB::commit();
 
             return redirect()
-                ->route('retur.index')
-                ->with(
-                    'success',
-                    'Data retur berhasil dihapus.'
-                );
-
+                ->route('kasir.retur.index')
+                ->with('success', 'Data retur berhasil dihapus.');
+                
         } catch (\Exception $e) {
-
             DB::rollBack();
 
-            return response()->json([
-
-                'success' => false,
-
-                'message' => $e->getMessage()
-
-            ], 422);
-
+            return redirect()
+                ->back()
+                ->with('error', 'Data retur gagal dihapus: ' . $e->getMessage());
         }
     }
 }

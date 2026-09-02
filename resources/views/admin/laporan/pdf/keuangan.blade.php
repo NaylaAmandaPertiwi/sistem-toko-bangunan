@@ -123,6 +123,7 @@
             padding: 10px;
             text-align: center;
             margin-top: 8px;
+            margin-bottom: 15px;
         }
 
         .profit-label {
@@ -213,9 +214,6 @@
 
 <body>
 
-    {{-- =====================================================
-         HEADER
-    ====================================================== --}}
 
     <div class="header">
 
@@ -230,10 +228,6 @@
 
     </div>
 
-
-    {{-- =====================================================
-         PERIODE
-    ====================================================== --}}
 
     <table class="periode">
 
@@ -267,7 +261,7 @@
 
 
     {{-- =====================================================
-         4 CARD UTAMA
+         RINGKASAN UTAMA
     ====================================================== --}}
 
     <table class="summary">
@@ -277,11 +271,11 @@
             <td>
 
                 <div class="summary-label">
-                    Total Penjualan
+                    Penjualan Bersih
                 </div>
 
                 <div class="summary-value">
-                    Rp {{ number_format($totalPenjualan, 0, ',', '.') }}
+                    Rp {{ number_format($totalPenjualanBersih, 0, ',', '.') }}
                 </div>
 
             </td>
@@ -290,11 +284,11 @@
             <td>
 
                 <div class="summary-label">
-                    Total Retur
+                    Uang Penjualan
                 </div>
 
                 <div class="summary-value">
-                    Rp {{ number_format($totalRetur, 0, ',', '.') }}
+                    Rp {{ number_format($uangPenjualan, 0, ',', '.') }}
                 </div>
 
             </td>
@@ -303,11 +297,11 @@
             <td>
 
                 <div class="summary-label">
-                    Kas Masuk
+                    Laba Kotor
                 </div>
 
                 <div class="summary-value summary-green">
-                    Rp {{ number_format($totalKasMasuk, 0, ',', '.') }}
+                    Rp {{ number_format($labaKotor, 0, ',', '.') }}
                 </div>
 
             </td>
@@ -316,11 +310,11 @@
             <td>
 
                 <div class="summary-label">
-                    Kas Keluar
+                    Laba Bersih
                 </div>
 
-                <div class="summary-value summary-red">
-                    Rp {{ number_format($totalKasKeluar, 0, ',', '.') }}
+                <div class="summary-value summary-green">
+                    Rp {{ number_format($labaBersih, 0, ',', '.') }}
                 </div>
 
             </td>
@@ -382,11 +376,50 @@
         <tr>
 
             <td class="label">
-                HPP
+                Uang Penjualan
             </td>
 
             <td class="value">
+                Rp {{ number_format($uangPenjualan, 0, ',', '.') }}
+            </td>
+
+        </tr>
+
+
+        <tr>
+
+            <td class="label">
+                HPP
+            </td>
+
+            <td class="value red">
                 - Rp {{ number_format($totalHpp, 0, ',', '.') }}
+            </td>
+
+        </tr>
+
+
+        <tr>
+
+            <td class="label">
+                Laba Kotor
+            </td>
+
+            <td class="value green">
+                Rp {{ number_format($labaKotor, 0, ',', '.') }}
+            </td>
+
+        </tr>
+
+
+        <tr>
+
+            <td class="label">
+                Beban Operasional
+            </td>
+
+            <td class="value">
+                Rp {{ number_format($totalBebanOperasional, 0, ',', '.') }}
             </td>
 
         </tr>
@@ -397,11 +430,11 @@
     <div class="profit-box">
 
         <div class="profit-label">
-            Laba Kotor
+            Laba Bersih
         </div>
 
         <div class="profit-value">
-            Rp {{ number_format($labaKotor, 0, ',', '.') }}
+            Rp {{ number_format($labaBersih, 0, ',', '.') }}
         </div>
 
     </div>
@@ -423,7 +456,7 @@
                 Retur Uang
             </td>
 
-            <td class="value">
+            <td class="value red">
                 Rp {{ number_format($totalReturUang, 0, ',', '.') }}
             </td>
 
@@ -433,11 +466,24 @@
         <tr>
 
             <td class="label">
-                Tukar Barang
+                Jumlah Tukar Barang
             </td>
 
             <td class="value">
-                Rp {{ number_format($totalTukarBarang, 0, ',', '.') }}
+                {{ $jumlahTukarBarang }} transaksi
+            </td>
+
+        </tr>
+
+
+        <tr>
+
+            <td class="label">
+                Nilai Barang Dikembalikan
+            </td>
+
+            <td class="value">
+                Rp {{ number_format($nilaiBarangDikembalikan, 0, ',', '.') }}
             </td>
 
         </tr>
@@ -450,7 +496,7 @@
             </td>
 
             <td class="value">
-                Rp {{ number_format($totalNilaiPengganti, 0, ',', '.') }}
+                Rp {{ number_format($nilaiBarangPengganti, 0, ',', '.') }}
             </td>
 
         </tr>
@@ -459,11 +505,11 @@
         <tr>
 
             <td class="label">
-                Selisih Pembayaran
+                Selisih Tukar Barang
             </td>
 
             <td class="value green">
-                Rp {{ number_format($totalSelisihPembayaran, 0, ',', '.') }}
+                Rp {{ number_format($selisihTukarBarang, 0, ',', '.') }}
             </td>
 
         </tr>
@@ -484,36 +530,40 @@
         <tr>
 
             <td class="cash-in">
-                <strong>Kas Masuk</strong>
+
+                <strong>
+                    Kas Masuk dari Tukar
+                </strong>
+
                 <br>
-                Rp {{ number_format($totalKasMasuk, 0, ',', '.') }}
-                <br>
-                <small>Dari selisih pembayaran tukar barang</small>
+
+                Rp {{ number_format($kasMasukDariTukar, 0, ',', '.') }}
+
             </td>
 
 
             <td class="cash-out">
-                <strong>Kas Keluar</strong>
+
+                <strong>
+                    Kas Keluar dari Retur Uang
+                </strong>
+
                 <br>
-                Rp {{ number_format($totalKasKeluar, 0, ',', '.') }}
-                <br>
-                <small>Dari retur uang</small>
+
+                Rp {{ number_format($kasKeluarDariReturUang, 0, ',', '.') }}
+
             </td>
 
 
             <td class="cash-net">
 
-                <strong>Arus Kas Bersih</strong>
+                <strong>
+                    Arus Kas Bersih
+                </strong>
 
                 <br>
 
                 Rp {{ number_format($arusKasBersih, 0, ',', '.') }}
-
-                <br>
-
-                <small>
-                    Kas Masuk - Kas Keluar
-                </small>
 
             </td>
 
@@ -523,11 +573,11 @@
 
 
     {{-- =====================================================
-         RINGKASAN RETUR - DATA
+         DETAIL RETUR
     ====================================================== --}}
 
     <div class="section-title">
-        Ringkasan Retur
+        Detail Transaksi Retur
     </div>
 
     <table class="return-table">
@@ -542,7 +592,7 @@
                 <th>Kode Penjualan</th>
                 <th>Kasir</th>
                 <th>Jenis Retur</th>
-                <th>Total Retur</th>
+                <th>Nilai Dikembalikan</th>
                 <th>Nilai Pengganti</th>
                 <th>Selisih</th>
 
@@ -614,11 +664,11 @@
 
 
     {{-- =====================================================
-         RINGKASAN PENJUALAN
+         DETAIL PENJUALAN
     ====================================================== --}}
 
     <div class="section-title">
-        Ringkasan Penjualan
+        Detail Transaksi Penjualan
     </div>
 
     <table class="sales-table">
@@ -649,7 +699,7 @@
                     $hpp = $sale->saleDetails->sum(function ($detail) {
 
                         return $detail->qty *
-                               ($detail->product->harga_beli ?? 0);
+                               $detail->harga_beli;
 
                     });
 
