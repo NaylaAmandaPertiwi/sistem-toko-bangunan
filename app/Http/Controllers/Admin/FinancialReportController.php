@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Sale;
 use App\Models\ReturnSale;
 use App\Models\CashTransaction;
+use App\Models\BebanOperasional;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Exports\FinancialReportExport;
@@ -17,7 +18,7 @@ class FinancialReportController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | LAPORAN KEUANGAN
+    | HALAMAN LAPORAN KEUANGAN
     |--------------------------------------------------------------------------
     */
 
@@ -34,20 +35,13 @@ class FinancialReportController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | MENGAMBIL DATA DAN PERHITUNGAN LAPORAN KEUANGAN
+    | MENGAMBIL DATA LAPORAN KEUANGAN
     |--------------------------------------------------------------------------
     */
 
     private function getFinancialData(Request $request)
     {
-        /*
-        |--------------------------------------------------------------------------
-        | FILTER TANGGAL
-        |--------------------------------------------------------------------------
-        */
-
         $tanggalMulai = $request->tanggal_mulai;
-
         $tanggalAkhir = $request->tanggal_akhir;
 
 
@@ -63,19 +57,23 @@ class FinancialReportController extends Controller
         ]);
 
         if ($tanggalMulai) {
+
             $salesQuery->whereDate(
                 'tanggal',
                 '>=',
                 $tanggalMulai
             );
+
         }
 
         if ($tanggalAkhir) {
+
             $salesQuery->whereDate(
                 'tanggal',
                 '<=',
                 $tanggalAkhir
             );
+
         }
 
         $sales = $salesQuery
@@ -97,19 +95,23 @@ class FinancialReportController extends Controller
         ]);
 
         if ($tanggalMulai) {
+
             $returnsQuery->whereDate(
                 'tanggal',
                 '>=',
                 $tanggalMulai
             );
+
         }
 
         if ($tanggalAkhir) {
+
             $returnsQuery->whereDate(
                 'tanggal',
                 '<=',
                 $tanggalAkhir
             );
+
         }
 
         $returns = $returnsQuery
@@ -121,26 +123,37 @@ class FinancialReportController extends Controller
         |--------------------------------------------------------------------------
         | DATA TRANSAKSI KAS
         |--------------------------------------------------------------------------
+        |
+        | cash_transactions digunakan untuk:
+        |
+        | 1. Saldo Awal Kas
+        | 2. Selisih pembayaran tukar barang
+        | 3. Retur uang
+        |
+        | Saldo awal TIDAK akan dihitung sebagai Kas Masuk periode.
+        |
         */
 
-        $cashQuery = CashTransaction::with(
-            'returnSale'
-        );
+        $cashQuery = CashTransaction::with('returnSale');
 
         if ($tanggalMulai) {
+
             $cashQuery->whereDate(
                 'tanggal',
                 '>=',
                 $tanggalMulai
             );
+
         }
 
         if ($tanggalAkhir) {
+
             $cashQuery->whereDate(
                 'tanggal',
                 '<=',
                 $tanggalAkhir
             );
+
         }
 
         $cashTransactions = $cashQuery
@@ -150,29 +163,54 @@ class FinancialReportController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | DATA BEBAN OPERASIONAL
+        |--------------------------------------------------------------------------
+        */
+
+        $bebanOperasionals = BebanOperasional::query()
+
+            ->when(
+                $tanggalMulai,
+                function ($query) use ($tanggalMulai) {
+
+                    $query->whereDate(
+                        'tanggal',
+                        '>=',
+                        $tanggalMulai
+                    );
+
+                }
+            )
+
+            ->when(
+                $tanggalAkhir,
+                function ($query) use ($tanggalAkhir) {
+
+                    $query->whereDate(
+                        'tanggal',
+                        '<=',
+                        $tanggalAkhir
+                    );
+
+                }
+            )
+
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
         | RINGKASAN PENJUALAN
         |--------------------------------------------------------------------------
         */
 
-        /*
-        | Penjualan Bruto
-        | = seluruh subtotal sebelum diskon
-        */
-
-        $totalPenjualanBruto = $sales->sum('subtotal');
+        $totalPenjualanBruto =
+            $sales->sum('subtotal');
 
 
-        /*
-        | Total Diskon
-        */
+        $totalDiskon =
+            $sales->sum('diskon');
 
-        $totalDiskon = $sales->sum('diskon');
-
-
-        /*
-        | Penjualan Bersih
-        | = Penjualan Bruto - Total Diskon
-        */
 
         $totalPenjualanBersih =
             $totalPenjualanBruto
@@ -181,23 +219,31 @@ class FinancialReportController extends Controller
 
 
         /*
-        | Uang Penjualan
+        |--------------------------------------------------------------------------
+        | UANG PENJUALAN
+        |--------------------------------------------------------------------------
         |
-        | Diambil dari total_bayar yang benar-benar harus
-        | dibayarkan pelanggan setelah diskon.
+        | total_bayar adalah nilai transaksi yang benar-benar menjadi
+        | penerimaan penjualan.
+        |
+        | Jangan menggunakan field "bayar" karena field tersebut
+        | merupakan uang yang diberikan pelanggan sebelum dikurangi
+        | kembalian.
+        |
         */
 
-        $uangPenjualan = $sales->sum('total_bayar');
+        $uangPenjualan =
+            $sales->sum('total_bayar');
+
+
+        $totalPenjualan =
+            $uangPenjualan;
 
 
         /*
         |--------------------------------------------------------------------------
-        | HPP
+        | HITUNG HPP
         |--------------------------------------------------------------------------
-        |
-        | HPP menggunakan harga_beli yang disimpan pada
-        | sale_details, bukan harga_beli produk saat ini.
-        |
         */
 
         $totalHpp = 0;
@@ -210,7 +256,9 @@ class FinancialReportController extends Controller
                     $detail->qty
                     *
                     $detail->harga_beli;
+
             }
+
         }
 
 
@@ -230,13 +278,10 @@ class FinancialReportController extends Controller
         |--------------------------------------------------------------------------
         | BEBAN OPERASIONAL
         |--------------------------------------------------------------------------
-        |
-        | Saat ini sistem belum mempunyai tabel pencatatan
-        | beban operasional, sehingga nilainya 0.
-        |
         */
 
-        $totalBebanOperasional = 0;
+        $totalBebanOperasional =
+            $bebanOperasionals->sum('nominal');
 
 
         /*
@@ -257,121 +302,311 @@ class FinancialReportController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        /*
-        | Total Retur Uang
-        */
-
-        $totalReturUang = $returns
-            ->where('return_type', 'uang')
-            ->sum('total_retur');
+        $totalReturUang =
+            $returns
+                ->where('return_type', 'uang')
+                ->sum('total_retur');
 
 
-        /*
-        | Jumlah Tukar Barang
-        |
-        | Menghitung jumlah transaksi retur dengan
-        | jenis tukar barang.
-        */
-
-        $jumlahTukarBarang = $returns
-            ->where('return_type', 'tukar')
-            ->count();
+        $jumlahTukarBarang =
+            $returns
+                ->where('return_type', 'tukar')
+                ->count();
 
 
-        /*
-        | Nilai Barang Dikembalikan
-        |
-        | Merupakan nilai barang yang dikembalikan
-        | pada transaksi tukar barang.
-        */
-
-        $nilaiBarangDikembalikan = $returns
-            ->where('return_type', 'tukar')
-            ->sum('total_retur');
+        $nilaiBarangDikembalikan =
+            $returns
+                ->where('return_type', 'tukar')
+                ->sum('total_retur');
 
 
-        /*
-        | Nilai Barang Pengganti
-        */
-
-        $nilaiBarangPengganti = $returns
-            ->where('return_type', 'tukar')
-            ->sum('total_pengganti');
+        $nilaiBarangPengganti =
+            $returns
+                ->where('return_type', 'tukar')
+                ->sum('total_pengganti');
 
 
-        /*
-        | Selisih Tukar Barang
-        |
-        | Nilai pengganti - nilai barang dikembalikan.
-        */
-
-        $selisihTukarBarang = $returns
-            ->where('return_type', 'tukar')
-            ->sum('selisih_bayar');
+        $selisihTukarBarang =
+            $returns
+                ->where('return_type', 'tukar')
+                ->sum('selisih_bayar');
 
 
         /*
         |--------------------------------------------------------------------------
-        | KAS
+        | KAS MASUK DARI TUKAR BARANG
+        |--------------------------------------------------------------------------
+        |
+        | Hanya transaksi:
+        |
+        | jenis  = masuk
+        | sumber = tukar_barang
+        |
+        | Saldo awal tidak ikut dihitung di sini.
+        |
+        */
+
+        $kasMasukDariTukar =
+            $cashTransactions
+                ->where('jenis', 'masuk')
+                ->where('sumber', 'tukar_barang')
+                ->sum('nominal');
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | KAS KELUAR DARI RETUR UANG
         |--------------------------------------------------------------------------
         */
 
+        $kasKeluarDariReturUang =
+            $cashTransactions
+                ->where('jenis', 'keluar')
+                ->where('sumber', 'retur_uang')
+                ->sum('nominal');
+
+
         /*
-        | Kas Masuk dari Tukar
+        |--------------------------------------------------------------------------
+        | KAS KELUAR DARI BEBAN OPERASIONAL
+        |--------------------------------------------------------------------------
         |
-        | Hanya mengambil kas masuk yang berasal dari
-        | selisih pembayaran tukar barang.
+        | Beban operasional disimpan pada tabel beban_operasionals,
+        | bukan pada cash_transactions.
+        |
         */
 
-        $kasMasukDariTukar = $cashTransactions
-            ->where('jenis', 'masuk')
-            ->where('sumber', 'tukar_barang')
-            ->sum('nominal');
+        $kasKeluarDariBebanOperasional =
+            $totalBebanOperasional;
 
 
         /*
-        | Kas Keluar dari Retur Uang
+        |--------------------------------------------------------------------------
+        | TOTAL KAS MASUK PERIODE
+        |--------------------------------------------------------------------------
         */
 
-        $kasKeluarDariReturUang = $cashTransactions
-            ->where('jenis', 'keluar')
-            ->where('sumber', 'retur_uang')
-            ->sum('nominal');
+        $kasMasukPenjualan =
+            $uangPenjualan;
+
+
+        $totalKasMasuk =
+            $kasMasukPenjualan
+            +
+            $kasMasukDariTukar;
 
 
         /*
-        | Arus Kas Bersih
+        |--------------------------------------------------------------------------
+        | TOTAL KAS KELUAR PERIODE
+        |--------------------------------------------------------------------------
+        */
+
+        $totalKasKeluar =
+            $kasKeluarDariReturUang
+            +
+            $kasKeluarDariBebanOperasional;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | ARUS KAS BERSIH
+        |--------------------------------------------------------------------------
         */
 
         $arusKasBersih =
-            $kasMasukDariTukar
+            $totalKasMasuk
             -
-            $kasKeluarDariReturUang;
+            $totalKasKeluar;
 
 
         /*
         |--------------------------------------------------------------------------
-        | ALIAS
+        | SALDO AWAL KAS
         |--------------------------------------------------------------------------
         |
-        | Tetap disediakan agar bagian PDF/Excel lama
-        | yang menggunakan nama totalPenjualan tidak error.
+        | Konsep:
+        |
+        | Saldo Awal Kas =
+        | uang yang sudah tersedia sebelum periode laporan.
+        |
+        | Jika laporan menggunakan tanggal mulai, maka:
+        |
+        | Saldo Awal =
+        | Saldo awal yang telah dicatat
+        | +
+        | seluruh transaksi kas sebelum tanggal mulai.
+        |
+        | Transaksi "saldo_awal" tidak dimasukkan sebagai Kas Masuk.
+        | Ia hanya menjadi dasar saldo awal.
         |
         */
 
-        $totalPenjualan = $uangPenjualan;
+        $saldoAwalKas = 0;
+
+
+        if ($tanggalMulai) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | 1. SALDO AWAL YANG SUDAH DICATAT
+            |--------------------------------------------------------------------------
+            |
+            | Mengambil transaksi saldo_awal sampai sebelum / pada
+            | tanggal mulai laporan.
+            |
+            */
+
+            $saldoAwalTercatat =
+                CashTransaction::query()
+                    ->where('sumber', 'saldo_awal')
+                    ->whereDate(
+                        'tanggal',
+                        '<=',
+                        $tanggalMulai
+                    )
+                    ->sum('nominal');
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 2. PENJUALAN SEBELUM PERIODE
+            |--------------------------------------------------------------------------
+            */
+
+            $kasPenjualanSebelumPeriode =
+                Sale::query()
+                    ->whereDate(
+                        'tanggal',
+                        '<',
+                        $tanggalMulai
+                    )
+                    ->sum('total_bayar');
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 3. TRANSAKSI KAS SEBELUM PERIODE
+            |--------------------------------------------------------------------------
+            |
+            | Saldo awal tidak dihitung lagi di sini karena sudah
+            | diambil pada $saldoAwalTercatat.
+            |
+            */
+
+            $cashSebelumPeriode =
+                CashTransaction::query()
+                    ->whereDate(
+                        'tanggal',
+                        '<',
+                        $tanggalMulai
+                    )
+                    ->where('sumber', '!=', 'saldo_awal')
+                    ->get();
+
+
+            $kasMasukSebelumPeriode =
+                $cashSebelumPeriode
+                    ->where('jenis', 'masuk')
+                    ->sum('nominal');
+
+
+            $kasKeluarSebelumPeriode =
+                $cashSebelumPeriode
+                    ->where('jenis', 'keluar')
+                    ->sum('nominal');
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 4. BEBAN OPERASIONAL SEBELUM PERIODE
+            |--------------------------------------------------------------------------
+            */
+
+            $bebanSebelumPeriode =
+                BebanOperasional::query()
+                    ->whereDate(
+                        'tanggal',
+                        '<',
+                        $tanggalMulai
+                    )
+                    ->sum('nominal');
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 5. HITUNG SALDO AWAL
+            |--------------------------------------------------------------------------
+            */
+
+            $saldoAwalKas =
+
+                $saldoAwalTercatat
+
+                +
+
+                $kasPenjualanSebelumPeriode
+
+                +
+
+                $kasMasukSebelumPeriode
+
+                -
+
+                $kasKeluarSebelumPeriode
+
+                -
+
+                $bebanSebelumPeriode;
+
+        } else {
+
+            /*
+            |--------------------------------------------------------------------------
+            | JIKA TIDAK ADA TANGGAL MULAI
+            |--------------------------------------------------------------------------
+            |
+            | "Semua Tanggal":
+            |
+            | Saldo awal diambil dari saldo awal yang dicatat.
+            |
+            | Seluruh transaksi setelah saldo awal akan dihitung
+            | sebagai pergerakan kas periode.
+            |
+            */
+
+            $saldoAwalKas =
+                CashTransaction::query()
+                    ->where('sumber', 'saldo_awal')
+                    ->sum('nominal');
+
+        }
 
 
         /*
         |--------------------------------------------------------------------------
-        | DATA YANG DIKIRIM KE VIEW
+        | SALDO AKHIR KAS
+        |--------------------------------------------------------------------------
+        */
+
+        $saldoAkhirKas =
+            $saldoAwalKas
+            +
+            $arusKasBersih;
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | DATA UNTUK VIEW
         |--------------------------------------------------------------------------
         */
 
         return compact(
 
             /*
-            | Filter
+            |--------------------------------------------------------------------------
+            | FILTER
+            |--------------------------------------------------------------------------
             */
 
             'tanggalMulai',
@@ -379,24 +614,35 @@ class FinancialReportController extends Controller
 
 
             /*
-            | Penjualan
+            |--------------------------------------------------------------------------
+            | PENJUALAN
+            |--------------------------------------------------------------------------
             */
 
             'sales',
 
-            'totalPenjualanBruto',
+            'totalPenjualan',
 
-            'totalDiskon',
+            'totalPenjualanBruto',
 
             'totalPenjualanBersih',
 
+            'totalDiskon',
+
             'uangPenjualan',
 
-            'totalPenjualan',
+
+            /*
+            |--------------------------------------------------------------------------
+            | LABA
+            |--------------------------------------------------------------------------
+            */
 
             'totalHpp',
 
             'labaKotor',
+
+            'bebanOperasionals',
 
             'totalBebanOperasional',
 
@@ -404,7 +650,9 @@ class FinancialReportController extends Controller
 
 
             /*
-            | Retur
+            |--------------------------------------------------------------------------
+            | RETUR
+            |--------------------------------------------------------------------------
             */
 
             'returns',
@@ -421,23 +669,44 @@ class FinancialReportController extends Controller
 
 
             /*
-            | Kas
+            |--------------------------------------------------------------------------
+            | TRANSAKSI KAS
+            |--------------------------------------------------------------------------
             */
 
             'cashTransactions',
 
+            'kasMasukPenjualan',
+
             'kasMasukDariTukar',
+
+            'totalKasMasuk',
 
             'kasKeluarDariReturUang',
 
-            'arusKasBersih'
+            'kasKeluarDariBebanOperasional',
+
+            'totalKasKeluar',
+
+            'arusKasBersih',
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | SALDO KAS
+            |--------------------------------------------------------------------------
+            */
+
+            'saldoAwalKas',
+
+            'saldoAkhirKas'
         );
     }
 
 
     /*
     |--------------------------------------------------------------------------
-    | CETAK PDF
+    | EXPORT PDF
     |--------------------------------------------------------------------------
     */
 
@@ -512,7 +781,19 @@ class FinancialReportController extends Controller
 
                 $data['kasKeluarDariReturUang'],
 
-                $data['arusKasBersih']
+                $data['arusKasBersih'],
+
+                $data['saldoAwalKas'],
+
+                $data['kasMasukPenjualan'],
+
+                $data['totalKasMasuk'],
+
+                $data['kasKeluarDariBebanOperasional'],
+
+                $data['totalKasKeluar'],
+
+                $data['saldoAkhirKas']
 
             ),
 

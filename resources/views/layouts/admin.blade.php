@@ -1035,6 +1035,16 @@ rel="stylesheet">
 
     </a>
 
+    <!-- PENCATATAN BEBAN -->
+
+    <a href="{{ route('admin.beban-operasional.index') }}"
+    class="{{ request()->routeIs('admin.beban-operasional.*') ? 'active' : '' }}">
+
+        <i class="fa-solid fa-wallet"></i>
+        Pencatatan Beban
+
+    </a>
+
     <!-- LAPORAN -->
 
     <div class="dropdown-menu">

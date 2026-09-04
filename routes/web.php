@@ -22,6 +22,8 @@ use App\Http\Controllers\Admin\StockAlertController;
 use App\Http\Controllers\Admin\TransactionController;
 
 use App\Http\Controllers\Admin\DiscountController;
+
+use App\Http\Controllers\Admin\BebanOperasionalController;
   
 use App\Http\Controllers\Admin\SalesReportController;
 use App\Http\Controllers\Admin\StockReportController;
@@ -411,6 +413,17 @@ Route::middleware('auth')->group(function () {
                 '/diskon/{discount}',
                 [\App\Http\Controllers\Admin\DiscountController::class, 'destroy']
             )->name('discount.destroy');
+
+            /*
+            |--------------------------------------------------------------------------
+            | BEBAN OPERASIONAL
+            |--------------------------------------------------------------------------
+            */
+
+            Route::resource(
+                'beban-operasional', 
+                BebanOperasionalController::class)
+            ->except(['show', 'create', 'edit']);
 
 
             /*

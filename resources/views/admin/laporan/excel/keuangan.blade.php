@@ -146,8 +146,8 @@
 
 
     {{-- =========================================================
-     RINGKASAN LAPORAN KEUANGAN
-========================================================== --}}
+         RINGKASAN LAPORAN KEUANGAN
+    ========================================================== --}}
 
     <tr>
 
@@ -169,7 +169,42 @@
 
 
     {{-- =========================================================
-        TOTAL DISKON
+         PENJUALAN BRUTO
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                border:1px solid #d9dee8;
+                padding:8px;
+            "
+        >
+            Penjualan Bruto
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                border:1px solid #d9dee8;
+                text-align:right;
+                padding:8px;
+            "
+        >
+            Rp {{ number_format(
+                $totalPenjualanBruto,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         TOTAL DISKON
     ========================================================== --}}
 
     <tr>
@@ -205,7 +240,7 @@
 
 
     {{-- =========================================================
-        PENJUALAN BERSIH
+         PENJUALAN BERSIH
     ========================================================== --}}
 
     <tr>
@@ -241,7 +276,7 @@
 
 
     {{-- =========================================================
-        UANG PENJUALAN
+         UANG PENJUALAN
     ========================================================== --}}
 
     <tr>
@@ -276,7 +311,7 @@
 
 
     {{-- =========================================================
-        HPP
+         HPP
     ========================================================== --}}
 
     <tr>
@@ -311,7 +346,7 @@
 
 
     {{-- =========================================================
-        LABA KOTOR
+         LABA KOTOR
     ========================================================== --}}
 
     <tr>
@@ -351,7 +386,43 @@
 
 
     {{-- =========================================================
-        LABA BERSIH
+         BEBAN OPERASIONAL
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                border:1px solid #d9dee8;
+                padding:8px;
+            "
+        >
+            Beban Operasional
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                border:1px solid #d9dee8;
+                color:#e33434;
+                text-align:right;
+                padding:8px;
+            "
+        >
+            - Rp {{ number_format(
+                $totalBebanOperasional,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         LABA BERSIH
     ========================================================== --}}
 
     <tr>
@@ -396,7 +467,379 @@
 
 
     {{-- =========================================================
-        RINGKASAN RETUR
+         RINGKASAN KAS
+    ========================================================== --}}
+
+    <tr>
+
+        <th
+            colspan="9"
+            style="
+                background-color:#ffffff;
+                color:#222222;
+                font-size:14px;
+                font-weight:bold;
+                text-align:left;
+                padding:8px;
+            "
+        >
+            Ringkasan Kas
+        </th>
+
+    </tr>
+
+
+    {{-- =========================================================
+         SALDO AWAL KAS
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                background-color:#f4f6fb;
+                border:1px solid #d9dee8;
+                font-weight:bold;
+                padding:8px;
+            "
+        >
+            Saldo Awal Kas
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                background-color:#f4f6fb;
+                border:1px solid #d9dee8;
+                font-weight:bold;
+                text-align:right;
+                padding:8px;
+            "
+        >
+            Rp {{ number_format(
+                $saldoAwalKas,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         KAS MASUK PENJUALAN
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                border:1px solid #d9dee8;
+                padding:8px;
+            "
+        >
+            Kas Masuk dari Penjualan
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                border:1px solid #d9dee8;
+                color:#168a45;
+                text-align:right;
+                padding:8px;
+            "
+        >
+            Rp {{ number_format(
+                $kasMasukPenjualan,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         KAS MASUK TUKAR BARANG
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                border:1px solid #d9dee8;
+                padding:8px;
+            "
+        >
+            Kas Masuk dari Tukar Barang
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                border:1px solid #d9dee8;
+                color:#168a45;
+                text-align:right;
+                padding:8px;
+            "
+        >
+            Rp {{ number_format(
+                $kasMasukDariTukar,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         TOTAL KAS MASUK
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                background-color:#eaf8ef;
+                border:1px solid #d9dee8;
+                font-weight:bold;
+                padding:9px;
+            "
+        >
+            Total Kas Masuk
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                background-color:#eaf8ef;
+                border:1px solid #d9dee8;
+                color:#168a45;
+                font-weight:bold;
+                text-align:right;
+                padding:9px;
+            "
+        >
+            Rp {{ number_format(
+                $totalKasMasuk,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         KAS KELUAR RETUR UANG
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                border:1px solid #d9dee8;
+                padding:8px;
+            "
+        >
+            Kas Keluar dari Retur Uang
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                border:1px solid #d9dee8;
+                color:#e33434;
+                text-align:right;
+                padding:8px;
+            "
+        >
+            - Rp {{ number_format(
+                $kasKeluarDariReturUang,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         KAS KELUAR BEBAN OPERASIONAL
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                border:1px solid #d9dee8;
+                padding:8px;
+            "
+        >
+            Kas Keluar dari Beban Operasional
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                border:1px solid #d9dee8;
+                color:#e33434;
+                text-align:right;
+                padding:8px;
+            "
+        >
+            - Rp {{ number_format(
+                $kasKeluarDariBebanOperasional,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         TOTAL KAS KELUAR
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                background-color:#fff0f0;
+                border:1px solid #d9dee8;
+                font-weight:bold;
+                padding:9px;
+            "
+        >
+            Total Kas Keluar
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                background-color:#fff0f0;
+                border:1px solid #d9dee8;
+                color:#e33434;
+                font-weight:bold;
+                text-align:right;
+                padding:9px;
+            "
+        >
+            - Rp {{ number_format(
+                $totalKasKeluar,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         ARUS KAS BERSIH
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                background-color:#eef4ff;
+                border:1px solid #d9dee8;
+                font-weight:bold;
+                padding:9px;
+            "
+        >
+            Arus Kas Bersih
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                background-color:#eef4ff;
+                border:1px solid #d9dee8;
+                color:#2864d7;
+                font-weight:bold;
+                text-align:right;
+                padding:9px;
+            "
+        >
+            Rp {{ number_format(
+                $arusKasBersih,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         SALDO AKHIR KAS
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                background-color:#eaf7ee;
+                border:1px solid #d9dee8;
+                font-weight:bold;
+                padding:10px;
+            "
+        >
+            Saldo Akhir Kas
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                background-color:#eaf7ee;
+                border:1px solid #d9dee8;
+                color:#168a45;
+                font-size:14px;
+                font-weight:bold;
+                text-align:right;
+                padding:10px;
+            "
+        >
+            Rp {{ number_format(
+                $saldoAkhirKas,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    <tr>
+        <td colspan="9"></td>
+    </tr>
+
+
+    {{-- =========================================================
+         RINGKASAN RETUR
     ========================================================== --}}
 
     <tr>
@@ -418,7 +861,9 @@
     </tr>
 
 
-    {{-- RETUR UANG --}}
+    {{-- =========================================================
+         RETUR UANG
+    ========================================================== --}}
 
     <tr>
 
@@ -452,7 +897,9 @@
     </tr>
 
 
-    {{-- JUMLAH TUKAR BARANG --}}
+    {{-- =========================================================
+         JUMLAH TUKAR BARANG
+    ========================================================== --}}
 
     <tr>
 
@@ -480,7 +927,9 @@
     </tr>
 
 
-    {{-- NILAI BARANG DIKEMBALIKAN --}}
+    {{-- =========================================================
+         NILAI BARANG DIKEMBALIKAN
+    ========================================================== --}}
 
     <tr>
 
@@ -513,7 +962,9 @@
     </tr>
 
 
-    {{-- NILAI BARANG PENGGANTI --}}
+    {{-- =========================================================
+         NILAI BARANG PENGGANTI
+    ========================================================== --}}
 
     <tr>
 
@@ -536,7 +987,7 @@
             "
         >
             Rp {{ number_format(
-                $totalNilaiPengganti,
+                $nilaiBarangPengganti,
                 0,
                 ',',
                 '.'
@@ -546,7 +997,9 @@
     </tr>
 
 
-    {{-- SELISIH TUKAR BARANG --}}
+    {{-- =========================================================
+         SELISIH TUKAR BARANG
+    ========================================================== --}}
 
     <tr>
 
@@ -571,7 +1024,7 @@
             "
         >
             Rp {{ number_format(
-                $totalSelisihPembayaran,
+                $selisihTukarBarang,
                 0,
                 ',',
                 '.'
@@ -587,7 +1040,7 @@
 
 
     {{-- =========================================================
-        ARUS KAS
+         ARUS KAS
     ========================================================== --}}
 
     <tr>
@@ -609,7 +1062,9 @@
     </tr>
 
 
-    {{-- KAS MASUK DARI TUKAR --}}
+    {{-- =========================================================
+         KAS MASUK DARI PENJUALAN
+    ========================================================== --}}
 
     <tr>
 
@@ -622,7 +1077,7 @@
                 padding:8px;
             "
         >
-            Kas Masuk dari Tukar
+            Kas Masuk dari Penjualan
         </td>
 
         <td
@@ -637,7 +1092,7 @@
             "
         >
             Rp {{ number_format(
-                $kasMasukTukar,
+                $kasMasukPenjualan,
                 0,
                 ',',
                 '.'
@@ -647,7 +1102,89 @@
     </tr>
 
 
-    {{-- KAS KELUAR DARI RETUR UANG --}}
+    {{-- =========================================================
+         KAS MASUK DARI TUKAR
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                background-color:#eaf8ef;
+                border:1px solid #d9dee8;
+                font-weight:bold;
+                padding:8px;
+            "
+        >
+            Kas Masuk dari Tukar Barang
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                background-color:#eaf8ef;
+                border:1px solid #d9dee8;
+                color:#168a45;
+                font-weight:bold;
+                text-align:right;
+                padding:8px;
+            "
+        >
+            Rp {{ number_format(
+                $kasMasukDariTukar,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         TOTAL KAS MASUK
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                background-color:#eaf8ef;
+                border:1px solid #d9dee8;
+                font-weight:bold;
+                padding:8px;
+            "
+        >
+            Total Kas Masuk
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                background-color:#eaf8ef;
+                border:1px solid #d9dee8;
+                color:#168a45;
+                font-weight:bold;
+                text-align:right;
+                padding:8px;
+            "
+        >
+            Rp {{ number_format(
+                $totalKasMasuk,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         KAS KELUAR DARI RETUR UANG
+    ========================================================== --}}
 
     <tr>
 
@@ -675,7 +1212,7 @@
             "
         >
             - Rp {{ number_format(
-                $kasKeluarReturUang,
+                $kasKeluarDariReturUang,
                 0,
                 ',',
                 '.'
@@ -685,7 +1222,89 @@
     </tr>
 
 
-    {{-- ARUS KAS BERSIH --}}
+    {{-- =========================================================
+         KAS KELUAR DARI BEBAN OPERASIONAL
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                background-color:#fff0f0;
+                border:1px solid #d9dee8;
+                font-weight:bold;
+                padding:8px;
+            "
+        >
+            Kas Keluar dari Beban Operasional
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                background-color:#fff0f0;
+                border:1px solid #d9dee8;
+                color:#e33434;
+                font-weight:bold;
+                text-align:right;
+                padding:8px;
+            "
+        >
+            - Rp {{ number_format(
+                $kasKeluarDariBebanOperasional,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         TOTAL KAS KELUAR
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                background-color:#fff0f0;
+                border:1px solid #d9dee8;
+                font-weight:bold;
+                padding:8px;
+            "
+        >
+            Total Kas Keluar
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                background-color:#fff0f0;
+                border:1px solid #d9dee8;
+                color:#e33434;
+                font-weight:bold;
+                text-align:right;
+                padding:8px;
+            "
+        >
+            - Rp {{ number_format(
+                $totalKasKeluar,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         ARUS KAS BERSIH
+    ========================================================== --}}
 
     <tr>
 
@@ -714,6 +1333,46 @@
         >
             Rp {{ number_format(
                 $arusKasBersih,
+                0,
+                ',',
+                '.'
+            ) }}
+        </td>
+
+    </tr>
+
+
+    {{-- =========================================================
+         SALDO AKHIR KAS
+    ========================================================== --}}
+
+    <tr>
+
+        <td
+            colspan="5"
+            style="
+                background-color:#eaf7ee;
+                border:1px solid #d9dee8;
+                font-weight:bold;
+                padding:9px;
+            "
+        >
+            Saldo Akhir Kas
+        </td>
+
+        <td
+            colspan="4"
+            style="
+                background-color:#eaf7ee;
+                border:1px solid #d9dee8;
+                color:#168a45;
+                font-weight:bold;
+                text-align:right;
+                padding:9px;
+            "
+        >
+            Rp {{ number_format(
+                $saldoAkhirKas,
                 0,
                 ',',
                 '.'

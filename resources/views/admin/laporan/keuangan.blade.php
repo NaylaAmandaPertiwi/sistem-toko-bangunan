@@ -328,6 +328,22 @@
     color: #198754;
 }
 
+.profit-box.net-profit {
+    margin-top: 14px;
+    background: #eaf8f0;
+    border: 1px solid #b8e3c8;
+}
+
+.profit-box.net-profit .profit-label {
+    color: #397052;
+    font-weight: 600;
+}
+
+.profit-box.net-profit .profit-value {
+    font-size: 25px;
+    color: #198754;
+}
+
 
 /* =========================================================
    RINGKASAN RETUR
@@ -432,6 +448,22 @@
     border: 1px solid #bcd4ff;
     border-radius: 11px;
     padding: 14px;
+}
+
+.cash-final {
+    margin-top: 12px;
+    background: #eaf8f0;
+    border: 1px solid #b8e3c8;
+    border-radius: 11px;
+    padding: 14px;
+}
+
+.cash-final .cash-net-label {
+    color: #198754;
+}
+
+.cash-final .cash-net-value {
+    color: #198754;
 }
 
 .cash-net-label {
@@ -801,15 +833,14 @@
 
     </div>
 
-
     {{-- =====================================================
-         4 CARD UTAMA
-         ===================================================== --}}
+     4 CARD UTAMA
+     ===================================================== --}}
 
     <div class="finance-top-grid">
 
 
-        {{-- TOTAL PENJUALAN --}}
+        {{-- TOTAL PENJUALAN BERSIH --}}
 
         <div class="finance-top-card">
 
@@ -820,7 +851,7 @@
             <div>
 
                 <div class="finance-top-label">
-                    Total Penjualan
+                    Penjualan Bersih
                 </div>
 
                 <div class="finance-top-value">
@@ -838,24 +869,25 @@
 
         </div>
 
-        {{-- TOTAL RETUR --}}
+
+        {{-- LABA BERSIH --}}
 
         <div class="finance-top-card">
 
-            <div class="finance-icon icon-red">
-                ↩
+            <div class="finance-icon icon-green">
+                📈
             </div>
 
             <div>
 
                 <div class="finance-top-label">
-                    Total Retur
+                    Laba Bersih
                 </div>
 
                 <div class="finance-top-value">
 
                     Rp {{ number_format(
-                        $totalReturUang + $nilaiBarangDikembalikan,
+                        $labaBersih,
                         0,
                         ',',
                         '.'
@@ -868,7 +900,7 @@
         </div>
 
 
-        {{-- KAS MASUK --}}
+        {{-- TOTAL KAS MASUK --}}
 
         <div class="finance-top-card">
 
@@ -879,13 +911,13 @@
             <div>
 
                 <div class="finance-top-label">
-                    Kas Masuk
+                    Total Kas Masuk
                 </div>
 
                 <div class="finance-top-value">
 
                     Rp {{ number_format(
-                        $kasMasukDariTukar,
+                        $totalKasMasuk,
                         0,
                         ',',
                         '.'
@@ -898,24 +930,24 @@
         </div>
 
 
-        {{-- KAS KELUAR --}}
+        {{-- SALDO AKHIR KAS --}}
 
         <div class="finance-top-card">
 
             <div class="finance-icon icon-orange">
-                💸
+                💰
             </div>
 
             <div>
 
                 <div class="finance-top-label">
-                    Kas Keluar
+                    Saldo Akhir Kas
                 </div>
 
                 <div class="finance-top-value">
 
                     Rp {{ number_format(
-                        $kasKeluarDariReturUang,
+                        $saldoAkhirKas,
                         0,
                         ',',
                         '.'
@@ -1032,6 +1064,8 @@
             </div>
 
 
+            {{-- LABA KOTOR --}}
+
             <div class="profit-box">
 
                 <div class="profit-label">
@@ -1042,6 +1076,50 @@
 
                     Rp {{ number_format(
                         $labaKotor,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+
+                </div>
+
+            </div>
+
+
+            {{-- BEBAN OPERASIONAL --}}
+
+            <div class="finance-row">
+
+                <span class="finance-row-label">
+                    Total Beban Operasional
+                </span>
+
+                <span class="finance-row-value red">
+
+                    - Rp {{ number_format(
+                        $totalBebanOperasional,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+
+                </span>
+
+            </div>
+
+
+            {{-- LABA BERSIH --}}
+
+            <div class="profit-box net-profit">
+
+                <div class="profit-label">
+                    Laba Bersih
+                </div>
+
+                <div class="profit-value">
+
+                    Rp {{ number_format(
+                        $labaBersih,
                         0,
                         ',',
                         '.'
@@ -1169,17 +1247,16 @@
 
         </div>
 
-
         {{-- =================================================
-             ARUS KAS
-             ================================================= --}}
+            ARUS KAS
+            ================================================= --}}
 
         <div class="finance-panel">
 
             <div class="finance-panel-title">
 
                 <h2>
-                    Arus Kas
+                    Ringkasan Arus Kas
                 </h2>
 
             </div>
@@ -1187,15 +1264,68 @@
 
             <div class="cash-box">
 
+
+                {{-- SALDO AWAL --}}
+
+                <div class="cash-row">
+
+                    <div class="cash-label">
+                        Saldo Awal Kas
+                    </div>
+
+                    <div class="cash-value">
+                        Rp {{ number_format(
+                            $saldoAwalKas,
+                            0,
+                            ',',
+                            '.'
+                        ) }}
+                    </div>
+
+                    <small>
+                        Uang yang tersedia sebelum periode laporan
+                    </small>
+
+                </div>
+
+
+                {{-- KAS MASUK PENJUALAN --}}
+
                 <div class="cash-row">
 
                     <div class="cash-label cash-in">
-                        Kas Masuk
+                        Kas Masuk dari Penjualan
                     </div>
 
                     <div class="cash-value cash-in">
 
-                        Rp {{ number_format(
+                        + Rp {{ number_format(
+                            $kasMasukPenjualan,
+                            0,
+                            ',',
+                            '.'
+                        ) }}
+
+                    </div>
+
+                    <small>
+                        Dari transaksi penjualan
+                    </small>
+
+                </div>
+
+
+                {{-- KAS MASUK TUKAR BARANG --}}
+
+                <div class="cash-row">
+
+                    <div class="cash-label cash-in">
+                        Kas Masuk dari Tukar Barang
+                    </div>
+
+                    <div class="cash-value cash-in">
+
+                        + Rp {{ number_format(
                             $kasMasukDariTukar,
                             0,
                             ',',
@@ -1205,20 +1335,49 @@
                     </div>
 
                     <small>
-                        Dari selisih tukar barang
+                        Dari selisih pembayaran tukar barang
                     </small>
 
                 </div>
 
+
+                {{-- TOTAL KAS MASUK --}}
+
+                <div class="cash-row">
+
+                    <div class="cash-label cash-in">
+                        <strong>
+                            Total Kas Masuk
+                        </strong>
+                    </div>
+
+                    <div class="cash-value cash-in">
+
+                        <strong>
+                            Rp {{ number_format(
+                                $totalKasMasuk,
+                                0,
+                                ',',
+                                '.'
+                            ) }}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                {{-- RETUR UANG --}}
+
                 <div class="cash-row">
 
                     <div class="cash-label cash-out">
-                        Kas Keluar
+                        Kas Keluar dari Retur Uang
                     </div>
 
                     <div class="cash-value cash-out">
 
-                        Rp {{ number_format(
+                        - Rp {{ number_format(
                             $kasKeluarDariReturUang,
                             0,
                             ',',
@@ -1228,13 +1387,67 @@
                     </div>
 
                     <small>
-                        Dari retur uang
+                        Pengembalian uang kepada pelanggan
                     </small>
+
+                </div>
+
+
+                {{-- BEBAN OPERASIONAL --}}
+
+                <div class="cash-row">
+
+                    <div class="cash-label cash-out">
+                        Kas Keluar dari Beban Operasional
+                    </div>
+
+                    <div class="cash-value cash-out">
+
+                        - Rp {{ number_format(
+                            $kasKeluarDariBebanOperasional,
+                            0,
+                            ',',
+                            '.'
+                        ) }}
+
+                    </div>
+
+                    <small>
+                        Pengeluaran operasional usaha
+                    </small>
+
+                </div>
+
+
+                {{-- TOTAL KAS KELUAR --}}
+
+                <div class="cash-row">
+
+                    <div class="cash-label cash-out">
+                        <strong>
+                            Total Kas Keluar
+                        </strong>
+                    </div>
+
+                    <div class="cash-value cash-out">
+
+                        <strong>
+                            Rp {{ number_format(
+                                $totalKasKeluar,
+                                0,
+                                ',',
+                                '.'
+                            ) }}
+                        </strong>
+
+                    </div>
 
                 </div>
 
             </div>
 
+
+            {{-- ARUS KAS BERSIH --}}
 
             <div class="cash-net">
 
@@ -1254,7 +1467,33 @@
                 </div>
 
                 <small>
-                    Kas Masuk - Kas Keluar
+                    Total Kas Masuk − Total Kas Keluar
+                </small>
+
+            </div>
+
+
+            {{-- SALDO AKHIR --}}
+
+            <div class="cash-final">
+
+                <div class="cash-net-label">
+                    Saldo Akhir Kas
+                </div>
+
+                <div class="cash-net-value">
+
+                    Rp {{ number_format(
+                        $saldoAkhirKas,
+                        0,
+                        ',',
+                        '.'
+                    ) }}
+
+                </div>
+
+                <small>
+                    Saldo Awal Kas + Arus Kas Bersih
                 </small>
 
             </div>
@@ -1575,10 +1814,23 @@
 
             <br>
 
-            Laporan keuangan ini dihitung berdasarkan transaksi
-            penjualan, retur, dan pencatatan kas pada periode
-            yang dipilih. Kas masuk berasal dari selisih pembayaran
-            tukar barang, sedangkan kas keluar berasal dari retur uang.
+            Laporan keuangan menampilkan kinerja usaha dan posisi kas
+            berdasarkan periode yang dipilih. Penjualan bersih digunakan
+            dalam perhitungan laba, sedangkan arus kas menunjukkan
+            pergerakan uang yang masuk dan keluar dari kas usaha.
+
+            <br><br>
+
+            <strong>Kas masuk</strong> terdiri dari penerimaan penjualan
+            dan selisih pembayaran tukar barang.
+
+            <strong>Kas keluar</strong> terdiri dari pengembalian uang
+            retur dan beban operasional yang dicatat sebagai pengeluaran.
+
+            <strong>Saldo awal kas</strong> merupakan uang yang telah
+            tersedia sebelum periode laporan, sedangkan
+            <strong>saldo akhir kas</strong> merupakan saldo awal
+            ditambah arus kas bersih.
 
         </div>
 

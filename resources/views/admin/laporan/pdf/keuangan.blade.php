@@ -184,8 +184,10 @@
         }
 
         .cash-box td {
+            width: 33.33%;
             border: 1px solid #ddd;
             padding: 8px;
+            vertical-align: top;
         }
 
         .cash-in {
@@ -198,6 +200,16 @@
 
         .cash-net {
             color: #2563eb;
+            font-weight: bold;
+        }
+
+        .cash-opening {
+            color: #7c3aed;
+            font-weight: bold;
+        }
+
+        .cash-ending {
+            color: #16884a;
             font-weight: bold;
         }
 
@@ -215,6 +227,10 @@
 <body>
 
 
+    {{-- =====================================================
+         HEADER
+    ====================================================== --}}
+
     <div class="header">
 
         <h1>LAPORAN KEUANGAN</h1>
@@ -228,6 +244,10 @@
 
     </div>
 
+
+    {{-- =====================================================
+         PERIODE
+    ====================================================== --}}
 
     <table class="periode">
 
@@ -245,6 +265,16 @@
 
                     -
 
+                    {{ \Carbon\Carbon::parse($tanggalAkhir)->format('d/m/Y') }}
+
+                @elseif($tanggalMulai)
+
+                    Mulai
+                    {{ \Carbon\Carbon::parse($tanggalMulai)->format('d/m/Y') }}
+
+                @elseif($tanggalAkhir)
+
+                    Sampai
                     {{ \Carbon\Carbon::parse($tanggalAkhir)->format('d/m/Y') }}
 
                 @else
@@ -418,14 +448,18 @@
                 Beban Operasional
             </td>
 
-            <td class="value">
-                Rp {{ number_format($totalBebanOperasional, 0, ',', '.') }}
+            <td class="value red">
+                - Rp {{ number_format($totalBebanOperasional, 0, ',', '.') }}
             </td>
 
         </tr>
 
     </table>
 
+
+    {{-- =====================================================
+         LABA BERSIH
+    ====================================================== --}}
 
     <div class="profit-box">
 
@@ -438,6 +472,161 @@
         </div>
 
     </div>
+
+
+    {{-- =====================================================
+         RINGKASAN KAS
+    ====================================================== --}}
+
+    <div class="section-title">
+        Ringkasan Kas
+    </div>
+
+    <table class="detail-table">
+
+        {{-- SALDO AWAL --}}
+
+        <tr>
+
+            <td class="label">
+                Saldo Awal Kas
+            </td>
+
+            <td class="value cash-opening">
+                Rp {{ number_format($saldoAwalKas, 0, ',', '.') }}
+            </td>
+
+        </tr>
+
+
+        {{-- KAS MASUK PENJUALAN --}}
+
+        <tr>
+
+            <td class="label">
+                Kas Masuk dari Penjualan
+            </td>
+
+            <td class="value cash-in">
+                Rp {{ number_format($kasMasukPenjualan, 0, ',', '.') }}
+            </td>
+
+        </tr>
+
+
+        {{-- KAS MASUK TUKAR BARANG --}}
+
+        <tr>
+
+            <td class="label">
+                Kas Masuk dari Selisih Tukar Barang
+            </td>
+
+            <td class="value cash-in">
+                Rp {{ number_format($kasMasukDariTukar, 0, ',', '.') }}
+            </td>
+
+        </tr>
+
+
+        {{-- TOTAL KAS MASUK --}}
+
+        <tr>
+
+            <td class="label">
+                <strong>Total Kas Masuk</strong>
+            </td>
+
+            <td class="value cash-in">
+                <strong>
+                    Rp {{ number_format($totalKasMasuk, 0, ',', '.') }}
+                </strong>
+            </td>
+
+        </tr>
+
+
+        {{-- KAS KELUAR RETUR UANG --}}
+
+        <tr>
+
+            <td class="label">
+                Kas Keluar dari Retur Uang
+            </td>
+
+            <td class="value cash-out">
+                - Rp {{ number_format($kasKeluarDariReturUang, 0, ',', '.') }}
+            </td>
+
+        </tr>
+
+
+        {{-- KAS KELUAR BEBAN OPERASIONAL --}}
+
+        <tr>
+
+            <td class="label">
+                Kas Keluar dari Beban Operasional
+            </td>
+
+            <td class="value cash-out">
+                - Rp {{ number_format($kasKeluarDariBebanOperasional, 0, ',', '.') }}
+            </td>
+
+        </tr>
+
+
+        {{-- TOTAL KAS KELUAR --}}
+
+        <tr>
+
+            <td class="label">
+                <strong>Total Kas Keluar</strong>
+            </td>
+
+            <td class="value cash-out">
+                <strong>
+                    - Rp {{ number_format($totalKasKeluar, 0, ',', '.') }}
+                </strong>
+            </td>
+
+        </tr>
+
+
+        {{-- ARUS KAS BERSIH --}}
+
+        <tr>
+
+            <td class="label">
+                <strong>Arus Kas Bersih</strong>
+            </td>
+
+            <td class="value cash-net">
+                <strong>
+                    Rp {{ number_format($arusKasBersih, 0, ',', '.') }}
+                </strong>
+            </td>
+
+        </tr>
+
+
+        {{-- SALDO AKHIR KAS --}}
+
+        <tr>
+
+            <td class="label">
+                <strong>Saldo Akhir Kas</strong>
+            </td>
+
+            <td class="value cash-ending">
+                <strong>
+                    Rp {{ number_format($saldoAkhirKas, 0, ',', '.') }}
+                </strong>
+            </td>
+
+        </tr>
+
+    </table>
 
 
     {{-- =====================================================
@@ -527,12 +716,27 @@
 
     <table class="cash-box">
 
+        {{-- BARIS KAS MASUK --}}
+
         <tr>
 
             <td class="cash-in">
 
                 <strong>
-                    Kas Masuk dari Tukar
+                    Kas Masuk dari Penjualan
+                </strong>
+
+                <br>
+
+                Rp {{ number_format($kasMasukPenjualan, 0, ',', '.') }}
+
+            </td>
+
+
+            <td class="cash-in">
+
+                <strong>
+                    Kas Masuk dari Tukar Barang
                 </strong>
 
                 <br>
@@ -542,6 +746,25 @@
             </td>
 
 
+            <td class="cash-in">
+
+                <strong>
+                    Total Kas Masuk
+                </strong>
+
+                <br>
+
+                Rp {{ number_format($totalKasMasuk, 0, ',', '.') }}
+
+            </td>
+
+        </tr>
+
+
+        {{-- BARIS KAS KELUAR --}}
+
+        <tr>
+
             <td class="cash-out">
 
                 <strong>
@@ -550,7 +773,52 @@
 
                 <br>
 
-                Rp {{ number_format($kasKeluarDariReturUang, 0, ',', '.') }}
+                - Rp {{ number_format($kasKeluarDariReturUang, 0, ',', '.') }}
+
+            </td>
+
+
+            <td class="cash-out">
+
+                <strong>
+                    Kas Keluar dari Beban Operasional
+                </strong>
+
+                <br>
+
+                - Rp {{ number_format($kasKeluarDariBebanOperasional, 0, ',', '.') }}
+
+            </td>
+
+
+            <td class="cash-out">
+
+                <strong>
+                    Total Kas Keluar
+                </strong>
+
+                <br>
+
+                - Rp {{ number_format($totalKasKeluar, 0, ',', '.') }}
+
+            </td>
+
+        </tr>
+
+
+        {{-- BARIS SALDO --}}
+
+        <tr>
+
+            <td class="cash-opening">
+
+                <strong>
+                    Saldo Awal Kas
+                </strong>
+
+                <br>
+
+                Rp {{ number_format($saldoAwalKas, 0, ',', '.') }}
 
             </td>
 
@@ -564,6 +832,19 @@
                 <br>
 
                 Rp {{ number_format($arusKasBersih, 0, ',', '.') }}
+
+            </td>
+
+
+            <td class="cash-ending">
+
+                <strong>
+                    Saldo Akhir Kas
+                </strong>
+
+                <br>
+
+                Rp {{ number_format($saldoAkhirKas, 0, ',', '.') }}
 
             </td>
 
@@ -633,7 +914,7 @@
                     </td>
 
                     <td class="text-right">
-                        Rp {{ number_format($return->total_retur, 0, ',', '.') }}
+                        Rp {{ number_format($return->total_retur ?? 0, 0, ',', '.') }}
                     </td>
 
                     <td class="text-right">
@@ -759,6 +1040,10 @@
 
     </table>
 
+
+    {{-- =====================================================
+         FOOTER
+    ====================================================== --}}
 
     <div class="footer">
 
