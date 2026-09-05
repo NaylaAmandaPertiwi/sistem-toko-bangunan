@@ -709,10 +709,17 @@
 
                 <strong>Notifikasi</strong>
 
-                @if($stokMenipis->count() > 0)
+                @if(
+                    $stokHabis->count() > 0 ||
+                    $stokMenipis->count() > 0
+                )
 
                     <span>
-                        {{ $stokMenipis->count() }} produk stok menipis
+                        {{
+                            $stokHabis->count() +
+                            $stokMenipis->count()
+                        }}
+                        stok menipis
                     </span>
 
                 @else
@@ -901,7 +908,7 @@
         </div>
 
         <p class="stat-value">
-            {{ $stokMenipis->count() }}
+            {{ $stokHabis->count() + $stokMenipis->count() }}
         </p>
 
         <div class="stat-description">
@@ -956,7 +963,7 @@
             </h3>
 
             <span>
-                {{ $stokMenipis->count() }} Produk
+                {{ $stokHabis->count() + $stokMenipis->count() }} Produk
             </span>
 
         </div>
@@ -976,6 +983,49 @@
             </thead>
 
             <tbody>
+
+                {{-- =====================================================
+                    STOK HABIS
+                ====================================================== --}}
+
+                @forelse($stokHabis as $product)
+
+                    <tr>
+
+                        <td>
+                            {{ $product->nama_produk }}
+                        </td>
+
+                        <td>
+                            <span class="stock-number">
+                                {{ $product->stok }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="stock-minimum">
+                                {{ $product->stok_minimum }}
+                            </span>
+                        </td>
+
+                        <td>
+
+                            <span class="badge-danger">
+                                Stok Habis
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                @empty
+
+                @endforelse
+
+
+                {{-- =====================================================
+                    STOK MENIPIS
+                ====================================================== --}}
 
                 @forelse($stokMenipis as $product)
 
@@ -1000,7 +1050,7 @@
                         <td>
 
                             <span class="badge-danger">
-                                Menipis
+                                Stok Menipis
                             </span>
 
                         </td>
@@ -1009,17 +1059,31 @@
 
                 @empty
 
+                @endforelse
+
+
+                {{-- =====================================================
+                    JIKA TIDAK ADA PERINGATAN STOK
+                ====================================================== --}}
+
+                @if(
+                    $stokHabis->count() === 0 &&
+                    $stokMenipis->count() === 0
+                )
+
                     <tr>
 
                         <td colspan="4" style="text-align:center;">
+
                             <span class="badge-safe">
                                 Semua stok aman
                             </span>
+
                         </td>
 
                     </tr>
 
-                @endforelse
+                @endif
 
             </tbody>
 

@@ -164,11 +164,28 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
-        $stokMenipis = Product::whereColumn(
+        // STOK HABIS
+        $stokHabis = Product::where(
             'stok',
             '<=',
-            'stok_minimum'
+            0
         )
+            ->orderBy('nama_produk')
+            ->limit(5)
+            ->get();
+
+
+        // STOK MENIPIS
+        $stokMenipis = Product::where(
+            'stok',
+            '>',
+            0
+        )
+            ->whereColumn(
+                'stok',
+                '<=',
+                'stok_minimum'
+            )
             ->orderBy('stok', 'asc')
             ->limit(5)
             ->get();
@@ -216,10 +233,22 @@ class DashboardController extends Controller
         |--------------------------------------------------------------------------
         */
 
+        $hariIni = Carbon::today();
+
         $diskonAktif = Discount::where(
             'status',
             'Aktif'
         )
+            ->whereDate(
+                'tanggal_mulai',
+                '<=',
+                $hariIni
+            )
+            ->whereDate(
+                'tanggal_berakhir',
+                '>=',
+                $hariIni
+            )
             ->orderByDesc('persentase_diskon')
             ->get();
 
@@ -288,6 +317,7 @@ class DashboardController extends Controller
             compact(
                 'data',
                 'stokMenipis',
+                'stokHabis',
                 'transaksiTerakhir',
                 'returTerbaru',
                 'diskonAktif'
