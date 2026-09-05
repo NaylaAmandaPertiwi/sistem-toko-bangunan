@@ -721,7 +721,12 @@ class ReturnController extends Controller
 
                 'message' => 'Retur berhasil disimpan.',
 
-                'return_sale_id' => $returnSale->id
+                'return_sale_id' => $returnSale->id,
+
+                'print_url' => route(
+                    'print.return',
+                    $returnSale->id
+                )
 
             ]);
 
@@ -760,6 +765,27 @@ class ReturnController extends Controller
 
         return view(
             'transaksi.detail-retur',
+            compact('retur')
+        );
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cetak Invoice Retur
+    |--------------------------------------------------------------------------
+    */
+
+    public function print(ReturnSale $retur)
+    {
+        $retur->load([
+            'sale.user',
+            'details.product',
+            'details.saleDetail',
+            'exchangeDetails.product'
+        ]);
+
+        return view(
+            'shared.print-return',
             compact('retur')
         );
     }

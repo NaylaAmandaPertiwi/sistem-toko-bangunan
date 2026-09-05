@@ -668,6 +668,11 @@ Route::middleware('auth')->group(function () {
                 [KasirReturnController::class,'destroy']
             )->name('retur.destroy');
 
+            Route::get(
+                '/print/retur/{retur}',
+                [KasirReturnController::class, 'print']
+            )->name('print.return');
+
 
             /*
             |--------------------------------------------------------------------------

@@ -3100,27 +3100,27 @@ async function submitReturn() {
 
         if (result.success) {
 
-            alert(
-                result.message ||
-                "Retur berhasil disimpan."
-            );
+            if (result.print_url) {
 
+                window.open(
+                    result.print_url,
+                    "_blank",
+                    "width=450,height=700"
+                );
 
-            /*
-            |--------------------------------------------------------------------------
-            | Reload halaman setelah berhasil
-            |--------------------------------------------------------------------------
-            */
+            } else {
+
+                alert(
+                    "Retur berhasil disimpan, tetapi URL struk retur tidak tersedia."
+                );
+
+            }
 
             setTimeout(function () {
-
                 window.location.reload();
-
-            }, 300);
-
+            }, 500);
 
             return;
-
         }
 
 

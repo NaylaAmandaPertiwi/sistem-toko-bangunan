@@ -9,126 +9,446 @@
 
     <style>
 
-        body {
+        *{
+            box-sizing: border-box;
+        }
+
+
+        /* =====================================================
+           UKURAN STRUK THERMAL 58 MM
+        ====================================================== */
+
+        html,
+        body{
+
             margin: 0;
             padding: 0;
+
+            width: 58mm;
+
             background: #ffffff;
-            color: #000;
-            font-family: "Courier New", monospace;
-            font-size: 11px;
-            line-height: 1.4;
+            color: #000000;
+
         }
 
-        .print-receipt {
-            width: 76mm;
-            max-width: 76mm;
-            margin: auto;
-            padding: 4mm;
-        }
 
-        .receipt-header {
-            text-align: center;
-            margin-bottom: 6px;
-        }
+        .print-receipt{
 
-        .receipt-header h2 {
+            width: 58mm;
+            max-width: 58mm;
+
             margin: 0;
-            font-size: 22px;
-            letter-spacing: 2px;
+
+            padding: 3mm 2mm;
+
+            background: #ffffff;
+            color: #000000;
+
+            /*
+             * Arial digunakan agar tulisan lebih jelas
+             * ketika dicetak menggunakan printer thermal.
+             */
+            font-family: Arial, sans-serif;
+
+            font-size: 10px;
+
+            line-height: 1.35;
+
         }
 
-        .receipt-header p {
+
+        /* =====================================================
+           HEADER TOKO
+        ====================================================== */
+
+        .receipt-header{
+
+            text-align: center;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .receipt-header h2{
+
+            margin: 0 0 5px;
+
+            font-size: 18px;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+        }
+
+
+        .receipt-header p{
+
             margin: 2px 0;
+
+            font-size: 9px;
+
+            font-weight: 500;
+
+            line-height: 1.3;
+
+            word-break: break-word;
+
         }
 
-        .receipt-divider {
+
+        /* =====================================================
+           GARIS PEMISAH
+        ====================================================== */
+
+        .receipt-divider{
+
             border-top: 1px dashed #000;
-            margin: 8px 0;
+
+            margin: 6px 0;
+
+            height: 0;
+
         }
 
-        .receipt-title {
+
+        /* =====================================================
+           JUDUL
+        ====================================================== */
+
+        .receipt-title{
+
             text-align: center;
-            font-size: 15px;
-            font-weight: bold;
-        }
 
-        .receipt-info div {
-            display: flex;
-            justify-content: space-between;
-            margin: 3px 0;
-        }
+            font-size: 12px;
 
-        .receipt-items {
-            margin-top: 5px;
-        }
+            font-weight: 700;
 
-        .receipt-item {
-            margin-bottom: 8px;
-        }
+            letter-spacing: .5px;
 
-        .receipt-product {
-            font-weight: bold;
-        }
-
-        .receipt-item-detail {
-            display: flex;
-            justify-content: space-between;
-            padding-left: 8px;
-            font-size: 10px;
-        }
-
-        .receipt-summary div {
-            display: flex;
-            justify-content: space-between;
-            margin: 3px 0;
-        }
-
-        .receipt-total {
-            display: flex;
-            justify-content: space-between;
-            font-weight: bold;
-            font-size: 15px;
             margin: 5px 0;
+
         }
 
-        .receipt-payment {
-            margin-top: 5px;
+
+        /* =====================================================
+           INFORMASI RETUR
+        ====================================================== */
+
+        .receipt-info{
+
+            margin: 6px 0;
+
         }
 
-        .receipt-payment div {
+
+        .receipt-info div{
+
             display: flex;
+
             justify-content: space-between;
-            margin: 4px 0;
+
+            gap: 5px;
+
+            margin: 3px 0;
+
+            font-size: 9px;
+
         }
 
-        .receipt-payment .important {
-            font-weight: bold;
-            font-size: 13px;
+
+        .receipt-info div span:first-child{
+
+            flex: 0 0 65px;
+
+            font-weight: 500;
+
         }
 
-        .receipt-section-title {
-            font-weight: bold;
-            margin: 8px 0 5px;
+
+        .receipt-info div span:last-child{
+
+            flex: 1;
+
+            text-align: right;
+
+            word-break: break-word;
+
+            font-weight: 500;
+
         }
 
-        .receipt-footer {
-            text-align: center;
-            margin-top: 15px;
+
+        /* =====================================================
+           DAFTAR BARANG
+        ====================================================== */
+
+        .receipt-items{
+
+            margin-top: 5px;
+
+        }
+
+
+        .receipt-item{
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .receipt-product{
+
+            font-weight: 700;
+
             font-size: 10px;
+
+            margin-bottom: 3px;
+
+            line-height: 1.3;
+
+            word-break: break-word;
+
         }
 
-        @page {
-            size: 80mm auto;
-            margin: 4mm;
+
+        .receipt-item-detail{
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 5px;
+
+            padding-left: 5px;
+
+            font-size: 9px;
+
+            font-weight: 500;
+
+        }
+
+
+        /* =====================================================
+           JUDUL BAGIAN
+        ====================================================== */
+
+        .receipt-section-title{
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            margin: 7px 0 5px;
+
+        }
+
+
+        /* =====================================================
+           RINGKASAN
+        ====================================================== */
+
+        .receipt-summary div{
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 5px;
+
+            margin: 3px 0;
+
+            font-size: 9px;
+
+            font-weight: 500;
+
+        }
+
+
+        .receipt-summary div span:first-child{
+
+            flex: 1;
+
+        }
+
+
+        .receipt-summary div span:last-child{
+
+            text-align: right;
+
+            word-break: break-word;
+
+        }
+
+
+        /* =====================================================
+           TOTAL
+        ====================================================== */
+
+        .receipt-total{
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 5px;
+
+            font-weight: 700;
+
+            font-size: 13px;
+
+            margin: 5px 0;
+
+        }
+
+
+        .receipt-total span:last-child{
+
+            text-align: right;
+
+        }
+
+
+        /* =====================================================
+           PEMBAYARAN
+        ====================================================== */
+
+        .receipt-payment{
+
+            margin-top: 5px;
+
+        }
+
+
+        .receipt-payment div{
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 5px;
+
+            margin: 3px 0;
+
+            font-size: 9px;
+
+        }
+
+
+        .receipt-payment div span:first-child{
+
+            flex: 1;
+
+        }
+
+
+        .receipt-payment div span:last-child{
+
+            text-align: right;
+
+            word-break: break-word;
+
+        }
+
+
+        .receipt-payment .important{
+
+            font-weight: 700;
+
+            font-size: 10px;
+
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ====================================================== */
+
+        .receipt-footer{
+
+            text-align: center;
+
+            margin-top: 10px;
+
+            font-size: 8px;
+
+            font-weight: 500;
+
+            line-height: 1.35;
+
+        }
+
+
+        .receipt-footer p{
+
+            margin: 3px 0;
+
+        }
+
+
+        .receipt-footer strong{
+
+            font-size: 9px;
+
+        }
+
+
+        /* =====================================================
+           PRINT THERMAL 58 MM
+        ====================================================== */
+
+        @media print{
+
+            @page{
+
+                size: 58mm auto;
+
+                margin: 0;
+
+            }
+
+
+            html,
+            body{
+
+                width: 58mm;
+
+                margin: 0;
+
+                padding: 0;
+
+            }
+
+
+            .print-receipt{
+
+                width: 58mm;
+
+                max-width: 58mm;
+
+                margin: 0;
+
+                padding: 3mm 2mm;
+
+                font-family: Arial, sans-serif;
+
+                font-size: 10px;
+
+            }
+
         }
 
     </style>
 
 </head>
 
+
 <body>
 
+
 <div class="print-receipt">
+
 
     {{-- =====================================================
          HEADER TOKO
@@ -138,14 +458,18 @@
 
         <h2>NAYLA BANGUNAN</h2>
 
-        <p>Toko Bahan Bangunan</p>
+        <p>
+            Toko Bahan Bangunan
+        </p>
 
         <p>
             Desa Jernih Jaya, Kec. Gunung Tujuh,
             Kab. Kerinci, Provinsi Jambi
         </p>
 
-        <p>Telp. 08xxxxxxxxxx</p>
+        <p>
+            Telp. 08xxxxxxxxxx
+        </p>
 
     </div>
 
@@ -277,6 +601,7 @@
 
                     </span>
 
+
                     <span>
 
                         {{ number_format($detail->subtotal,0,',','.') }}
@@ -303,7 +628,9 @@
 
         <div>
 
-            <span>Jumlah Item</span>
+            <span>
+                Jumlah Item
+            </span>
 
             <span>
                 {{ $returnSale->details->count() }}
@@ -314,7 +641,9 @@
 
         <div>
 
-            <span>Total Qty</span>
+            <span>
+                Total Qty
+            </span>
 
             <span>
                 {{ $returnSale->details->sum('qty') }}
@@ -334,7 +663,9 @@
 
     <div class="receipt-total">
 
-        <span>TOTAL RETUR</span>
+        <span>
+            TOTAL RETUR
+        </span>
 
         <span>
 
@@ -352,6 +683,7 @@
     @if($returnSale->return_type === 'tukar')
 
         <div class="receipt-divider"></div>
+
 
         <div class="receipt-section-title">
 
@@ -383,6 +715,7 @@
 
                         </span>
 
+
                         <span>
 
                             {{ number_format($exchange->subtotal,0,',','.') }}
@@ -407,7 +740,9 @@
 
             <div>
 
-                <span>Nilai Barang Pengganti</span>
+                <span>
+                    Nilai Barang Pengganti
+                </span>
 
                 <span>
 
@@ -426,13 +761,16 @@
 
         <div class="receipt-divider"></div>
 
+
         <div class="receipt-payment">
 
             @if($returnSale->selisih_bayar > 0)
 
                 <div class="important">
 
-                    <span>SELISIH DIBAYAR</span>
+                    <span>
+                        SELISIH DIBAYAR
+                    </span>
 
                     <span>
 
@@ -442,11 +780,16 @@
 
                 </div>
 
+
                 <div>
 
-                    <span>Status</span>
+                    <span>
+                        Status
+                    </span>
 
-                    <span>Sudah Dibayar</span>
+                    <span>
+                        Sudah Dibayar
+                    </span>
 
                 </div>
 
@@ -454,17 +797,26 @@
 
                 <div class="important">
 
-                    <span>PEMBAYARAN</span>
+                    <span>
+                        PEMBAYARAN
+                    </span>
 
-                    <span>Rp 0</span>
+                    <span>
+                        Rp 0
+                    </span>
 
                 </div>
 
+
                 <div>
 
-                    <span>Status</span>
+                    <span>
+                        Status
+                    </span>
 
-                    <span>Tidak Ada Selisih</span>
+                    <span>
+                        Tidak Ada Selisih
+                    </span>
 
                 </div>
 
@@ -483,11 +835,14 @@
 
         <div class="receipt-divider"></div>
 
+
         <div class="receipt-payment">
 
             <div class="important">
 
-                <span>UANG DIKEMBALIKAN</span>
+                <span>
+                    UANG DIKEMBALIKAN
+                </span>
 
                 <span>
 
@@ -497,11 +852,16 @@
 
             </div>
 
+
             <div>
 
-                <span>Status</span>
+                <span>
+                    Status
+                </span>
 
-                <span>Sudah Dikembalikan</span>
+                <span>
+                    Sudah Dikembalikan
+                </span>
 
             </div>
 
@@ -518,11 +878,14 @@
 
         <div class="receipt-divider"></div>
 
+
         <div class="receipt-summary">
 
             <div>
 
-                <span>Keterangan</span>
+                <span>
+                    Keterangan
+                </span>
 
                 <span>
 
@@ -546,19 +909,30 @@
 
     <div class="receipt-footer">
 
-        <p>Retur berhasil diproses.</p>
+        <p>
+            Retur berhasil diproses.
+        </p>
 
-        <p>Simpan invoice ini sebagai bukti retur.</p>
+        <p>
+            Simpan invoice ini sebagai bukti retur.
+        </p>
+
 
         <br>
 
-        <strong>☺ Terima Kasih ☺</strong>
+
+        <strong>
+            ☺ Terima Kasih ☺
+        </strong>
+
 
         <p>
             Telah Berbelanja di Nayla Bangunan
+            
         </p>
 
     </div>
+
 
 </div>
 
@@ -571,6 +945,7 @@ window.onload = function(){
 
 };
 
+
 window.onafterprint = function(){
 
     window.close();
@@ -578,6 +953,7 @@ window.onafterprint = function(){
 };
 
 </script>
+
 
 </body>
 

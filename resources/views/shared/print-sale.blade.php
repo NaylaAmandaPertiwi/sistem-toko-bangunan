@@ -10,9 +10,7 @@
         content="width=device-width, initial-scale=1.0">
 
     <title>
-
         Invoice {{ $sale->kode_penjualan }}
-
     </title>
 
 <style>
@@ -25,30 +23,41 @@ html,
 body{
     margin:0;
     padding:0;
-    width:80mm;
+    width:58mm;
     background:#fff;
 }
 
 .print-receipt{
 
-    width:80mm;
-    max-width:80mm;
+    width:58mm;
+    max-width:58mm;
 
     margin:0;
-    padding:3mm 4mm;
+
+    /*
+     * Jangan terlalu besar karena kertas hanya 58 mm
+     */
+    padding:3mm 2mm;
 
     background:#fff;
     color:#000;
 
-    font-family:"Courier New", monospace;
+    /*
+     * Arial biasanya lebih mudah terbaca
+     * pada hasil print thermal dari browser
+     */
+    font-family:Arial, sans-serif;
 
-    font-size:11px;
-    line-height:1.4;
+    font-size:10px;
+
+    line-height:1.35;
 
 }
 
 
-/* Header */
+/* =====================================================
+   HEADER
+===================================================== */
 
 .receipt-header{
 
@@ -58,57 +67,72 @@ body{
 
 }
 
+
 .receipt-header h2{
 
-    font-size:22px;
+    font-size:18px;
+
     font-weight:700;
 
-    letter-spacing:2px;
+    letter-spacing:1px;
 
-    margin:0 0 6px;
+    margin:0 0 5px;
 
 }
+
 
 .receipt-header p{
 
-    font-size:11px;
+    font-size:9px;
+
+    font-weight:500;
 
     margin:2px 0;
+
+    line-height:1.3;
+
+    word-break:break-word;
 
 }
 
 
-/* Garis */
+/* =====================================================
+   GARIS
+===================================================== */
 
 .receipt-divider{
 
     border-top:1px dashed #000;
 
-    margin:8px 0;
+    margin:6px 0;
 
     height:0;
 
 }
 
 
-/* Judul */
+/* =====================================================
+   JUDUL
+===================================================== */
 
 .receipt-title{
 
     text-align:center;
 
-    font-size:15px;
+    font-size:12px;
 
     font-weight:700;
 
-    letter-spacing:1px;
+    letter-spacing:.5px;
 
     margin:5px 0;
 
 }
 
 
-/* Informasi transaksi */
+/* =====================================================
+   INFORMASI TRANSAKSI
+===================================================== */
 
 .receipt-info{
 
@@ -116,23 +140,30 @@ body{
 
 }
 
+
 .receipt-info div{
 
     display:flex;
 
     justify-content:space-between;
 
-    gap:8px;
+    gap:5px;
 
-    margin:2px 0;
+    margin:3px 0;
+
+    font-size:9px;
 
 }
+
 
 .receipt-info div span:first-child{
 
-    flex:0 0 78px;
+    flex:0 0 65px;
+
+    font-weight:500;
 
 }
+
 
 .receipt-info div span:last-child{
 
@@ -142,10 +173,14 @@ body{
 
     word-break:break-word;
 
+    font-weight:500;
+
 }
 
 
-/* Barang */
+/* =====================================================
+   DAFTAR BARANG
+===================================================== */
 
 .receipt-items{
 
@@ -153,23 +188,28 @@ body{
 
 }
 
+
 .receipt-item{
 
     margin-bottom:7px;
 
 }
 
+
 .receipt-product{
 
     font-weight:700;
 
-    font-size:11px;
+    font-size:10px;
 
     margin-bottom:3px;
+
+    line-height:1.3;
 
     word-break:break-word;
 
 }
+
 
 .receipt-item-detail{
 
@@ -177,16 +217,20 @@ body{
 
     justify-content:space-between;
 
-    gap:10px;
+    gap:5px;
 
-    padding-left:8px;
+    padding-left:5px;
 
-    font-size:10px;
+    font-size:9px;
+
+    font-weight:500;
 
 }
 
 
-/* Ringkasan */
+/* =====================================================
+   RINGKASAN
+===================================================== */
 
 .receipt-summary div{
 
@@ -194,14 +238,20 @@ body{
 
     justify-content:space-between;
 
-    gap:10px;
+    gap:5px;
 
     margin:3px 0;
+
+    font-size:9px;
+
+    font-weight:500;
 
 }
 
 
-/* Total */
+/* =====================================================
+   TOTAL
+===================================================== */
 
 .receipt-total{
 
@@ -209,7 +259,7 @@ body{
 
     justify-content:space-between;
 
-    font-size:15px;
+    font-size:13px;
 
     font-weight:700;
 
@@ -218,41 +268,51 @@ body{
 }
 
 
-/* Footer */
+/* =====================================================
+   FOOTER
+===================================================== */
 
 .receipt-footer{
 
     text-align:center;
 
-    font-size:10px;
+    font-size:8px;
 
-    margin-top:12px;
+    font-weight:500;
+
+    margin-top:10px;
+
+    line-height:1.35;
 
 }
+
 
 .receipt-footer p{
 
-    margin:2px 0;
+    margin:3px 0;
 
 }
 
 
-/* PRINT THERMAL 80 MM */
+/* =====================================================
+   PRINT THERMAL 58 MM
+===================================================== */
 
 @media print{
 
     @page{
 
-        size:80mm auto;
+        size:58mm auto;
 
         margin:0;
 
     }
 
+
     html,
     body{
 
-        width:80mm;
+        width:58mm;
 
         margin:0;
 
@@ -260,19 +320,25 @@ body{
 
     }
 
+
     .print-receipt{
 
-        width:80mm;
+        width:58mm;
 
-        max-width:80mm;
+        max-width:58mm;
 
         margin:0;
 
-        padding:3mm 4mm;
+        padding:3mm 2mm;
+
+        font-family:Arial, sans-serif;
+
+        font-size:10px;
 
     }
 
 }
+
 
 </style>
 
@@ -282,22 +348,32 @@ body{
 
 <div class="print-receipt">
 
-    {{-- Header Toko --}}
+    {{-- =====================================================
+         HEADER TOKO
+    ====================================================== --}}
+
     <div class="receipt-header">
 
         <h2>NAYLA BANGUNAN</h2>
 
         <p>Toko Bahan Bangunan</p>
 
-        <p>Desa Jernih Jaya, Kec. Gunung Tujuh, Kab. Kerinci, Provinsi Jambi</p>
+        <p>
+            Desa Jernih Jaya, Kec. Gunung Tujuh,
+            Kab. Kerinci, Provinsi Jambi
+        </p>
 
         <p>Telp. 08xxxxxxxxxx</p>
 
     </div>
 
-    <div class="receipt-divider">
-        
-    </div>
+
+    <div class="receipt-divider"></div>
+
+
+    {{-- =====================================================
+         JUDUL
+    ====================================================== --}}
 
     <div class="receipt-title">
 
@@ -305,40 +381,58 @@ body{
 
     </div>
 
-    <div class="receipt-divider">
-        
-    </div>
+
+    <div class="receipt-divider"></div>
 
 
-    {{-- Informasi Transaksi --}}
+    {{-- =====================================================
+         INFORMASI TRANSAKSI
+    ====================================================== --}}
+
     <div class="receipt-info">
 
         <div>
+
             <span>No. Transaksi</span>
-            <span>{{ $sale->kode_penjualan }}</span>
+
+            <span>
+                {{ $sale->kode_penjualan }}
+            </span>
+
         </div>
 
+
         <div>
+
             <span>Tanggal</span>
+
             <span>
                 {{ \Carbon\Carbon::parse($sale->tanggal)->format('d/m/Y') }}
             </span>
+
         </div>
+
 
         <div>
+
             <span>Kasir</span>
-            <span>{{ $sale->user->name ?? '-' }}</span>
+
+            <span>
+                {{ $sale->user->name ?? '-' }}
+            </span>
+
         </div>
 
     </div>
 
 
-    <div class="receipt-divider">
-        
-    </div>
+    <div class="receipt-divider"></div>
 
 
-    {{-- Daftar Barang --}}
+    {{-- =====================================================
+         DAFTAR BARANG
+    ====================================================== --}}
+
     <div class="receipt-items">
 
         @foreach($sale->saleDetails as $detail)
@@ -351,6 +445,7 @@ body{
 
                 </div>
 
+
                 <div class="receipt-item-detail">
 
                     <span>
@@ -360,6 +455,7 @@ body{
                         {{ number_format($detail->harga,0,',','.') }}
 
                     </span>
+
 
                     <span>
 
@@ -376,12 +472,13 @@ body{
     </div>
 
 
-    <div class="receipt-divider">
-        
-    </div>
+    <div class="receipt-divider"></div>
 
 
-    {{-- Ringkasan Pembayaran --}}
+    {{-- =====================================================
+         RINGKASAN PEMBAYARAN
+    ====================================================== --}}
+
     <div class="receipt-summary">
 
         <div>
@@ -389,17 +486,22 @@ body{
             <span>Subtotal</span>
 
             <span>
+
                 Rp {{ number_format($sale->subtotal,0,',','.') }}
+
             </span>
 
         </div>
+
 
         <div>
 
             <span>Diskon</span>
 
             <span>
+
                 Rp {{ number_format($sale->diskon,0,',','.') }}
+
             </span>
 
         </div>
@@ -407,26 +509,32 @@ body{
     </div>
 
 
-    <div class="receipt-divider">
-        
-    </div>
+    <div class="receipt-divider"></div>
 
+
+    {{-- =====================================================
+         TOTAL
+    ====================================================== --}}
 
     <div class="receipt-total">
 
         <span>TOTAL</span>
 
         <span>
+
             Rp {{ number_format($sale->total_bayar,0,',','.') }}
+
         </span>
 
     </div>
 
 
-    <div class="receipt-divider">
-        
-    </div>
+    <div class="receipt-divider"></div>
 
+
+    {{-- =====================================================
+         PEMBAYARAN
+    ====================================================== --}}
 
     <div class="receipt-summary">
 
@@ -435,17 +543,22 @@ body{
             <span>Bayar</span>
 
             <span>
+
                 Rp {{ number_format($sale->bayar,0,',','.') }}
+
             </span>
 
         </div>
+
 
         <div>
 
             <span>Kembalian</span>
 
             <span>
+
                 Rp {{ number_format($sale->kembalian,0,',','.') }}
+
             </span>
 
         </div>
@@ -453,33 +566,51 @@ body{
     </div>
 
 
-    <div class="receipt-divider">
-        
-    </div>
+    <div class="receipt-divider"></div>
 
 
-    {{-- Footer --}}
+    {{-- =====================================================
+         FOOTER
+    ====================================================== --}}
+
     <div class="receipt-footer">
 
-        <p>PENUKARAN BARANG DIPERBOLEHKAN DALAM WAKTU 7 HARI SETELAH PEMBELIAN</p>
+        <p>
+            PENUKARAN BARANG DIPERBOLEHKAN DALAM WAKTU
+            7 HARI SETELAH PEMBELIAN
+        </p>
 
-        <p>HARAP BAWA KEMBALI INVOICE INI BILA ADA BARANG YANG RUSAK, TIDAK SESUAI, ATAU INGIN MELAKUKAN PENUKARAN</p>
+        <p>
+            HARAP BAWA KEMBALI INVOICE INI BILA ADA
+            BARANG YANG RUSAK, TIDAK SESUAI, ATAU INGIN
+            MELAKUKAN PENUKARAN
+        </p>
 
         <p>☺︎ Terima Kasih ☺︎</p>
-        <p>Telah Berbelanja di Nayla Bangunan</p>
+
+        <p>
+            Telah Berbelanja di Nayla Bangunan
+            
+        </p>
 
     </div>
 
 </div>
 
+
 <script>
 
 window.onload=function(){
+
     window.print();
+
 };
 
+
 window.onafterprint=function(){
+
     window.close();
+
 };
 
 </script>
