@@ -10,7 +10,6 @@ return new class extends Migration
     {
         Schema::table('stock_ins', function (Blueprint $table) {
             $table->string('nomor_transaksi', 30)
-                ->unique()
                 ->change();
         });
     }
@@ -19,7 +18,6 @@ return new class extends Migration
     {
         Schema::table('stock_ins', function (Blueprint $table) {
             $table->string('nomor_transaksi', 255)
-                ->unique()
                 ->change();
         });
     }
