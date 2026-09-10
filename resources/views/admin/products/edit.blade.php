@@ -273,7 +273,19 @@
                             type="text"
                             name="barcode"
                             value="{{ $produk->barcode }}"
-                            class="form-control">
+                            class="form-control"
+                            readonly
+                            placeholder="Barcode dibuat otomatis berdasarkan SKU"
+                        >
+
+                        <small style="
+                            display:block;
+                            margin-top:7px;
+                            color:#888;
+                            font-size:13px;
+                        ">
+                            Barcode dibuat otomatis berdasarkan SKU produk.
+                        </small>
 
                     </div>
 

@@ -25,7 +25,8 @@ class SaleController extends Controller
                 'nama_produk',
                 'harga_jual',
                 'stok',
-                'barcode'
+                'barcode',
+                'sku'
             )
             ->where('status', 'Aktif')
             ->where('stok', '>', 0)
@@ -80,6 +81,11 @@ class SaleController extends Controller
                 )
                 ->orWhere(
                     'barcode',
+                    'like',
+                    '%' . $request->keyword . '%'
+                )
+                ->orWhere(
+                    'sku',
                     'like',
                     '%' . $request->keyword . '%'
                 );
@@ -227,7 +233,12 @@ class SaleController extends Controller
 
     public function searchBarcode($barcode)
     {
-        $product = Product::where('barcode', $barcode)
+        $product = Product::where(function ($query) use ($barcode) {
+
+                $query->where('barcode', $barcode)
+                    ->orWhere('sku', $barcode);
+
+            })
             ->where('status', 'Aktif')
             ->whereHas('category', function ($query) {
                 $query->where('status', 'Aktif');

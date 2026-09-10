@@ -222,23 +222,6 @@ class ProductController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | BARCODE
-            |--------------------------------------------------------------------------
-            |
-            | Untuk tahap ini barcode masih boleh kosong.
-            | Generate barcode otomatis akan kita kerjakan setelah SKU selesai.
-            |
-            */
-
-            'barcode' => [
-                'nullable',
-                'string',
-                'max:100',
-            ],
-
-
-            /*
-            |--------------------------------------------------------------------------
             | STOK AWAL
             |--------------------------------------------------------------------------
             */
@@ -335,10 +318,6 @@ class ProductController extends Controller
                 'Nama produk harus berupa teks.',
 
 
-            'barcode.string' =>
-                'Barcode harus berupa teks.',
-
-
             'stok.required' =>
                 'Stok awal wajib diisi.',
 
@@ -426,6 +405,9 @@ class ProductController extends Controller
         $data['sku'] = $this->generateSku(
             $category
         );
+
+        // Barcode otomatis menggunakan nilai SKU
+        $data['barcode'] = $data['sku'];
 
 
         /*
@@ -528,22 +510,6 @@ class ProductController extends Controller
                 'required',
                 'string',
                 'max:255',
-            ],
-
-
-            /*
-            |--------------------------------------------------------------------------
-            | BARCODE
-            |--------------------------------------------------------------------------
-            |
-            | Barcode masih diinput secara manual.
-            |
-            */
-
-            'barcode' => [
-                'nullable',
-                'string',
-                'max:100',
             ],
 
 
@@ -700,15 +666,16 @@ class ProductController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | PERTAHANKAN SKU LAMA
+        | PERTAHANKAN SKU DAN BARCODE
         |--------------------------------------------------------------------------
         |
-        | SKU tidak lagi diubah melalui halaman Edit.
-        | SKU yang sudah dimiliki produk tetap dipertahankan.
+        | SKU dan barcode tidak diubah melalui halaman Edit.
+        | Keduanya tetap mengikuti data produk.
         |
         */
 
         $data['sku'] = $produk->sku;
+        $data['barcode'] = $produk->sku;
 
 
         /*

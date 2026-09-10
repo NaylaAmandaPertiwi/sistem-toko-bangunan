@@ -263,12 +263,27 @@
 
                     <div class="form-group">
 
-                        <label>Barcode</label>
+                        <label>
+                            Barcode
+                        </label>
 
                         <input
                             type="text"
+                            id="barcode"
                             name="barcode"
-                            class="form-control">
+                            class="form-control"
+                            readonly
+                            placeholder="Barcode akan dibuat otomatis berdasarkan SKU"
+                        >
+
+                        <small style="
+                            display:block;
+                            margin-top:7px;
+                            color:#888;
+                            font-size:13px;
+                        ">
+                            Barcode dibuat otomatis berdasarkan SKU produk.
+                        </small>
 
                     </div>
 
@@ -467,6 +482,12 @@ const categoryOptions = document.querySelectorAll('.category-option');
 
 const skuInput = document.getElementById('sku');
 
+// ==========================================================
+// BARCODE
+// ==========================================================
+
+const barcodeInput = document.getElementById('barcode');
+
 
 // ==========================================================
 // TAMPILKAN DAFTAR KATEGORI SAAT INPUT DIKLIK
@@ -495,6 +516,7 @@ categorySearch.addEventListener('input', function(){
 
     // Kosongkan SKU karena kategori belum dipilih kembali.
     skuInput.value = '';
+    barcodeInput.value = '';
 
     categoryOptions.forEach(function(option){
 
@@ -568,10 +590,12 @@ categoryOptions.forEach(function(option){
             if(data.success){
 
                 skuInput.value = data.sku;
+                barcodeInput.value = data.sku;
 
             }else{
 
                 skuInput.value = '';
+                barcodeInput.value = '';
 
                 alert(
                     data.message ||
@@ -581,11 +605,13 @@ categoryOptions.forEach(function(option){
             }
 
         })
+        
         .catch(function(error){
 
             console.error(error);
 
             skuInput.value = '';
+            barcodeInput.value = '';
 
             alert(
                 'Terjadi kesalahan saat membuat SKU.'
