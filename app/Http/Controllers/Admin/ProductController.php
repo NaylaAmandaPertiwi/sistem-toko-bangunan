@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 use App\Models\Category;
 use App\Models\Product;
 
@@ -67,7 +66,119 @@ class ProductController extends Controller
         );
     }
 
+    private function generateCategoryCode(string $categoryName): string
+    {
+        // Ubah menjadi huruf kapital
+        $categoryName = strtoupper($categoryName);
+
+        // Hanya sisakan huruf A-Z
+        $categoryName = preg_replace('/[^A-Z]/', '', $categoryName);
+
+        // Ambil 3 huruf pertama
+        return substr($categoryName, 0, 3);
+    }
+
+    private function generateSku(Category $category): string
+    {
+        // Membuat kode kategori
+        $categoryCode = $this->generateCategoryCode(
+            $category->nama_kategori
+        );
+
+        // Ambil semua SKU dengan prefix kategori yang sama
+        $skus = Product::whereNotNull('sku')
+            ->where('sku', 'like', $categoryCode . '-%')
+            ->pluck('sku');
+
+        // Cari nomor terbesar dari SKU yang sudah ada
+        $maxNumber = 0;
+
+        foreach ($skus as $sku) {
+
+            // Ambil bagian angka setelah tanda "-"
+            $number = (int) substr(
+                $sku,
+                strlen($categoryCode) + 1
+            );
+
+            if ($number > $maxNumber) {
+                $maxNumber = $number;
+            }
+        }
+
+        // Nomor SKU berikutnya
+        $nextNumber = $maxNumber + 1;
+
+        // Format menjadi 5 digit
+        return $categoryCode . '-' . str_pad(
+            $nextNumber,
+            5,
+            '0',
+            STR_PAD_LEFT
+        );
+    }
+
+    public function previewSku(Request $request)
+    {
+        $request->validate([
+            'category_id' => [
+                'required',
+                'exists:categories,id',
+            ],
+        ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | AMBIL KATEGORI
+        |--------------------------------------------------------------------------
+        */
+
+        $category = Category::findOrFail(
+            $request->category_id
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | CEK STATUS KATEGORI
+        |--------------------------------------------------------------------------
+        */
+
+        if ($category->status !== 'Aktif') {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Kategori yang dipilih sedang nonaktif.'
+            ], 422);
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GENERATE SKU
+        |--------------------------------------------------------------------------
+        */
+
+        $sku = $this->generateSku(
+            $category
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | KIRIM SKU KE HALAMAN
+        |--------------------------------------------------------------------------
+        */
+
+        return response()->json([
+            'success' => true,
+            'sku' => $sku
+        ]);
+    }
+
     // Simpan Produk
+    
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -91,7 +202,6 @@ class ProductController extends Controller
                         $fail(
                             'Kategori yang dipilih sedang nonaktif.'
                         );
-
                     }
                 },
             ],
@@ -112,24 +222,11 @@ class ProductController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | SKU
-            |--------------------------------------------------------------------------
-            */
-
-            'sku' => [
-                'required',
-                'string',
-                'max:100',
-                'unique:products,sku',
-            ],
-
-
-            /*
-            |--------------------------------------------------------------------------
             | BARCODE
             |--------------------------------------------------------------------------
             |
-            | Barcode boleh kosong.
+            | Untuk tahap ini barcode masih boleh kosong.
+            | Generate barcode otomatis akan kita kerjakan setelah SKU selesai.
             |
             */
 
@@ -144,9 +241,6 @@ class ProductController extends Controller
             |--------------------------------------------------------------------------
             | STOK AWAL
             |--------------------------------------------------------------------------
-            |
-            | Wajib diisi dan tidak boleh negatif.
-            |
             */
 
             'stok' => [
@@ -241,13 +335,6 @@ class ProductController extends Controller
                 'Nama produk harus berupa teks.',
 
 
-            'sku.required' =>
-                'SKU wajib diisi.',
-
-            'sku.unique' =>
-                'SKU tersebut sudah digunakan.',
-
-
             'barcode.string' =>
                 'Barcode harus berupa teks.',
 
@@ -307,12 +394,54 @@ class ProductController extends Controller
 
         /*
         |--------------------------------------------------------------------------
+        | AMBIL KATEGORI
+        |--------------------------------------------------------------------------
+        |
+        | Kategori digunakan untuk menentukan kode awal SKU.
+        |
+        | Contoh:
+        | Cat   → CAT
+        | Semen → SEM
+        | Paku  → PAK
+        |
+        */
+
+        $category = Category::findOrFail(
+            $data['category_id']
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | GENERATE SKU OTOMATIS
+        |--------------------------------------------------------------------------
+        |
+        | Contoh:
+        | Produk pertama kategori Cat   → CAT-00001
+        | Produk kedua kategori Cat     → CAT-00002
+        | Produk pertama kategori Semen → SEM-00001
+        |
+        */
+
+        $data['sku'] = $this->generateSku(
+            $category
+        );
+
+
+        /*
+        |--------------------------------------------------------------------------
         | SIMPAN PRODUK
         |--------------------------------------------------------------------------
         */
 
         Product::create($data);
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | REDIRECT
+        |--------------------------------------------------------------------------
+        */
 
         return redirect()
             ->route('admin.produk.index')
@@ -404,29 +533,10 @@ class ProductController extends Controller
 
             /*
             |--------------------------------------------------------------------------
-            | SKU
-            |--------------------------------------------------------------------------
-            |
-            | Wajib diisi dan tidak boleh sama dengan SKU produk lain.
-            |
-            */
-
-            'sku' => [
-                'required',
-                'string',
-                'max:100',
-
-                Rule::unique('products', 'sku')
-                    ->ignore($produk->id),
-            ],
-
-
-            /*
-            |--------------------------------------------------------------------------
             | BARCODE
             |--------------------------------------------------------------------------
             |
-            | Barcode tetap boleh kosong.
+            | Barcode masih diinput secara manual.
             |
             */
 
@@ -531,12 +641,8 @@ class ProductController extends Controller
             'nama_produk.required' =>
                 'Nama produk wajib diisi.',
 
-
-            'sku.required' =>
-                'SKU wajib diisi.',
-
-            'sku.unique' =>
-                'SKU tersebut sudah digunakan.',
+            'nama_produk.string' =>
+                'Nama produk harus berupa teks.',
 
 
             'stok.required' =>
@@ -590,6 +696,19 @@ class ProductController extends Controller
                 'Status produk tidak valid.',
 
         ]);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | PERTAHANKAN SKU LAMA
+        |--------------------------------------------------------------------------
+        |
+        | SKU tidak lagi diubah melalui halaman Edit.
+        | SKU yang sudah dimiliki produk tetap dipertahankan.
+        |
+        */
+
+        $data['sku'] = $produk->sku;
 
 
         /*

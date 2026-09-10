@@ -236,13 +236,28 @@
 
                     <div class="form-group">
 
-                        <label>SKU</label>
+                        <label>
+                            SKU
+                        </label>
 
                         <input
                             type="text"
+                            id="sku"
                             name="sku"
                             class="form-control"
-                            required>
+                            value="{{ old('sku') }}"
+                            readonly
+                            placeholder="SKU akan dibuat otomatis"
+                        >
+
+                        <small style="
+                            display:block;
+                            margin-top:7px;
+                            color:#888;
+                            font-size:13px;
+                        ">
+                            SKU dibuat otomatis berdasarkan kategori produk.
+                        </small>
 
                     </div>
 
@@ -402,6 +417,10 @@ function formatRupiah(value)
 }
 
 
+// ==========================================================
+// HARGA
+// ==========================================================
+
 const hargaBeliDisplay = document.getElementById('harga_beli_display');
 const hargaBeli = document.getElementById('harga_beli');
 
@@ -430,12 +449,28 @@ hargaJualDisplay.addEventListener('input', function(){
 
 });
 
+
+// ==========================================================
+// KATEGORI
+// ==========================================================
+
 const categorySearch = document.getElementById('categorySearch');
 const categoryId = document.getElementById('categoryId');
 const categoryResults = document.getElementById('categoryResults');
 
 const categoryOptions = document.querySelectorAll('.category-option');
 
+
+// ==========================================================
+// SKU
+// ==========================================================
+
+const skuInput = document.getElementById('sku');
+
+
+// ==========================================================
+// TAMPILKAN DAFTAR KATEGORI SAAT INPUT DIKLIK
+// ==========================================================
 
 categorySearch.addEventListener('focus', function(){
 
@@ -444,11 +479,22 @@ categorySearch.addEventListener('focus', function(){
 });
 
 
+// ==========================================================
+// PENCARIAN KATEGORI
+// ==========================================================
+
 categorySearch.addEventListener('input', function(){
 
     const keyword = this.value.toLowerCase().trim();
 
     let found = false;
+
+    // Karena Admin mengetik ulang kategori,
+    // pilihan kategori sebelumnya harus dihapus.
+    categoryId.value = '';
+
+    // Kosongkan SKU karena kategori belum dipilih kembali.
+    skuInput.value = '';
 
     categoryOptions.forEach(function(option){
 
@@ -473,20 +519,89 @@ categorySearch.addEventListener('input', function(){
 });
 
 
+// ==========================================================
+// PILIH KATEGORI
+// ==========================================================
+
 categoryOptions.forEach(function(option){
 
     option.addEventListener('click', function(){
 
+        // Tampilkan nama kategori pada input
         categorySearch.value = this.textContent.trim();
 
+        // Simpan ID kategori
         categoryId.value = this.dataset.id;
 
+        // Tutup daftar kategori
         categoryResults.style.display = 'none';
+
+
+        // ==================================================
+        // GENERATE / PREVIEW SKU OTOMATIS
+        // ==================================================
+
+        const selectedCategoryId = this.dataset.id;
+
+        skuInput.value = 'Membuat SKU...';
+
+
+        fetch(
+            "{{ route('admin.produk.preview-sku') }}?category_id=" +
+            encodeURIComponent(selectedCategoryId)
+        )
+        .then(function(response){
+
+            if(!response.ok){
+
+                throw new Error(
+                    'Gagal mengambil SKU.'
+                );
+
+            }
+
+            return response.json();
+
+        })
+        .then(function(data){
+
+            if(data.success){
+
+                skuInput.value = data.sku;
+
+            }else{
+
+                skuInput.value = '';
+
+                alert(
+                    data.message ||
+                    'SKU tidak dapat dibuat.'
+                );
+
+            }
+
+        })
+        .catch(function(error){
+
+            console.error(error);
+
+            skuInput.value = '';
+
+            alert(
+                'Terjadi kesalahan saat membuat SKU.'
+            );
+
+        });
 
     });
 
 });
 
+
+// ==========================================================
+// TUTUP HASIL PENCARIAN KATEGORI
+// JIKA KLIK DI LUAR AREA KATEGORI
+// ==========================================================
 
 document.addEventListener('click', function(event){
 
@@ -498,6 +613,11 @@ document.addEventListener('click', function(event){
 
 });
 
+
+// ==========================================================
+// VALIDASI FORM SEBELUM SUBMIT
+// ==========================================================
+
 document.getElementById('productForm').addEventListener('submit', function(event){
 
     /*
@@ -505,14 +625,40 @@ document.getElementById('productForm').addEventListener('submit', function(event
     | KATEGORI
     |--------------------------------------------------------------------------
     | Jika Admin belum memilih kategori dari daftar,
-    | kosongkan input agar validasi required browser bekerja.
+    | jangan lanjutkan proses penyimpanan.
     */
 
     if(!categoryId.value){
 
+        event.preventDefault();
+
         categorySearch.value = '';
 
         categorySearch.focus();
+
+        alert(
+            'Silakan pilih kategori terlebih dahulu.'
+        );
+
+        return;
+
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | SKU
+    |--------------------------------------------------------------------------
+    | SKU harus sudah berhasil dibuat sebelum data dikirim.
+    */
+
+    if(!skuInput.value || skuInput.value === 'Membuat SKU...'){
+
+        event.preventDefault();
+
+        alert(
+            'SKU belum berhasil dibuat. Silakan pilih kategori kembali.'
+        );
 
         return;
 

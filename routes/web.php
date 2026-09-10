@@ -142,6 +142,11 @@ Route::middleware('auth')->group(function () {
                 [\App\Http\Controllers\Admin\ProductController::class, 'bulkDelete']
             )->name('produk.bulkDelete');
 
+            Route::get( 
+                'produk/preview-sku', 
+                [\App\Http\Controllers\Admin\ProductController::class, 'previewSku'] 
+            )->name('produk.preview-sku');
+
             Route::resource(
                 'produk',
                 \App\Http\Controllers\Admin\ProductController::class

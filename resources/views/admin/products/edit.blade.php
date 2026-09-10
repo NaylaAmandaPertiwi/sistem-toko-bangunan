@@ -240,14 +240,29 @@
 
                     <div class="form-group">
 
-                        <label>SKU</label>
+                        <label>
+                            SKU
+                        </label>
 
                         <input
                             type="text"
+                            id="sku"
                             name="sku"
                             value="{{ $produk->sku }}"
                             class="form-control"
-                            required>
+                            readonly
+                            placeholder="SKU akan dibuat otomatis"
+                        >
+
+                        <small style="
+                            display:block;
+                            margin-top:7px;
+                            color:#888;
+                            font-size:13px;
+                        ">
+                            SKU dibuat otomatis berdasarkan kategori produk.
+                        </small>
+
                     </div>
 
                     <div class="form-group">
